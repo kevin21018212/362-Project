@@ -57,4 +57,29 @@ public class Enrollment {
             }
         }
     }
+
+    public static boolean checkPrerequisites(String studentId, Course course) {
+        List<String> prerequisites = course.getPrerequisites();
+
+        if (prerequisites.isEmpty() || (prerequisites.size() == 1 && prerequisites.get(0).isEmpty())) {
+            return true;
+        }
+
+        List<Enrollment> enrollments = loadEnrollments();
+        List<String> enrolledCourseIds = new ArrayList<>();
+
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment.getStudentId().equals(studentId)) {
+                enrolledCourseIds.add(enrollment.getCourseId());
+            }
+        }
+
+        for (String prereq : prerequisites) {
+            if (!enrolledCourseIds.contains(prereq)) {
+                System.out.println("Missing prerequisite course: " + prereq);
+                return false;
+            }
+        }
+        return true;
+    }
 }

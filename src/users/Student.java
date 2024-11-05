@@ -19,12 +19,16 @@ public class Student extends User {
 
 
 
+
+
+
+
     public void enrollInCourse() {
         String courseId = Utils.getInput("\nEnter Course ID to enroll: ");
         Course course = Course.findCourseById(courseId);
 
         if (course != null) {
-            if (!checkPrerequisites(course)) {
+            if (!Enrollment.checkPrerequisites(this.id, course)) {
                 Utils.displayMessage("Prerequisites not met for this course.");
                 return;
             }
@@ -42,40 +46,6 @@ public class Student extends User {
             Utils.displayMessage("Course not found.");
         }
     }
-
-    private boolean checkPrerequisites(Course course) {
-        List<String> prerequisites = course.getPrerequisites();
-
-
-
-        // If no prerequisites, allow enrollment
-        if (prerequisites.isEmpty() || (prerequisites.size() == 1 && prerequisites.get(0).isEmpty())) {
-            return true;
-        }
-
-        List<Enrollment> enrollments = Enrollment.loadEnrollments();
-        List<String> enrolledCourseIds = new ArrayList<>();
-
-
-
-        // Collect IDs of courses the student is enrolled in
-        for (Enrollment enrollment : enrollments) {
-            if (enrollment.getStudentId().equals(this.id)) {
-                enrolledCourseIds.add(enrollment.getCourseId());
-            }
-        }
-
-        // Check if all prerequisites are met
-        for (String prereq : prerequisites) {
-            if (!enrolledCourseIds.contains(prereq)) {
-                Utils.displayMessage("Missing prerequisite course: " + prereq);
-                return false;
-            }
-        }
-        return true;
-    }
-
-
 
 
     public void submitAssignment() {
