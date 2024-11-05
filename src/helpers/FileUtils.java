@@ -9,7 +9,7 @@ public class FileUtils {
 
     public static void writeToFile(String directory, String fileName, String data) {
         try {
-            File dir = new File("src/" + directory);
+            File dir = new File("src/data/" + directory);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -42,7 +42,7 @@ public class FileUtils {
     public static void OverwriteFile(String directory, String fileName, List<String> dataLines) {
         try {
             // Ensure directory exists
-            File dir = new File("src/" + directory);
+            File dir = new File("src/data/" + directory);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -62,7 +62,7 @@ public class FileUtils {
     public static List<String> readFromFile(String directory, String fileName) {
         List<String> lines = new ArrayList<>();
         try {
-            File file = new File("src/" + directory, fileName);
+            File file = new File("src/data/" + directory, fileName);
             if (!file.exists()) {
                 return lines;
             }
@@ -83,7 +83,7 @@ public class FileUtils {
 
 
     public static int getNextId(String directory, String fileName) {
-        List<String> lines = readFromFile("src/" + directory, fileName);
+        List<String> lines = readFromFile("src/data/" + directory, fileName);
         return lines.size() + 1;
     }
 }

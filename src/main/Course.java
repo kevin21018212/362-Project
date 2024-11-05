@@ -38,7 +38,8 @@ public class Course {
     // Load all courses from courses.txt
     public static List<Course> loadCourses() {
         List<Course> courses = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("data", "courses.txt");
+        List<String> lines = FileUtils.readFromFile("", "courses.txt");
+
         for (String line : lines) {
             String[] data = line.split(",");
             courses.add(new Course(data[0], data[1], data[2]));
@@ -67,7 +68,7 @@ public class Course {
         List<Course> courses = loadCourses();
         System.out.println("\nAvailable Courses:");
         for (Course course : courses) {
-            System.out.println(course.id + ": " + course.name + " Instructor: " + course.instructorId );
+            System.out.println(course.toString());
         }
     }
 }

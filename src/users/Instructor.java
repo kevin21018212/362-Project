@@ -19,26 +19,30 @@ public class Instructor extends User {
     }
 
     public void gradeAssignments() {
-        String courseId = Utils.getInput("Enter main.Course ID: ");
+        String courseId = Utils.getInput("Enter Course ID: ");
         Course course = Course.findCourseById(courseId);
         if (course != null && course.getInstructorId().equals(this.id)) {
-            String directory = "courses/" + courseId;
-            String fileName = "submissions.txt";
-            List<String> submissions = FileUtils.readFromFile(directory, fileName);
+            String fileName = "courses/" + courseId + "/submissions.txt";
+
+            System.out.println(fileName);
+            List<String> submissions = FileUtils.readFromFile("", fileName);
             List<String> updatedSubmissions = new ArrayList<>();
+
             for (String submission : submissions) {
                 String[] data = submission.split(",");
-                if (data[2].equals("Not Graded")) {
-                    String grade = Utils.getInput("Enter grade for Student ID " + data[0] + ", main.Assignment ID " + data[1] + ": ");
-                    data[2] = grade;
+                if (data[3].equals("Not Graded")) {
+                    String grade = Utils.getInput("Enter grade for Student ID " + data[2] + ", Assignment ID " + data[1] + ": ");
+                    data[3] = grade;
                 }
                 updatedSubmissions.add(String.join(",", data));
             }
-            FileUtils.OverwriteFile(directory, fileName, updatedSubmissions);
+
+            FileUtils.OverwriteFile("", fileName, updatedSubmissions);
             Utils.displayMessage("Assignments graded.");
         } else {
-            Utils.displayMessage("main.Course not found or you are not the instructor for this course.");
+            Utils.displayMessage("Course not found or you are not the instructor for this course.");
         }
     }
+
 }
 

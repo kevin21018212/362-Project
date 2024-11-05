@@ -1,2 +1,0 @@
-stu_001,asgn_001,Not Graded
-stu_002,asgn_001,Not Graded

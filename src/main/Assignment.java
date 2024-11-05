@@ -9,13 +9,13 @@ public class Assignment {
     private final String id;
     private final String title;
     private final String dueDate;
-    private final String courseId;
 
-    public Assignment(String id, String title, String dueDate, String courseId) {
+
+    public Assignment(String id, String title, String dueDate) {
         this.id = id;
         this.title = title;
         this.dueDate = dueDate;
-        this.courseId = courseId;
+
     }
 
     // Getters
@@ -24,21 +24,21 @@ public class Assignment {
 
     @Override
     public String toString() {
-        return id + "," + title + "," + dueDate + "," + courseId;
+        return id + "," + title + "," + dueDate + ",";
     }
 
     // Load assignments for a specific course
     public static List<Assignment> loadAssignments(String courseId) {
         List<Assignment> assignments = new ArrayList<>();
-        String directory = "data/courses/" + courseId;
-        String fileName = "assignments.txt";
-        List<String> lines = FileUtils.readFromFile(directory, fileName);
-        for (String line : lines) {
-            String[] data = line.split(",");
-            assignments.add(new Assignment(data[0], data[1], data[2], data[3]));
-        }
+        String fileName = "courses/" + courseId + "/assignments.txt";
+
+        FileUtils.readFromFile("", fileName).stream()
+                .map(line -> line.split(","))
+                .filter(data -> data.length == 3)
+                .forEach(data -> assignments.add(new Assignment(data[0], data[1], data[2])));
         return assignments;
     }
+
 
     // Find an assignment by ID in a specific course
     public static Assignment findAssignmentById(String courseId, String assignmentId) {
@@ -49,5 +49,27 @@ public class Assignment {
             }
         }
         return null;
+    }
+
+
+    public static boolean isSubmitted(String courseId, String studentId, String assignmentId) {
+        String fileName = "courses/" + courseId + "/submissions.txt";
+        List<String> submissions = FileUtils.readFromFile("", fileName);
+
+        for (String submission : submissions) {
+            String[] data = submission.split(",");
+            if (data[1].equals(assignmentId) && data[2].equals(studentId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static void submit(String courseId, String studentId, String assignmentId) {
+        String submissionId = "sub_" + System.currentTimeMillis();
+        String data = submissionId + "," + assignmentId + "," + studentId + ",Not Graded";
+        String fileName = "courses/" + courseId + "/submissions.txt";
+        FileUtils.writeToFile("", fileName, data);
     }
 }

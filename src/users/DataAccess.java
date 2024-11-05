@@ -10,7 +10,7 @@ public class DataAccess {
     // Loaders
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("data", "students.txt");
+        List<String> lines = FileUtils.readFromFile("", "students.txt");
 
         for (String line : lines) {
             String[] data = line.split(",");
@@ -21,7 +21,7 @@ public class DataAccess {
     }
     public static List<Instructor> loadInstructors() {
         List<Instructor> instructors = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("data", "instructors.txt");
+        List<String> lines = FileUtils.readFromFile("", "instructors.txt");
         for (String line : lines) {
             String[] data = line.split(",");
             instructors.add(new Instructor(data[0], data[1], data[2]));

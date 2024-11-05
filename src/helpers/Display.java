@@ -10,33 +10,7 @@ import javax.xml.crypto.Data;
 
 public class Display {
 
-    public static void displayMainMenu() {
-        while (true) {
-            System.out.println("\nWelcome to the University System");
-            System.out.println("1. Student Login");
-            System.out.println("2. Instructor Login");
-            System.out.println("3. Faculty Login");
-            System.out.println("4. Exit");
-            String choice = Utils.getInput("Choose Option: ");
 
-            switch (choice) {
-                case "1":
-                    displayStudentMenu();
-                    break;
-                case "2":
-                    displayInstructorMenu();
-                    break;
-                case "3":
-                    //faculty?
-                    break;
-                case "4":
-                    System.out.println("End");
-                    return;
-                default:
-                    System.out.println("Bad Baka");
-            }
-        }
-    }
 
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID or 'new' to create an account: ");
