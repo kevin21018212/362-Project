@@ -26,7 +26,7 @@ public class Display {
 
         while (true) {
             System.out.println("\nStudent Menu:");
-            System.out.println("1 View Available Courses");
+            System.out.println("1 View my Courses");
             System.out.println("2 Enroll in Course");
             System.out.println("3 Submit Assignment");
             System.out.println("4 Logout");
@@ -34,10 +34,11 @@ public class Display {
 
             switch (choice) {
                 case "1":
-                    Course.displayAllCourses();
+
                     break;
                 case "2":
                     assert student != null;
+                    Course.displayAllCourses();
                     student.enrollInCourse();
                     break;
                 case "3":

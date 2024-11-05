@@ -5,6 +5,7 @@ import helpers.User;
 import helpers.Utils;
 import main.Assignment;
 import main.Course;
+import main.Enrollment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class Instructor extends User {
             }
 
             Assignment selectedAssignment = assignments.get(assignmentChoice);
+            checkMissingSubmissions(courseId, selectedAssignment.getId());
             gradeSelectedAssignment(courseId, selectedAssignment.getId());
         } else {
             Utils.displayMessage("Course not found or you are not the instructor for this course.");
@@ -78,6 +80,33 @@ public class Instructor extends User {
         Utils.displayMessage("Grading completed for assignment ID: " + assignmentId);
     }
 
+
+    private void checkMissingSubmissions(String courseId, String assignmentId) {
+        List<Enrollment> enrollments = Enrollment.loadEnrollments();
+        List<String> enrolledStudentIds = new ArrayList<>();
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment.getCourseId().equals(courseId)) {
+                enrolledStudentIds.add(enrollment.getStudentId());
+            }
+        }
+
+        List<String> submissions = FileUtils.readFromFile("", "courses/" + courseId + "/submissions.txt");
+        List<String> studentsWhoSubmitted = new ArrayList<>();
+
+        for (String submission : submissions) {
+            String[] data = submission.split(",");
+            if (data[1].equals(assignmentId)) {
+                studentsWhoSubmitted.add(data[2]);
+            }
+        }
+
+        Utils.displayMessage("Checking for missing submissions...");
+        for (String studentId : enrolledStudentIds) {
+            if (!studentsWhoSubmitted.contains(studentId)) {
+                Utils.displayMessage("Missing submission for Student ID: " + studentId + " for Assignment ID: " + assignmentId);
+            }
+        }
+    }
 
 
 
