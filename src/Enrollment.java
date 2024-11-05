@@ -9,7 +9,6 @@ public class Enrollment {
         this.course = course;
 
     }
-
     // Getters
     public String getEnrollmentID() { return enrollmentID; }
     public Student getStudent() { return student; }
