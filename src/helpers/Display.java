@@ -5,7 +5,6 @@ import users.DataAccess;
 import users.Instructor;
 import users.Student;
 
-import javax.xml.crypto.Data;
 
 
 public class Display {
@@ -35,13 +34,14 @@ public class Display {
 
             switch (choice) {
                 case "1":
-                    Course course= null;
                     Course.displayAllCourses();
                     break;
                 case "2":
+                    assert student != null;
                     student.enrollInCourse();
                     break;
                 case "3":
+                    assert student != null;
                     student.submitAssignment();
                     break;
                 case "4":

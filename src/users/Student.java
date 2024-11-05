@@ -1,13 +1,11 @@
 package users;
 
-import helpers.FileUtils;
+
 import helpers.User;
 import helpers.Utils;
 import main.Assignment;
 import main.Course;
 import main.Enrollment;
-
-import java.util.ArrayList;
 import java.util.List;
 
 

@@ -10,9 +10,7 @@ public class FileUtils {
     public static void writeToFile(String directory, String fileName, String data) {
         try {
             File dir = new File("src/data/" + directory);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+
             File file = new File(dir, fileName);
 
             // Ensure file ends with a newline
@@ -43,9 +41,7 @@ public class FileUtils {
         try {
             // Ensure directory exists
             File dir = new File("src/data/" + directory);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+
             File file = new File(dir, fileName);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 for (String data : dataLines) {
