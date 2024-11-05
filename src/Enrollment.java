@@ -2,38 +2,26 @@ public class Enrollment {
     private String enrollmentID;
     private Student student;
     private Course course;
-    private String enrollmentDate;
-    private String status;
+    private String status; // e.g., "Enrolled", "Waitlisted", "Dropped"
 
-    // Constructors and Getter/Setters
-    public Enrollment(Student student, Course course) {
-        this.enrollmentID = generateEnrollmentID();
+    // Constructor
+    public Enrollment(String enrollmentID, Student student, Course course, String status) {
+        this.enrollmentID = enrollmentID;
         this.student = student;
         this.course = course;
-        this.enrollmentDate = getCurrentDate();
-        this.status = "Enrolled";
+        this.status = status;
     }
 
+    // Getters and Setters
     public String getEnrollmentID() { return enrollmentID; }
+    public void setEnrollmentID(String enrollmentID) { this.enrollmentID = enrollmentID; }
 
     public Student getStudent() { return student; }
+    public void setStudent(Student student) { this.student = student; }
 
     public Course getCourse() { return course; }
-
-    public String getEnrollmentDate() { return enrollmentDate; }
-    public void setEnrollmentDate(String enrollmentDate) { this.enrollmentDate = enrollmentDate; }
+    public void setCourse(Course course) { this.course = course; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-
-    // Methods Case
-    private String generateEnrollmentID() {
-        // Generate a unique enrollment ID
-        return "ENR" + System.currentTimeMillis();
-    }
-
-    private String getCurrentDate() {
-        // To do
-        return java.time.LocalDate.now().toString();
-    }
 }
