@@ -16,6 +16,6 @@ public class Enrollment {
 
     @Override
     public String toString() {
-        return enrollmentID + "," + student.getStudentID() + "," + course.getCourseID();
+        return enrollmentID + "," + student.getId() + "," + course.getId();
     }
 }

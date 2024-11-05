@@ -1,21 +1,20 @@
+import java.util.ArrayList;
+import java.util.List;
 import helpers.FileUtils;
 import helpers.User;
 import helpers.Utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Student extends User {
     private List<Enrollment> enrollments;
-    private List<Assignment> submittedAssignments; // To track submitted assignments
+    private List<Assignment> submittedAssignments;
 
-    public Student(String studentID, String name, String email) {
-        super(studentID, name, email);
+    public Student(String id, String name, String email) {
+        super(id, name, email);
         this.enrollments = new ArrayList<>();
         this.submittedAssignments = new ArrayList<>();
     }
 
-    public String getStudentID() {
+    public String getId() {
         return super.userID;
     }
 
@@ -24,43 +23,66 @@ public class Student extends User {
     public List<Assignment> getSubmittedAssignments() { return submittedAssignments; }
 
     public void enrollInCourse(Course course) {
-        String enrollmentID = Utils.generateID("E", enrollments.size() + 1);
-        Enrollment enrollment = new Enrollment(enrollmentID, this, course);
+        String enrollmentId = Utils.generateID("E", FileUtils.getNextId("courses/" + course.getId(), "enrollments.txt"));
+        Enrollment enrollment = new Enrollment(enrollmentId, this, course);
         if (course.addEnrollment(enrollment)) {
             enrollments.add(enrollment);
-            Utils.displayMessage(name + " successfully enrolled in " + course.getCourseName());
-            saveEnrollment(enrollment);
+            Utils.displayMessage(name + " successfully enrolled in " + course.getName());
         }
     }
 
     public void submitAssignment(Assignment assignment) {
         submittedAssignments.add(assignment);
         Utils.displayMessage(name + " submitted assignment: " + assignment.getTitle());
+        saveAssignmentSubmission(assignment);
     }
 
-    private void saveEnrollment(Enrollment enrollment) {
-        FileUtils.writeToFile("enrollments.txt", enrollment.toString());
+    private void saveAssignmentSubmission(Assignment assignment) {
+        String directory = "courses/" + assignment.getCourse().getId();
+        String fileName = "submissions.txt";
+        String data = getId() + "," + assignment.getId();
+        FileUtils.writeToFile(directory, fileName, data);
     }
 
     @Override
     public void displayInfo() {
-        System.out.println("Student ID: " + userID + ", Name: " + name + ", Email: " + email);
+        System.out.println("Student ID: " + super.userID + ", Name: " + name + ", Email: " + email);
     }
 
     @Override
     public String toString() {
-        return userID + "," + name + "," + email;
+        return super.userID + "," + name + "," + email;
     }
 
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("students.txt");
+        List<String> lines = FileUtils.readFromFile("", "students.txt");
         for (String line : lines) {
-            String[] data = line.split(","); // Assuming CSV format
+            String[] data = line.split(",");
             students.add(new Student(data[0], data[1], data[2]));
         }
         return students;
     }
 
+    public static Student findStudentById(String id) {
+        List<Student> students = loadStudents();
+        for (Student student : students) {
+            if (student.getId().equals(id)) {
+                return student;
+            }
+        }
+        return null;
+    }
 
+    public void loadEnrollments() {
+        List<Course> courses = Course.loadCourses();
+        for (Course course : courses) {
+            course.loadEnrollments();
+            for (Enrollment enrollment : course.getEnrollments()) {
+                if (enrollment.getStudent().getId().equals(this.getId())) {
+                    enrollments.add(enrollment);
+                }
+            }
+        }
+    }
 }

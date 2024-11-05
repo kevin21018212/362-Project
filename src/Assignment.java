@@ -1,21 +1,27 @@
 public class Assignment {
-    private String assignmentID;
+    private String id;
     private String title;
     private String dueDate;
     private Course course;
+    private String grade;
 
-    public Assignment(String assignmentID, String title, String dueDate, Course course) {
-        this.assignmentID = assignmentID;
+    public Assignment(String id, String title, String dueDate, Course course) {
+        this.id = id;
         this.title = title;
         this.dueDate = dueDate;
         this.course = course;
+        this.grade = "Ungraded";
     }
-    public String getAssignmentID() { return assignmentID; }
+
+    public String getId() { return id; }
     public String getTitle() { return title; }
     public String getDueDate() { return dueDate; }
     public Course getCourse() { return course; }
+    public String getGrade() { return grade; }
+    public void setGrade(String grade) { this.grade = grade; }
 
+    @Override
     public String toString() {
-        return assignmentID + "," + title + "," + dueDate + "," + course.getCourseID();
+        return id + "," + title + "," + dueDate + "," + course.getId() + "," + grade;
     }
 }
