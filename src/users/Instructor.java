@@ -33,7 +33,7 @@ public class Instructor extends User {
             Utils.displayMessage("Available Assignments:");
             for (int i = 0; i < assignments.size(); i++) {
                 Assignment assignment = assignments.get(i);
-                Utils.displayMessage((i + 1) + ". " +  assignment.toString());
+                Utils.displayMessage((i + 1) + ". " + assignment);
             }
 
             int assignmentChoice = Integer.parseInt(Utils.getInput("\nChoose an assignment number to grade: ")) - 1;
@@ -43,45 +43,45 @@ public class Instructor extends User {
             }
 
             Assignment selectedAssignment = assignments.get(assignmentChoice);
-            checkMissingSubmissions(courseId, selectedAssignment.getId());
-            gradeSelectedAssignment(courseId, selectedAssignment.getId());
+            checkMissingSubmissions(courseId, selectedAssignment);
+            gradeSelectedAssignment(courseId, selectedAssignment);
         } else {
             Utils.displayMessage("Course not found or you are not the instructor for this course.");
         }
     }
 
-    private void gradeSelectedAssignment(String courseId, String assignmentId) {
-        String fileName = "courses/" + courseId + "/submissions.txt";
-        List<String> submissions = FileUtils.readFromFile("", fileName);
-        List<String> updatedSubmissions = new ArrayList<>();
+    private void gradeSelectedAssignment(String courseId, Assignment assignment) {
+        List<String[]> submissions = Assignment.getSubmissions(courseId, assignment.getId());
 
-        for (String submission : submissions) {
-            String[] data = submission.split(",");
-            if (data[1].equals(assignmentId)) {
-                String studentId = data[2];
-                String grade = data[3];
-                String submittedDate = data[4];
-
-                if (grade.equals("Not Graded")) {
-                    Utils.displayMessage("Student ID: " + studentId + ", Submitted on: " + submittedDate);
-                    boolean isLate = checkIfLate(courseId, assignmentId, submittedDate);
-                    if (isLate) {
-                        Utils.displayMessage("This submission is late.\n");
-                    }
-
-                    String newGrade = Utils.getInput("Enter grade for this assignment: ");
-                    data[3] = newGrade;
-                }
-            }
-            updatedSubmissions.add(String.join(",", data));
+        if (submissions.isEmpty()) {
+            Utils.displayMessage("No submissions found for this assignment.");
+            return;
         }
 
+        List<String> updatedSubmissions = new ArrayList<>();
+        for (String[] submission : submissions) {
+            String studentId = submission[2];
+            String grade = submission[3];
+            String submittedDate = submission[4];
+
+            if ("Not Graded".equals(grade)) {
+                Utils.displayMessage("Student ID: " + studentId + ", Submitted on: " + submittedDate);
+                if (isLate(assignment.getDueDate(), submittedDate)) {
+                    Utils.displayMessage("This submission is late.\n");
+                }
+
+                String newGrade = Utils.getInput("Enter grade for this assignment: ");
+                submission[3] = newGrade;
+            }
+            updatedSubmissions.add(String.join(",", submission));
+        }
+
+        String fileName = "courses/" + courseId + "/submissions.txt";
         FileUtils.OverwriteFile("", fileName, updatedSubmissions);
-        Utils.displayMessage("Grading completed for assignment ID: " + assignmentId);
+        Utils.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
 
-
-    private void checkMissingSubmissions(String courseId, String assignmentId) {
+    private void checkMissingSubmissions(String courseId, Assignment assignment) {
         List<Enrollment> enrollments = Enrollment.loadEnrollments();
         List<String> enrolledStudentIds = new ArrayList<>();
         for (Enrollment enrollment : enrollments) {
@@ -90,35 +90,21 @@ public class Instructor extends User {
             }
         }
 
-        List<String> submissions = FileUtils.readFromFile("", "courses/" + courseId + "/submissions.txt");
+        List<String[]> submissions = Assignment.getSubmissions(courseId, assignment.getId());
         List<String> studentsWhoSubmitted = new ArrayList<>();
-
-        for (String submission : submissions) {
-            String[] data = submission.split(",");
-            if (data[1].equals(assignmentId)) {
-                studentsWhoSubmitted.add(data[2]);
-            }
+        for (String[] submission : submissions) {
+            studentsWhoSubmitted.add(submission[2]);
         }
 
         Utils.displayMessage("Checking for missing submissions...\n");
         for (String studentId : enrolledStudentIds) {
             if (!studentsWhoSubmitted.contains(studentId)) {
-                Utils.displayMessage("Missing submission for Student ID: " + studentId + " for Assignment ID: " + assignmentId);
+                Utils.displayMessage("Missing submission for Student ID: " + studentId + " for Assignment ID: " + assignment.getId());
             }
         }
     }
 
-
-
-    private boolean checkIfLate(String courseId, String assignmentId, String submittedDate) {
-        Assignment assignment = Assignment.findAssignmentById(courseId, assignmentId);
-        if (assignment != null) {
-            String dueDate = assignment.getDueDate();
-            return submittedDate.compareTo(dueDate) > 0;
-        }
-        return false;
+    private boolean isLate(String dueDate, String submittedDate) {
+        return submittedDate.compareTo(dueDate) > 0;
     }
-
-
 }
-

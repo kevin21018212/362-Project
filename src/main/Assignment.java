@@ -1,7 +1,6 @@
 package main;
 
 import helpers.FileUtils;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -18,23 +17,17 @@ public class Assignment {
         this.dueDate = dueDate;
     }
 
-    // Getters
     public String getId() { return id; }
-
-    public String getDueDate(){
-        return  dueDate;
-    }
+    public String getDueDate() { return dueDate; }
 
     @Override
     public String toString() {
-        return id + "," + title + "," + dueDate + ",";
+        return "Assignment ID: " + id + ", Title: " + title + ", Due Date: " + dueDate;
     }
 
-    // Load assignments for a specific course
     public static List<Assignment> loadAssignments(String courseId) {
         List<Assignment> assignments = new ArrayList<>();
         String fileName = "courses/" + courseId + "/assignments.txt";
-
         FileUtils.readFromFile("", fileName).stream()
                 .map(line -> line.split(","))
                 .filter(data -> data.length == 3)
@@ -42,7 +35,6 @@ public class Assignment {
         return assignments;
     }
 
-    // Find an assignment by ID in a specific course
     public static Assignment findAssignmentById(String courseId, String assignmentId) {
         List<Assignment> assignments = loadAssignments(courseId);
         for (Assignment assignment : assignments) {
@@ -51,6 +43,18 @@ public class Assignment {
             }
         }
         return null;
+    }
+
+    public static List<String[]> getSubmissions(String courseId, String assignmentId) {
+        String fileName = "courses/" + courseId + "/submissions.txt";
+        List<String[]> submissions = new ArrayList<>();
+
+        FileUtils.readFromFile("", fileName).stream()
+                .map(line -> line.split(","))
+                .filter(data -> data[1].equals(assignmentId))
+                .forEach(submissions::add);
+
+        return submissions;
     }
 
     public static boolean isSubmitted(String courseId, String studentId, String assignmentId) {
