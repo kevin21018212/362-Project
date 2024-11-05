@@ -6,15 +6,15 @@ import java.util.List;
 
 public class FileUtils {
 
-    // Write data to a file (appending), ensuring directories exist
+    // Write data to a file , if directories exist
     public static void writeToFile(String directory, String fileName, String data) {
         try {
-            // Ensure directory exists
+            // directory exists
             File dir = new File(directory);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            // Open file in append mode
+            // open in append
             File file = new File(dir, fileName);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
                 writer.write(data);
@@ -25,8 +25,8 @@ public class FileUtils {
         }
     }
 
-    // Overwrite the entire file with dataLines
-    public static void writeToFileOverwrite(String directory, String fileName, List<String> dataLines) {
+
+    public static void OverwriteFile(String directory, String fileName, List<String> dataLines) {
         try {
             // Ensure directory exists
             File dir = new File(directory);
@@ -67,7 +67,6 @@ public class FileUtils {
         return lines;
     }
 
-    // Get next ID for auto-increment within a directory
     public static int getNextId(String directory, String fileName) {
         List<String> lines = readFromFile(directory, fileName);
         return lines.size() + 1;
