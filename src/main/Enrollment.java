@@ -1,3 +1,5 @@
+package main;
+
 import helpers.FileUtils;
 
 import java.util.ArrayList;

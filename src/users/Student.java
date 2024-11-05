@@ -1,6 +1,11 @@
+package users;
+
 import helpers.FileUtils;
 import helpers.User;
 import helpers.Utils;
+import main.Assignment;
+import main.Course;
+import main.Enrollment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,63 +20,37 @@ public class Student extends User {
         return super.id;
     }
 
-    @Override
-    public void displayMenu() {
-        while (true) {
-            System.out.println("\nStudent Menu:");
-            System.out.println("1. View Available Courses");
-            System.out.println("2. Enroll in a Course");
-            System.out.println("3. Submit Assignment");
-            System.out.println("4. Logout");
-            String choice = Utils.getInput("Select an option: ");
 
-            switch (choice) {
-                case "1":
-                    Course.displayAllCourses();
-                    break;
-                case "2":
-                    enrollInCourse();
-                    break;
-                case "3":
-                    submitAssignment();
-                    break;
-                case "4":
-                    return;
-                default:
-                    System.out.println("Invalid option.");
-            }
-        }
-    }
 
-    private void enrollInCourse() {
-        String courseId = Utils.getInput("Enter Course ID to enroll: ");
+    public void enrollInCourse() {
+        String courseId = Utils.getInput("Enter main.Course ID to enroll: ");
         Course course = Course.findCourseById(courseId);
         if (course != null) {
             Enrollment enrollment = new Enrollment(this.id, courseId);
             Enrollment.saveEnrollment(enrollment);
             Utils.displayMessage("Enrolled in course " + course.getName());
         } else {
-            Utils.displayMessage("Course not found.");
+            Utils.displayMessage("main.Course not found.");
         }
     }
 
-    private void submitAssignment() {
-        String courseId = Utils.getInput("Enter Course ID: ");
+    public void submitAssignment() {
+        String courseId = Utils.getInput("Enter main.Course ID: ");
         Course course = Course.findCourseById(courseId);
         if (course != null) {
-            String assignmentId = Utils.getInput("Enter Assignment ID: ");
+            String assignmentId = Utils.getInput("Enter main.Assignment ID: ");
             Assignment assignment = course.findAssignmentById(assignmentId);
             if (assignment != null) {
                 String directory = "courses/" + courseId;
                 String fileName = "submissions.txt";
                 String data = this.id + "," + assignmentId + ",Not Graded";
                 FileUtils.writeToFile(directory, fileName, data);
-                Utils.displayMessage("Assignment submitted.");
+                Utils.displayMessage("main.Assignment submitted.");
             } else {
-                Utils.displayMessage("Assignment not found.");
+                Utils.displayMessage("main.Assignment not found.");
             }
         } else {
-            Utils.displayMessage("Course not found.");
+            Utils.displayMessage("main.Course not found.");
         }
     }
 
@@ -101,3 +80,4 @@ public class Student extends User {
         return id + "," + name + "," + email;
     }
 }
+

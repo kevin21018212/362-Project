@@ -1,3 +1,5 @@
+package main;
+
 import java.util.ArrayList;
 import java.util.List;
 import helpers.FileUtils;
@@ -20,6 +22,9 @@ public class Course {
         allCourses.add(this);
     }
 
+    public static void saveCourse(Course course) {
+    }
+
     // Getters
     public String getId() { return id; }
     public String getName() { return name; }
@@ -28,7 +33,7 @@ public class Course {
 
     public boolean addEnrollment(Enrollment enrollment) {
         if (enrollments.size() >= 30) {
-            Utils.displayMessage("Course is full.");
+            Utils.displayMessage("main.Course is full.");
             return false;
         }
         enrollments.add(enrollment);
@@ -38,7 +43,7 @@ public class Course {
 
     public void addAssignment(Assignment assignment) {
         assignments.add(assignment);
-        Utils.displayMessage("Assignment " + assignment.getTitle() + " added to " + name);
+        Utils.displayMessage("main.Assignment " + assignment.getTitle() + " added to " + name);
         saveAssignment(assignment);
     }
 
@@ -103,5 +108,9 @@ public class Course {
     @Override
     public String toString() {
         return id + "," + name;
+    }
+
+    public Assignment findAssignmentById(String assignmentId) {
+
     }
 }

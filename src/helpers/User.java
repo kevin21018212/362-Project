@@ -11,8 +11,7 @@ public abstract class User {
         this.email = email;
     }
 
-    // Display the user menu
-    public abstract void displayMenu();
+
 
     // Common toString method for all users
     @Override

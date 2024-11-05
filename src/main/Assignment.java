@@ -1,3 +1,7 @@
+package main;
+
+import main.Course;
+
 public class Assignment {
     private String id;
     private String title;
