@@ -25,10 +25,7 @@ public class Course {
     public String getInstructorId() { return instructorId; }
     public List<String> getPrerequisites() { return prerequisites; }
 
-    public void saveCourseInfo() {
-        String data = id + "," + name + "," + instructorId + "," + prerequisites.toString();
-        FileUtils.writeToFile("", "courses.txt", data);
-    }
+
 
     public static List<Course> loadCourses() {
         List<Course> courses = new ArrayList<>();
@@ -59,13 +56,7 @@ public class Course {
         return null;
     }
 
-    public void displayAssignments() {
-       Display.displayMessage("Assignments for Course: " + this.name);
-        List<Assignment> assignments = Assignment.loadAssignments(this.id);
-        for (Assignment assignment : assignments) {
-           Display.displayMessage(assignment.toString());
-        }
-    }
+
 
     public static void displayAllCourses() {
         List<Course> courses = loadCourses();
