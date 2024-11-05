@@ -8,7 +8,7 @@ public class Course {
     private int capacity;
     private List<Enrollment> enrollments;
 
-    // Constructors and Getter/Setters
+
     public Course(String courseID, String courseName, int credits, int capacity) {
         this.courseID = courseID;
         this.courseName = courseName;
@@ -32,7 +32,7 @@ public class Course {
 
     public List<Enrollment> getEnrollments() { return enrollments; }
 
-    // Method Case
+    // Methods
     public void addEnrollment(Enrollment enrollment) {
         if (enrollments.size() < capacity) {
             enrollments.add(enrollment);
