@@ -7,17 +7,11 @@ import main.Assignment;
 import main.Course;
 import main.Enrollment;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Student extends User {
 
     public Student(String id, String name, String email) {
         super(id, name, email);
-    }
-
-    public String getId() {
-        return super.id;
     }
 
 
@@ -35,22 +29,21 @@ public class Student extends User {
     }
 
     public void submitAssignment() {
-        String courseId = Utils.getInput("Enter main.Course ID: ");
+        String courseId = Utils.getInput("Enter Course ID: ");
         Course course = Course.findCourseById(courseId);
         if (course != null) {
-            String assignmentId = Utils.getInput("Enter main.Assignment ID: ");
-            Assignment assignment = course.findAssignmentById(assignmentId);
+            String assignmentId = Utils.getInput("Enter Assignment ID: ");
+            Assignment assignment = Assignment.findAssignmentById(courseId, assignmentId);
             if (assignment != null) {
-                String directory = "courses/" + courseId;
                 String fileName = "submissions.txt";
                 String data = this.id + "," + assignmentId + ",Not Graded";
-                FileUtils.writeToFile(directory, fileName, data);
-                Utils.displayMessage("main.Assignment submitted.");
+                FileUtils.writeToFile("", fileName, data);
+                Utils.displayMessage("Assignment submitted.");
             } else {
-                Utils.displayMessage("main.Assignment not found.");
+                Utils.displayMessage("Assignment not found.");
             }
         } else {
-            Utils.displayMessage("main.Course not found.");
+            Utils.displayMessage("Course not found.");
         }
     }
 
@@ -59,9 +52,5 @@ public class Student extends User {
         return DataAccess.findStudentById(id);
     }
 
-    @Override
-    public String toString() {
-        return id + "," + name + "," + email;
-    }
 }
 

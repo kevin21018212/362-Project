@@ -1,8 +1,6 @@
 package main;
 
 import helpers.FileUtils;
-import helpers.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,29 +27,10 @@ public class Course {
     public String getLevel() { return level; }
     public String getInstructorId() { return instructorId; }
 
-    // Save course information to course_info.txt
+    // Save course information to courses.txt
     public void saveCourseInfo() {
-        String directory = "courses/" + id;
-        String fileName = "course_info.txt";
         String data = id + "," + name + "," + level + "," + instructorId;
-        FileUtils.writeToFile(directory, fileName, data);
-    }
-
-    // Save course to courses.txt
-    public static void saveCourse(Course course) {
-        FileUtils.writeToFile("", "courses.txt", course.id + "," + course.name + "," + course.level + "," + course.instructorId);
-    }
-
-    // Add an assignment to the course
-    public void addAssignment(Assignment assignment) {
-        String directory = "courses/" + id;
-        String fileName = "assignments.txt";
-        FileUtils.writeToFile(directory, fileName, assignment.toString());
-    }
-
-    // Find an assignment by ID in the course
-    public Assignment findAssignmentById(String assignmentId) {
-        return Assignment.findAssignmentById(this.id, assignmentId);
+        FileUtils.writeToFile("", "courses.txt", data);
     }
 
     // Load all courses from courses.txt
@@ -67,13 +46,11 @@ public class Course {
 
     // Find a course by its ID
     public static Course findCourseById(String id) {
-        // Check if the course is already loaded
         for (Course course : allCourses) {
             if (course.getId().equals(id)) {
                 return course;
             }
         }
-        // Load from file if not in memory
         List<Course> courses = loadCourses();
         for (Course course : courses) {
             if (course.getId().equals(id)) {

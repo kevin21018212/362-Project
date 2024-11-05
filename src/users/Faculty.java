@@ -1,9 +1,8 @@
 package users;
 
-import helpers.FileUtils;
+
 import helpers.User;
-import helpers.Utils;
-import main.Course;
+
 
 public class Faculty extends User {
 

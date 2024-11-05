@@ -14,7 +14,7 @@ public class Enrollment {
         this.courseId = courseId;
     }
 
-    // Getters
+
     public String getStudentId() { return studentId; }
     public String getCourseId() { return courseId; }
 
@@ -26,7 +26,7 @@ public class Enrollment {
     // Load enrollments
     public static List<Enrollment> loadEnrollments() {
         List<Enrollment> enrollments = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("", "enrollments.txt");
+        List<String> lines = FileUtils.readFromFile("data", "enrollments.txt");
         for (String line : lines) {
             String[] data = line.split(",");
             enrollments.add(new Enrollment(data[0], data[1]));
@@ -36,6 +36,6 @@ public class Enrollment {
 
     // Save enrollment
     public static void saveEnrollment(Enrollment enrollment) {
-        FileUtils.writeToFile("", "enrollments.txt", enrollment.toString());
+        FileUtils.writeToFile("data", "enrollments.txt", enrollment.toString());
     }
 }

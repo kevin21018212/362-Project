@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Assignment {
-    private String id;
-    private String title;
-    private String dueDate;
-    private String courseId;
+    private final String id;
+    private final String title;
+    private final String dueDate;
+    private final String courseId;
 
     public Assignment(String id, String title, String dueDate, String courseId) {
         this.id = id;
@@ -20,9 +20,7 @@ public class Assignment {
 
     // Getters
     public String getId() { return id; }
-    public String getTitle() { return title; }
-    public String getDueDate() { return dueDate; }
-    public String getCourseId() { return courseId; }
+
 
     @Override
     public String toString() {
@@ -32,7 +30,7 @@ public class Assignment {
     // Load assignments for a specific course
     public static List<Assignment> loadAssignments(String courseId) {
         List<Assignment> assignments = new ArrayList<>();
-        String directory = "courses/" + courseId;
+        String directory = "data/courses/" + courseId;
         String fileName = "assignments.txt";
         List<String> lines = FileUtils.readFromFile(directory, fileName);
         for (String line : lines) {

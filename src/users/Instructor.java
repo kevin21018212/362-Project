@@ -3,11 +3,9 @@ package users;
 import helpers.FileUtils;
 import helpers.User;
 import helpers.Utils;
-import main.Assignment;
 import main.Course;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Instructor extends User {
@@ -19,7 +17,6 @@ public class Instructor extends User {
     public static Instructor findInstructorById(String id) {
         return DataAccess.findInstructorById(id);
     }
-
 
     public void gradeAssignments() {
         String courseId = Utils.getInput("Enter main.Course ID: ");

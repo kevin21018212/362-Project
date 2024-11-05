@@ -2,7 +2,6 @@ package users;
 
 
 import helpers.FileUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class DataAccess {
     // Loaders
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("", "students.txt");
+        List<String> lines = FileUtils.readFromFile("data", "students.txt");
         for (String line : lines) {
             String[] data = line.split(",");
             students.add(new Student(data[0], data[1], data[2]));
@@ -20,7 +19,7 @@ public class DataAccess {
     }
     public static List<Instructor> loadInstructors() {
         List<Instructor> instructors = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("", "instructors.txt");
+        List<String> lines = FileUtils.readFromFile("data", "instructors.txt");
         for (String line : lines) {
             String[] data = line.split(",");
             instructors.add(new Instructor(data[0], data[1], data[2]));
