@@ -1,59 +1,81 @@
-import java.util.ArrayList;
-import java.util.List;
 import helpers.FileUtils;
 import helpers.User;
 import helpers.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Student extends User {
-    private List<Enrollment> enrollments;
-    private List<Assignment> submittedAssignments;
 
     public Student(String id, String name, String email) {
         super(id, name, email);
-        this.enrollments = new ArrayList<>();
-        this.submittedAssignments = new ArrayList<>();
     }
 
     public String getId() {
-        return super.userID;
+        return super.id;
     }
 
-    // Getters
-    public List<Enrollment> getEnrollments() { return enrollments; }
-    public List<Assignment> getSubmittedAssignments() { return submittedAssignments; }
+    @Override
+    public void displayMenu() {
+        while (true) {
+            System.out.println("\nStudent Menu:");
+            System.out.println("1. View Available Courses");
+            System.out.println("2. Enroll in a Course");
+            System.out.println("3. Submit Assignment");
+            System.out.println("4. Logout");
+            String choice = Utils.getInput("Select an option: ");
 
-    public void enrollInCourse(Course course) {
-        String enrollmentId = Utils.generateID("E", FileUtils.getNextId("courses/" + course.getId(), "enrollments.txt"));
-        Enrollment enrollment = new Enrollment(enrollmentId, this, course);
-        if (course.addEnrollment(enrollment)) {
-            enrollments.add(enrollment);
-            Utils.displayMessage(name + " successfully enrolled in " + course.getName());
+            switch (choice) {
+                case "1":
+                    Course.displayAllCourses();
+                    break;
+                case "2":
+                    enrollInCourse();
+                    break;
+                case "3":
+                    submitAssignment();
+                    break;
+                case "4":
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+            }
         }
     }
 
-    public void submitAssignment(Assignment assignment) {
-        submittedAssignments.add(assignment);
-        Utils.displayMessage(name + " submitted assignment: " + assignment.getTitle());
-        saveAssignmentSubmission(assignment);
+    private void enrollInCourse() {
+        String courseId = Utils.getInput("Enter Course ID to enroll: ");
+        Course course = Course.findCourseById(courseId);
+        if (course != null) {
+            Enrollment enrollment = new Enrollment(this.id, courseId);
+            Enrollment.saveEnrollment(enrollment);
+            Utils.displayMessage("Enrolled in course " + course.getName());
+        } else {
+            Utils.displayMessage("Course not found.");
+        }
     }
 
-    private void saveAssignmentSubmission(Assignment assignment) {
-        String directory = "courses/" + assignment.getCourse().getId();
-        String fileName = "submissions.txt";
-        String data = getId() + "," + assignment.getId();
-        FileUtils.writeToFile(directory, fileName, data);
+    private void submitAssignment() {
+        String courseId = Utils.getInput("Enter Course ID: ");
+        Course course = Course.findCourseById(courseId);
+        if (course != null) {
+            String assignmentId = Utils.getInput("Enter Assignment ID: ");
+            Assignment assignment = course.findAssignmentById(assignmentId);
+            if (assignment != null) {
+                String directory = "courses/" + courseId;
+                String fileName = "submissions.txt";
+                String data = this.id + "," + assignmentId + ",Not Graded";
+                FileUtils.writeToFile(directory, fileName, data);
+                Utils.displayMessage("Assignment submitted.");
+            } else {
+                Utils.displayMessage("Assignment not found.");
+            }
+        } else {
+            Utils.displayMessage("Course not found.");
+        }
     }
 
-    @Override
-    public void displayInfo() {
-        System.out.println("Student ID: " + super.userID + ", Name: " + name + ", Email: " + email);
-    }
-
-    @Override
-    public String toString() {
-        return super.userID + "," + name + "," + email;
-    }
-
+    // Load students from file
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
         List<String> lines = FileUtils.readFromFile("", "students.txt");
@@ -74,15 +96,8 @@ public class Student extends User {
         return null;
     }
 
-    public void loadEnrollments() {
-        List<Course> courses = Course.loadCourses();
-        for (Course course : courses) {
-            course.loadEnrollments();
-            for (Enrollment enrollment : course.getEnrollments()) {
-                if (enrollment.getStudent().getId().equals(this.getId())) {
-                    enrollments.add(enrollment);
-                }
-            }
-        }
+    @Override
+    public String toString() {
+        return id + "," + name + "," + email;
     }
 }

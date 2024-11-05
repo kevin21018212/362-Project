@@ -67,6 +67,7 @@ public class FileUtils {
         return lines;
     }
 
+    // Get next ID for auto-increment within a directory
     public static int getNextId(String directory, String fileName) {
         List<String> lines = readFromFile(directory, fileName);
         return lines.size() + 1;
