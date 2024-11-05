@@ -2,6 +2,8 @@ package main;
 
 import helpers.FileUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,17 +12,18 @@ public class Assignment {
     private final String title;
     private final String dueDate;
 
-
     public Assignment(String id, String title, String dueDate) {
         this.id = id;
         this.title = title;
         this.dueDate = dueDate;
-
     }
 
     // Getters
     public String getId() { return id; }
 
+    public String getDueDate(){
+        return  dueDate;
+    }
 
     @Override
     public String toString() {
@@ -39,7 +42,6 @@ public class Assignment {
         return assignments;
     }
 
-
     // Find an assignment by ID in a specific course
     public static Assignment findAssignmentById(String courseId, String assignmentId) {
         List<Assignment> assignments = loadAssignments(courseId);
@@ -50,7 +52,6 @@ public class Assignment {
         }
         return null;
     }
-
 
     public static boolean isSubmitted(String courseId, String studentId, String assignmentId) {
         String fileName = "courses/" + courseId + "/submissions.txt";
@@ -65,10 +66,10 @@ public class Assignment {
         return false;
     }
 
-
     public static void submit(String courseId, String studentId, String assignmentId) {
         String submissionId = "sub_" + System.currentTimeMillis();
-        String data = submissionId + "," + assignmentId + "," + studentId + ",Not Graded";
+        String submittedDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
+        String data = submissionId + "," + assignmentId + "," + studentId + ",Not Graded," + submittedDate;
         String fileName = "courses/" + courseId + "/submissions.txt";
         FileUtils.writeToFile("", fileName, data);
     }
