@@ -10,11 +10,15 @@ public class Course {
     private List<Enrollment> enrollments;
     private List<Assignment> assignments;
 
+   //List of all courses
+    private static List<Course> allCourses = new ArrayList<>();
+
     public Course(String courseID, String courseName) {
         this.courseID = courseID;
         this.courseName = courseName;
         this.enrollments = new ArrayList<>();
         this.assignments = new ArrayList<>();
+        allCourses.add(this);
     }
 
     // Vital Getters
@@ -24,7 +28,7 @@ public class Course {
     public List<Assignment> getAssignments() { return assignments; }
 
     public boolean addEnrollment(Enrollment enrollment) {
-        if (enrollments.size() >= 30) { // Assume capacity is 30 for simplicity
+        if (enrollments.size() >= 30) {
             Utils.displayMessage("Course is full.");
             return false;
         }
@@ -35,6 +39,11 @@ public class Course {
     public void addAssignment(Assignment assignment) {
         assignments.add(assignment);
         Utils.displayMessage("Assignment " + assignment.getTitle() + " added to " + courseName);
+        saveAssignment(assignment);
+    }
+
+    private void saveAssignment(Assignment assignment) {
+        FileUtils.writeToFile("assignments.txt", assignment.toString());
     }
 
     public static List<Course> loadCourses() {
@@ -45,6 +54,16 @@ public class Course {
             courses.add(new Course(data[0], data[1]));
         }
         return courses;
+    }
+
+    // Find course by ID
+    public static Course findCourseByID(String courseID) {
+        for (Course course : allCourses) {
+            if (course.getCourseID().equals(courseID)) {
+                return course;
+            }
+        }
+        return null;
     }
 
     @Override
