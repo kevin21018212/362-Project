@@ -9,9 +9,7 @@ public class Utils {
     }
 
     // Future use
-    public static void displayMessage(String message) {
-        System.out.println(message);
-    }
+
 
 
     public static String getInput(String prompt) {

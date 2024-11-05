@@ -1,5 +1,6 @@
 package main;
 
+import helpers.Display;
 import helpers.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,18 +60,18 @@ public class Course {
     }
 
     public void displayAssignments() {
-        System.out.println("Assignments for Course: " + this.name);
+       Display.displayMessage("Assignments for Course: " + this.name);
         List<Assignment> assignments = Assignment.loadAssignments(this.id);
         for (Assignment assignment : assignments) {
-            System.out.println(assignment);
+           Display.displayMessage(assignment.toString());
         }
     }
 
     public static void displayAllCourses() {
         List<Course> courses = loadCourses();
-        System.out.println("\nAvailable Courses:");
+       Display.displayMessage("\nAvailable Courses:");
         for (Course course : courses) {
-            System.out.println(course);
+           Display.displayMessage(course.toString());
         }
     }
 

@@ -15,21 +15,21 @@ public class Display {
         String id = Utils.getInput("Enter Student ID or 'new' to create an account: ");
         Student student = DataAccess.findStudentById(id);
         if (id.equalsIgnoreCase("new")) {
-            System.out.println("LOL");
+            displayMessage("LOL");
         } else {
             student = Student.findStudentById(id);
             if (student == null) {
-                System.out.println("Student not found.");
+                displayMessage("Student not found.");
                 return;
             }
         }
 
         while (true) {
-            System.out.println("\nStudent Menu:");
-            System.out.println("1 View my Courses");
-            System.out.println("2 Enroll in Course");
-            System.out.println("3 Submit Assignment");
-            System.out.println("4 Logout\n");
+            displayMessage("\nStudent Menu:");
+            displayMessage("1 View my Courses");
+            displayMessage("2 Enroll in Course");
+            displayMessage("3 Submit Assignment");
+            displayMessage("4 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -48,7 +48,7 @@ public class Display {
                 case "4":
                     return;
                 default:
-                    System.out.println("Bad Baka");
+                    displayMessage("Bad Baka");
             }
         }
     }
@@ -57,20 +57,20 @@ public class Display {
         String id = Utils.getInput("Enter Instructor ID or 'new' to create an account: ");
         Instructor instructor = DataAccess.findInstructorById(id);
         if (id.equalsIgnoreCase("new")) {
-            System.out.println("lol");
+            displayMessage("lol");
         } else {
             instructor = Instructor.findInstructorById(id);
             if (instructor == null) {
-                System.out.println("Instructor not found.");
+                displayMessage("Instructor not found.");
                 return;
             }
         }
 
         while (true) {
-            System.out.println("\nInstructor Menu:");
-            System.out.println("1 Create Assignment");
-            System.out.println("2 Grade Assignments");
-            System.out.println("3 Logout");
+            displayMessage("\nInstructor Menu:");
+            displayMessage("1 Create Assignment");
+            displayMessage("2 Grade Assignments");
+            displayMessage("3 Logout");
             String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
@@ -83,10 +83,13 @@ public class Display {
                 case "3":
                     return;
                 default:
-                    System.out.println("Bad Baka");
+                    displayMessage("Bad Baka");
             }
         }
     }
 
+    public static void displayMessage(String message) {
+        System.out.println(message);
+    }
 
 }

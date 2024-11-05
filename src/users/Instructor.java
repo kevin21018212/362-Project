@@ -1,5 +1,6 @@
 package users;
 
+import helpers.Display;
 import helpers.FileUtils;
 import helpers.User;
 import helpers.Utils;
@@ -26,19 +27,19 @@ public class Instructor extends User {
         if (course != null && course.getInstructorId().equals(this.id)) {
             List<Assignment> assignments = Assignment.loadAssignments(courseId);
             if (assignments.isEmpty()) {
-                Utils.displayMessage("No assignments found for this course.");
+                Display.displayMessage("No assignments found for this course.");
                 return;
             }
 
-            Utils.displayMessage("Available Assignments:");
+            Display.displayMessage("Available Assignments:");
             for (int i = 0; i < assignments.size(); i++) {
                 Assignment assignment = assignments.get(i);
-                Utils.displayMessage((i + 1) + ". " + assignment);
+                Display.displayMessage((i + 1) + ". " + assignment);
             }
 
             int assignmentChoice = Integer.parseInt(Utils.getInput("\nChoose an assignment number to grade: ")) - 1;
             if (assignmentChoice < 0 || assignmentChoice >= assignments.size()) {
-                Utils.displayMessage("Invalid choice.");
+                Display.displayMessage("Invalid choice.");
                 return;
             }
 
@@ -46,7 +47,7 @@ public class Instructor extends User {
             checkMissingSubmissions(courseId, selectedAssignment);
             gradeSelectedAssignment(courseId, selectedAssignment);
         } else {
-            Utils.displayMessage("Course not found or you are not the instructor for this course.");
+            Display.displayMessage("Course not found or you are not the instructor for this course.");
         }
     }
 
@@ -54,7 +55,7 @@ public class Instructor extends User {
         List<String[]> submissions = Assignment.getSubmissions(courseId, assignment.getId());
 
         if (submissions.isEmpty()) {
-            Utils.displayMessage("No submissions found for this assignment.");
+            Display.displayMessage("No submissions found for this assignment.");
             return;
         }
 
@@ -65,9 +66,9 @@ public class Instructor extends User {
             String submittedDate = submission[4];
 
             if ("Not Graded".equals(grade)) {
-                Utils.displayMessage("Student ID: " + studentId + ", Submitted on: " + submittedDate);
+                Display.displayMessage("Student ID: " + studentId + ", Submitted on: " + submittedDate);
                 if (isLate(assignment.getDueDate(), submittedDate)) {
-                    Utils.displayMessage("This submission is late.\n");
+                    Display.displayMessage("This submission is late.\n");
                 }
 
                 String newGrade = Utils.getInput("Enter grade for this assignment: ");
@@ -78,7 +79,7 @@ public class Instructor extends User {
 
         String fileName = "courses/" + courseId + "/submissions.txt";
         FileUtils.OverwriteFile("", fileName, updatedSubmissions);
-        Utils.displayMessage("Grading completed for assignment ID: " + assignment.getId());
+        Display.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
 
     private void checkMissingSubmissions(String courseId, Assignment assignment) {
@@ -96,10 +97,10 @@ public class Instructor extends User {
             studentsWhoSubmitted.add(submission[2]);
         }
 
-        Utils.displayMessage("Checking for missing submissions...\n");
+        Display.displayMessage("Checking for missing submissions...\n");
         for (String studentId : enrolledStudentIds) {
             if (!studentsWhoSubmitted.contains(studentId)) {
-                Utils.displayMessage("Missing submission for Student ID: " + studentId + " for Assignment ID: " + assignment.getId());
+                Display.displayMessage("Missing submission for Student ID: " + studentId + " for Assignment ID: " + assignment.getId());
             }
         }
     }

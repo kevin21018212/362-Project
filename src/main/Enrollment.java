@@ -1,5 +1,6 @@
 package main;
 
+import helpers.Display;
 import helpers.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +50,11 @@ public class Enrollment {
         }
 
         if (enrolledCourses.isEmpty()) {
-            System.out.println("No enrolled courses found for student ID: " + studentId);
+            Display.displayMessage("No enrolled courses found for student ID: " + studentId);
         } else {
-            System.out.println("\nEnrolled Courses:");
+            Display.displayMessage("\nEnrolled Courses:");
             for (Course course : enrolledCourses) {
-                System.out.println(course.getId() + ": " + course.getName() + " Instructor: " + course.getInstructorId());
+                Display.displayMessage(course.getId() + ": " + course.getName() + " Instructor: " + course.getInstructorId());
             }
         }
     }
@@ -76,7 +77,7 @@ public class Enrollment {
 
         for (String prereq : prerequisites) {
             if (!enrolledCourseIds.contains(prereq)) {
-                System.out.println("Missing prerequisite course: " + prereq);
+                Display.displayMessage("Missing prerequisite course: " + prereq);
                 return false;
             }
         }

@@ -1,13 +1,13 @@
 package users;
 
 
+
+import helpers.Display;
 import helpers.User;
 import helpers.Utils;
 import main.Assignment;
 import main.Course;
 import main.Enrollment;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,21 +29,21 @@ public class Student extends User {
 
         if (course != null) {
             if (!Enrollment.checkPrerequisites(this.id, course)) {
-                Utils.displayMessage("Prerequisites not met for this course.");
+                Display.displayMessage("Prerequisites not met for this course.");
                 return;
             }
 
             for (Enrollment enrollment : Enrollment.loadEnrollments()) {
                 if (enrollment.getStudentId().equals(this.id) && enrollment.getCourseId().equals(courseId)) {
-                    Utils.displayMessage("You are already enrolled in this course.");
+                    Display.displayMessage("You are already enrolled in this course.");
                     return;
                 }
             }
             Enrollment enrollment = new Enrollment(this.id, courseId);
             Enrollment.saveEnrollment(enrollment);
-            Utils.displayMessage("Enrolled in course " + course.getName());
+            Display.displayMessage("Enrolled in course " + course.getName());
         } else {
-            Utils.displayMessage("Course not found.");
+            Display.displayMessage("Course not found.");
         }
     }
 
@@ -56,7 +56,7 @@ public class Student extends User {
         String courseId = Utils.getInput("\nEnter Course ID from the list above: ");
         Course course = Course.findCourseById(courseId);
         if (course == null) {
-            Utils.displayMessage("Invalid Course ID.");
+            Display.displayMessage("Invalid Course ID.");
             return;
         }
 
@@ -73,17 +73,17 @@ public class Student extends User {
         }
 
         if (!hasUnsubmittedAssignments) {
-            Utils.displayMessage("All assignments have been submitted for this course.");
+            Display.displayMessage("All assignments have been submitted for this course.");
             return;
         }
 
         // Ask for assignment ID
         String assignmentId = Utils.getInput("\nEnter Assignment ID: ");
         if (Assignment.isSubmitted(courseId, this.id, assignmentId)) {
-            Utils.displayMessage("This assignment has already been submitted.");
+            Display.displayMessage("This assignment has already been submitted.");
         } else {
             Assignment.submit(courseId, this.id, assignmentId);
-            Utils.displayMessage("Assignment submitted successfully.");
+            Display.displayMessage("Assignment submitted successfully.");
         }
     }
 
