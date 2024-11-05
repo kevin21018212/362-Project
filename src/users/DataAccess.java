@@ -11,10 +11,12 @@ public class DataAccess {
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
         List<String> lines = FileUtils.readFromFile("data", "students.txt");
+
         for (String line : lines) {
             String[] data = line.split(",");
             students.add(new Student(data[0], data[1], data[2]));
         }
+
         return students;
     }
     public static List<Instructor> loadInstructors() {
@@ -28,9 +30,11 @@ public class DataAccess {
     }
 
 
+
     // Find student by ID
     public static Student findStudentById(String id) {
         List<Student> students = loadStudents();
+
         for (Student student : students) {
             if (student.getId().equals(id)) {
                 return student;

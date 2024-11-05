@@ -6,16 +6,28 @@ import java.util.List;
 
 public class FileUtils {
 
-    // Write data to a file , if directories exist
+
     public static void writeToFile(String directory, String fileName, String data) {
         try {
-            // directory exists
-            File dir = new File(directory);
+            File dir = new File("src/" + directory);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            // open in append
             File file = new File(dir, fileName);
+
+            // Ensure file ends with a newline
+            if (file.exists() && file.length() > 0) {
+                try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+                    raf.seek(file.length() - 1);
+                    if (raf.readByte() != '\n') {
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+                            writer.newLine();
+                        }
+                    }
+                }
+            }
+
+            // Append new data
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
                 writer.write(data);
                 writer.newLine();
@@ -26,10 +38,11 @@ public class FileUtils {
     }
 
 
+
     public static void OverwriteFile(String directory, String fileName, List<String> dataLines) {
         try {
             // Ensure directory exists
-            File dir = new File(directory);
+            File dir = new File("src/" + directory);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -49,16 +62,16 @@ public class FileUtils {
     public static List<String> readFromFile(String directory, String fileName) {
         List<String> lines = new ArrayList<>();
         try {
-            File file = new File(directory, fileName);
-            // If file doesn't exist, return empty list
+            File file = new File("src/" + directory, fileName);
             if (!file.exists()) {
                 return lines;
             }
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    if (!line.trim().isEmpty())
+                    if (!line.trim().isEmpty()) {
                         lines.add(line);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -67,9 +80,10 @@ public class FileUtils {
         return lines;
     }
 
-    // Get next ID for auto-increment within a directory
+
+
     public static int getNextId(String directory, String fileName) {
-        List<String> lines = readFromFile(directory, fileName);
+        List<String> lines = readFromFile("src/" + directory, fileName);
         return lines.size() + 1;
     }
 }

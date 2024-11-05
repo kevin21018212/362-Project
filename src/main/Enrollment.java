@@ -14,9 +14,12 @@ public class Enrollment {
         this.courseId = courseId;
     }
 
-
-    public String getStudentId() { return studentId; }
-    public String getCourseId() { return courseId; }
+    public  String getStudentId(){
+        return studentId;
+    }
+    public  String getCourseId(){
+        return  courseId;
+    }
 
     @Override
     public String toString() {

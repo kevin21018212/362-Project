@@ -1,2 +1,3 @@
-101,Model Walk Swag,inst_001
-102, Nicko-logy ,inst_002
+101,Model Walk Swag,001
+102, Nicko-logy,001
+

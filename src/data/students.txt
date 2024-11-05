@@ -1,2 +1,2 @@
-stu_001,one,one@example.com
-stu_002,two,two@example.com
+001,one,one@example.com
+002,two,two@example.com

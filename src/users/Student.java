@@ -17,16 +17,25 @@ public class Student extends User {
 
 
     public void enrollInCourse() {
-        String courseId = Utils.getInput("Enter main.Course ID to enroll: ");
+        String courseId = Utils.getInput("Enter Course ID to enroll: ");
         Course course = Course.findCourseById(courseId);
+
         if (course != null) {
+            for (Enrollment enrollment : Enrollment.loadEnrollments()) {
+                if (enrollment.getStudentId().equals(this.id) && enrollment.getCourseId().equals(courseId)) {
+                    Utils.displayMessage("You are already enrolled in this course.");
+                    return;
+                }
+            }
             Enrollment enrollment = new Enrollment(this.id, courseId);
             Enrollment.saveEnrollment(enrollment);
             Utils.displayMessage("Enrolled in course " + course.getName());
         } else {
-            Utils.displayMessage("main.Course not found.");
+            Utils.displayMessage("Course not found.");
         }
     }
+
+
 
     public void submitAssignment() {
         String courseId = Utils.getInput("Enter Course ID: ");
