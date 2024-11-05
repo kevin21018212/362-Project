@@ -45,6 +45,18 @@ public class Assignment {
         return null;
     }
 
+    public static List<String[]> getSubmissions(String courseId, String assignmentId) {
+        String fileName = "courses/" + courseId + "/submissions.txt";
+        List<String[]> submissions = new ArrayList<>();
+
+        FileUtils.readFromFile("", fileName).stream()
+                .map(line -> line.split(","))
+                .filter(data -> data[1].equals(assignmentId))
+                .forEach(submissions::add);
+
+        return submissions;
+    }
+
     public static boolean isSubmitted(String courseId, String studentId, String assignmentId) {
         String fileName = "courses/" + courseId + "/submissions.txt";
         List<String> submissions = FileUtils.readFromFile("", fileName);
