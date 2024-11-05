@@ -20,7 +20,7 @@ public class Student extends User {
 
 
     public void enrollInCourse() {
-        String courseId = Utils.getInput("Enter Course ID to enroll: ");
+        String courseId = Utils.getInput("\nEnter Course ID to enroll: ");
         Course course = Course.findCourseById(courseId);
 
         if (course != null) {
@@ -83,7 +83,7 @@ public class Student extends User {
         Enrollment.displayAllEnrolledCourses(this.id);
 
         // Ask for course ID
-        String courseId = Utils.getInput("Enter Course ID from the list above: ");
+        String courseId = Utils.getInput("\nEnter Course ID from the list above: ");
         Course course = Course.findCourseById(courseId);
         if (course == null) {
             Utils.displayMessage("Invalid Course ID.");
@@ -108,7 +108,7 @@ public class Student extends User {
         }
 
         // Ask for assignment ID
-        String assignmentId = Utils.getInput("Enter Assignment ID: ");
+        String assignmentId = Utils.getInput("\nEnter Assignment ID: ");
         if (Assignment.isSubmitted(courseId, this.id, assignmentId)) {
             Utils.displayMessage("This assignment has already been submitted.");
         } else {

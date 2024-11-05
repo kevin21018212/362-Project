@@ -8,7 +8,7 @@ public class Main {
                 System.out.println("1. Student Login");
                 System.out.println("2. Instructor Login");
                 System.out.println("3. Faculty Login");
-                System.out.println("4. Exit");
+                System.out.println("4. Exit\n");
                 String choice = Utils.getInput("Choose Option: ");
 
                 switch (choice) {

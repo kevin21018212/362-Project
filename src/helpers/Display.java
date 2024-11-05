@@ -29,7 +29,7 @@ public class Display {
             System.out.println("1 View my Courses");
             System.out.println("2 Enroll in Course");
             System.out.println("3 Submit Assignment");
-            System.out.println("4 Logout");
+            System.out.println("4 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -71,7 +71,7 @@ public class Display {
             System.out.println("1 Create Assignment");
             System.out.println("2 Grade Assignments");
             System.out.println("3 Logout");
-            String choice = Utils.getInput("Select an option: ");
+            String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
                 case "1":

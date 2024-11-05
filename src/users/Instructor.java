@@ -33,10 +33,10 @@ public class Instructor extends User {
             Utils.displayMessage("Available Assignments:");
             for (int i = 0; i < assignments.size(); i++) {
                 Assignment assignment = assignments.get(i);
-                Utils.displayMessage((i + 1) + ". " + assignment.getId() + ": " + assignment.toString());
+                Utils.displayMessage((i + 1) + ". " +  assignment.toString());
             }
 
-            int assignmentChoice = Integer.parseInt(Utils.getInput("Choose an assignment number to grade: ")) - 1;
+            int assignmentChoice = Integer.parseInt(Utils.getInput("\nChoose an assignment number to grade: ")) - 1;
             if (assignmentChoice < 0 || assignmentChoice >= assignments.size()) {
                 Utils.displayMessage("Invalid choice.");
                 return;
@@ -66,7 +66,7 @@ public class Instructor extends User {
                     Utils.displayMessage("Student ID: " + studentId + ", Submitted on: " + submittedDate);
                     boolean isLate = checkIfLate(courseId, assignmentId, submittedDate);
                     if (isLate) {
-                        Utils.displayMessage("This submission is late.");
+                        Utils.displayMessage("This submission is late.\n");
                     }
 
                     String newGrade = Utils.getInput("Enter grade for this assignment: ");
@@ -100,7 +100,7 @@ public class Instructor extends User {
             }
         }
 
-        Utils.displayMessage("Checking for missing submissions...");
+        Utils.displayMessage("Checking for missing submissions...\n");
         for (String studentId : enrolledStudentIds) {
             if (!studentsWhoSubmitted.contains(studentId)) {
                 Utils.displayMessage("Missing submission for Student ID: " + studentId + " for Assignment ID: " + assignmentId);
