@@ -1,76 +1,81 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
 import helpers.FileUtils;
 import helpers.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Course {
     private String id;
     private String name;
-    private List<Enrollment> enrollments;
-    private List<Assignment> assignments;
+    private String level;
+    private String instructorId;
 
-    // list ofall courses
     private static List<Course> allCourses = new ArrayList<>();
 
-    public Course(String id, String name) {
+    public Course(String id, String name, String level, String instructorId) {
         this.id = id;
         this.name = name;
-        this.enrollments = new ArrayList<>();
-        this.assignments = new ArrayList<>();
+        this.level = level;
+        this.instructorId = instructorId;
         allCourses.add(this);
-    }
-
-    public static void saveCourse(Course course) {
+        saveCourseInfo();
     }
 
     // Getters
     public String getId() { return id; }
     public String getName() { return name; }
-    public List<Enrollment> getEnrollments() { return enrollments; }
-    public List<Assignment> getAssignments() { return assignments; }
+    public String getLevel() { return level; }
+    public String getInstructorId() { return instructorId; }
 
-    public boolean addEnrollment(Enrollment enrollment) {
-        if (enrollments.size() >= 30) {
-            Utils.displayMessage("main.Course is full.");
-            return false;
-        }
-        enrollments.add(enrollment);
-        saveEnrollment(enrollment);
-        return true;
-    }
-
-    public void addAssignment(Assignment assignment) {
-        assignments.add(assignment);
-        Utils.displayMessage("main.Assignment " + assignment.getTitle() + " added to " + name);
-        saveAssignment(assignment);
-    }
-
-    private void saveEnrollment(Enrollment enrollment) {
+    // Save course information to course_info.txt
+    public void saveCourseInfo() {
         String directory = "courses/" + id;
-        String fileName = "enrollments.txt";
-        FileUtils.writeToFile(directory, fileName, enrollment.toString());
+        String fileName = "course_info.txt";
+        String data = id + "," + name + "," + level + "," + instructorId;
+        FileUtils.writeToFile(directory, fileName, data);
     }
 
-    private void saveAssignment(Assignment assignment) {
+    // Save course to courses.txt
+    public static void saveCourse(Course course) {
+        FileUtils.writeToFile("", "courses.txt", course.id + "," + course.name + "," + course.level + "," + course.instructorId);
+    }
+
+    // Add an assignment to the course
+    public void addAssignment(Assignment assignment) {
         String directory = "courses/" + id;
         String fileName = "assignments.txt";
         FileUtils.writeToFile(directory, fileName, assignment.toString());
     }
 
+    // Find an assignment by ID in the course
+    public Assignment findAssignmentById(String assignmentId) {
+        return Assignment.findAssignmentById(this.id, assignmentId);
+    }
+
+    // Load all courses from courses.txt
     public static List<Course> loadCourses() {
         List<Course> courses = new ArrayList<>();
         List<String> lines = FileUtils.readFromFile("", "courses.txt");
         for (String line : lines) {
             String[] data = line.split(",");
-            courses.add(new Course(data[0], data[1]));
+            courses.add(new Course(data[0], data[1], data[2], data[3]));
         }
         return courses;
     }
 
+    // Find a course by its ID
     public static Course findCourseById(String id) {
+        // Check if the course is already loaded
         for (Course course : allCourses) {
+            if (course.getId().equals(id)) {
+                return course;
+            }
+        }
+        // Load from file if not in memory
+        List<Course> courses = loadCourses();
+        for (Course course : courses) {
             if (course.getId().equals(id)) {
                 return course;
             }
@@ -78,39 +83,12 @@ public class Course {
         return null;
     }
 
-    public void loadEnrollments() {
-        String directory = "courses/" + id;
-        String fileName = "enrollments.txt";
-        List<String> lines = FileUtils.readFromFile(directory, fileName);
-        for (String line : lines) {
-            String[] data = line.split(",");
-            Student student = Student.findStudentById(data[1]);
-            if (student != null) {
-                Enrollment enrollment = new Enrollment(data[0], student, this);
-                enrollments.add(enrollment);
-                student.getEnrollments().add(enrollment);
-            }
+    // Display all available courses
+    public static void displayAllCourses() {
+        List<Course> courses = loadCourses();
+        System.out.println("\nAvailable Courses:");
+        for (Course course : courses) {
+            System.out.println(course.id + ": " + course.name + " (" + course.level + ")");
         }
-    }
-
-    public void loadAssignments() {
-        String directory = "courses/" + id;
-        String fileName = "assignments.txt";
-        List<String> lines = FileUtils.readFromFile(directory, fileName);
-        for (String line : lines) {
-            String[] data = line.split(",");
-            Assignment assignment = new Assignment(data[0], data[1], data[2], this);
-            assignment.setGrade(data.length > 4 ? data[4] : "Ungraded");
-            assignments.add(assignment);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return id + "," + name;
-    }
-
-    public Assignment findAssignmentById(String assignmentId) {
-
     }
 }

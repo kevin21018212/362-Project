@@ -11,9 +11,18 @@ public abstract class User {
         this.email = email;
     }
 
+    public String getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
 
-    // Common toString method for all users
     @Override
     public String toString() {
         return id + "," + name + "," + email;

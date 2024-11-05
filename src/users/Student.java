@@ -54,25 +54,9 @@ public class Student extends User {
         }
     }
 
-    // Load students from file
-    public static List<Student> loadStudents() {
-        List<Student> students = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("", "students.txt");
-        for (String line : lines) {
-            String[] data = line.split(",");
-            students.add(new Student(data[0], data[1], data[2]));
-        }
-        return students;
-    }
 
     public static Student findStudentById(String id) {
-        List<Student> students = loadStudents();
-        for (Student student : students) {
-            if (student.getId().equals(id)) {
-                return student;
-            }
-        }
-        return null;
+        return DataAccess.findStudentById(id);
     }
 
     @Override

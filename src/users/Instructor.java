@@ -17,24 +17,9 @@ public class Instructor extends User {
     }
 
     public static Instructor findInstructorById(String id) {
-        return null;
+        return DataAccess.findInstructorById(id);
     }
 
-
-    private void createAssignment() {
-        String courseId = Utils.getInput("Enter main.Course ID: ");
-        Course course = Course.findCourseById(courseId);
-        if (course != null && course.getInstructorId().equals(this.id)) {
-            String assignmentId = Utils.generateId("A", FileUtils.getNextId("courses/" + courseId, "assignments.txt"));
-            String title = Utils.getInput("Enter main.Assignment Title: ");
-            String dueDate = Utils.getInput("Enter Due Date: ");
-            Assignment assignment = new Assignment(assignmentId, title, dueDate, courseId);
-            course.addAssignment(assignment);
-            Utils.displayMessage("main.Assignment created.");
-        } else {
-            Utils.displayMessage("main.Course not found or you are not the instructor for this course.");
-        }
-    }
 
     public void gradeAssignments() {
         String courseId = Utils.getInput("Enter main.Course ID: ");
@@ -52,7 +37,7 @@ public class Instructor extends User {
                 }
                 updatedSubmissions.add(String.join(",", data));
             }
-            FileUtils.OverwriteFile(directory, fileName, Collections.singletonList(updatedSubmissions));
+            FileUtils.OverwriteFile(directory, fileName, updatedSubmissions);
             Utils.displayMessage("Assignments graded.");
         } else {
             Utils.displayMessage("main.Course not found or you are not the instructor for this course.");

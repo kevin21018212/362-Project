@@ -15,7 +15,7 @@ public class Display {
             System.out.println("2. Instructor Login");
             System.out.println("3. Faculty Login");
             System.out.println("4. Exit");
-            String choice = Utils.getInput("Select an option: ");
+            String choice = Utils.getInput("Choose Option: ");
 
             switch (choice) {
                 case "1":
@@ -25,13 +25,13 @@ public class Display {
                     displayInstructorMenu();
                     break;
                 case "3":
-                    displayFacultyMenu();
+                    //faculty?
                     break;
                 case "4":
-                    System.out.println("Goodbye!");
+                    System.out.println("End");
                     return;
                 default:
-                    System.out.println("Invalid option.");
+                    System.out.println("Bad Baka");
             }
         }
     }
@@ -51,10 +51,10 @@ public class Display {
 
         while (true) {
             System.out.println("\nStudent Menu:");
-            System.out.println("1. View Available Courses");
-            System.out.println("2. Enroll in a main.Course");
-            System.out.println("3. Submit main.Assignment");
-            System.out.println("4. Logout");
+            System.out.println("1 View Available Courses");
+            System.out.println("2 Enroll in Course");
+            System.out.println("3 Submit Assignment");
+            System.out.println("4 Logout");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -70,7 +70,7 @@ public class Display {
                 case "4":
                     return;
                 default:
-                    System.out.println("Invalid option.");
+                    System.out.println("Bad Baka");
             }
         }
     }
@@ -79,7 +79,7 @@ public class Display {
         String id = Utils.getInput("Enter Instructor ID or 'new' to create an account: ");
         Instructor instructor = null;
         if (id.equalsIgnoreCase("new")) {
-            return
+            return;
         } else {
             instructor = Instructor.findInstructorById(id);
             if (instructor == null) {
@@ -90,14 +90,14 @@ public class Display {
 
         while (true) {
             System.out.println("\nInstructor Menu:");
-            System.out.println("1. Create main.Assignment");
-            System.out.println("2. Grade Assignments");
-            System.out.println("3. Logout");
+            System.out.println("1 Create Assignment");
+            System.out.println("2 Grade Assignments");
+            System.out.println("3 Logout");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
                 case "1":
-                    instructor.createAssignment();
+                    //create assigment
                     break;
                 case "2":
                     instructor.gradeAssignments();
@@ -105,39 +105,10 @@ public class Display {
                 case "3":
                     return;
                 default:
-                    System.out.println("Invalid option.");
+                    System.out.println("Bad Baka");
             }
         }
     }
 
-    public static void displayFacultyMenu() {
-        String id = Utils.getInput("Enter Faculty ID or 'new' to create an account: ");
-        Faculty faculty;
-        if (id.equalsIgnoreCase("new")) {
-             return;
-        } else {
-            faculty = Faculty.findFacultyById(id);
-            if (faculty == null) {
-                System.out.println("Faculty not found.");
-                return;
-            }
-        }
 
-        while (true) {
-            System.out.println("\nFaculty Menu:");
-            System.out.println("1. Create main.Course");
-            System.out.println("2. Logout");
-            String choice = Utils.getInput("Select an option: ");
-
-            switch (choice) {
-                case "1":
-                    faculty.createCourse();
-                    break;
-                case "2":
-                    return;
-                default:
-                    System.out.println("Invalid option.");
-            }
-        }
-    }
 }
