@@ -6,19 +6,17 @@ import java.util.List;
 
 public class FileUtils {
 
-    public static void writeToFile(String fileName, String data) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            writer.write(data);
-            writer.newLine();
-        } catch (IOException e) {
-            System.out.println("Writing error: " + e.getMessage());
-        }
-    }
-
-    //overwrite the entire file
-    public static void writeToFileOverwrite(String fileName, List<String> dataLines) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (String data : dataLines) {
+    // Write data to a file (appending), ensuring directories exist
+    public static void writeToFile(String directory, String fileName, String data) {
+        try {
+            // Ensure directory exists
+            File dir = new File(directory);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            // Open file in append mode
+            File file = new File(dir, fileName);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
                 writer.write(data);
                 writer.newLine();
             }
@@ -27,23 +25,41 @@ public class FileUtils {
         }
     }
 
-    public static List<String> readFromFile(String fileName) {
-        List<String> lines = new ArrayList<>();
-        File file = new File(fileName);
-        // doesn't exist, create
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                System.out.println("File creation error: " + e.getMessage());
+    // Overwrite the entire file with dataLines
+    public static void writeToFileOverwrite(String directory, String fileName, List<String> dataLines) {
+        try {
+            // Ensure directory exists
+            File dir = new File(directory);
+            if (!dir.exists()) {
+                dir.mkdirs();
             }
-            return lines;
+            File file = new File(dir, fileName);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                for (String data : dataLines) {
+                    writer.write(data);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Writing error: " + e.getMessage());
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.trim().isEmpty())
-                    lines.add(line);
+    }
+
+    // Read from file and return list of lines
+    public static List<String> readFromFile(String directory, String fileName) {
+        List<String> lines = new ArrayList<>();
+        try {
+            File file = new File(directory, fileName);
+            // If file doesn't exist, return empty list
+            if (!file.exists()) {
+                return lines;
+            }
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (!line.trim().isEmpty())
+                        lines.add(line);
+                }
             }
         } catch (IOException e) {
             System.out.println("Reading error: " + e.getMessage());
@@ -51,8 +67,9 @@ public class FileUtils {
         return lines;
     }
 
-    public static int getNextID(String fileName) {
-        List<String> lines = readFromFile(fileName);
+    // Get next ID for auto-increment within a directory
+    public static int getNextId(String directory, String fileName) {
+        List<String> lines = readFromFile(directory, fileName);
         return lines.size() + 1;
     }
 }
