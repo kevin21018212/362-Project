@@ -76,10 +76,4 @@ public class FileUtils {
         return lines;
     }
 
-
-
-    public static int getNextId(String directory, String fileName) {
-        List<String> lines = readFromFile("src/data/" + directory, fileName);
-        return lines.size() + 1;
-    }
 }

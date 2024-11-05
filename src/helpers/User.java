@@ -20,5 +20,4 @@ public abstract class User {
         return id + "," + name + "," + email;
     }
 
-
 }

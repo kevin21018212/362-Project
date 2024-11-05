@@ -35,16 +35,6 @@ public class Assignment {
         return assignments;
     }
 
-    public static Assignment findAssignmentById(String courseId, String assignmentId) {
-        List<Assignment> assignments = loadAssignments(courseId);
-        for (Assignment assignment : assignments) {
-            if (assignment.getId().equals(assignmentId)) {
-                return assignment;
-            }
-        }
-        return null;
-    }
-
     public static List<String[]> getSubmissions(String courseId, String assignmentId) {
         String fileName = "courses/" + courseId + "/submissions.txt";
         List<String[]> submissions = new ArrayList<>();
