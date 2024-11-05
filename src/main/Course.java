@@ -18,8 +18,10 @@ public class Course {
 
         this.instructorId = instructorId;
         allCourses.add(this);
-        saveCourseInfo();
+
     }
+
+
 
     // Getters
     public String getId() { return id; }
