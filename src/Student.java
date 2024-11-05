@@ -6,20 +6,18 @@ public class Student {
     private String name;
     private String email;
     private String address;
-    private List<Enrollment> enrollments;
-    private List<Assignment> assignments;
+    private List<Enrollment> enrollments = new ArrayList<>();
+    private List<Assignment> assignments = new ArrayList<>();
 
-
+    // Constructor
     public Student(String studentID, String name, String email, String address) {
         this.studentID = studentID;
         this.name = name;
         this.email = email;
         this.address = address;
-        this.enrollments = new ArrayList<>();
-        this.assignments = new ArrayList<>();
     }
 
-
+    // Getters and Setters
     public String getStudentID() { return studentID; }
     public void setStudentID(String studentID) { this.studentID = studentID; }
 
@@ -33,7 +31,6 @@ public class Student {
     public void setAddress(String address) { this.address = address; }
 
     public List<Enrollment> getEnrollments() { return enrollments; }
-
     public List<Assignment> getAssignments() { return assignments; }
 
     // Methods
@@ -51,16 +48,14 @@ public class Student {
     }
 
     public void listCourses() {
-        System.out.println("Courses for student " + name + ":");
-        for (Enrollment enrollment : enrollments) {
-            System.out.println("- " + enrollment.getCourse().getCourseName());
-        }
+        enrollments.forEach(enrollment ->
+                System.out.println("- " + enrollment.getCourse().getCourseName())
+        );
     }
 
     public void listSubmittedAssignments() {
-        System.out.println("Assignments submitted by " + name + ":");
-        for (Assignment assignment : assignments) {
-            System.out.println("- " + assignment.getTitle() + " (Course: " + assignment.getCourse().getCourseName() + ")");
-        }
+        assignments.forEach(assignment ->
+                System.out.println("- " + assignment.getTitle() + " (Course: " + assignment.getCourse().getCourseName() + ")")
+        );
     }
 }

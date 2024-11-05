@@ -4,7 +4,7 @@ public class Assignment {
     private String dueDate;
     private Course course;
 
-
+    // Constructor
     public Assignment(String assignmentID, String title, String dueDate, Course course) {
         this.assignmentID = assignmentID;
         this.title = title;

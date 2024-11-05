@@ -2,9 +2,8 @@ public class Enrollment {
     private String enrollmentID;
     private Student student;
     private Course course;
-    private String status; // e.g., "Enrolled", "Waitlisted", "Dropped"
+    private String status; 
 
-    // Constructor
     public Enrollment(String enrollmentID, Student student, Course course, String status) {
         this.enrollmentID = enrollmentID;
         this.student = student;
@@ -12,7 +11,6 @@ public class Enrollment {
         this.status = status;
     }
 
-    // Getters and Setters
     public String getEnrollmentID() { return enrollmentID; }
     public void setEnrollmentID(String enrollmentID) { this.enrollmentID = enrollmentID; }
 
