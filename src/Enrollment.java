@@ -7,7 +7,10 @@ public class Enrollment {
         this.enrollmentID = enrollmentID;
         this.student = student;
         this.course = course;
+
     }
+
+    // Getters
     public String getEnrollmentID() { return enrollmentID; }
     public Student getStudent() { return student; }
     public Course getCourse() { return course; }

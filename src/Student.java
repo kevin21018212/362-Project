@@ -1,61 +1,66 @@
+import helpers.FileUtils;
+import helpers.User;
+import helpers.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Student {
-    private String studentID;
-    private String name;
-    private String email;
-    private String address;
-    private List<Enrollment> enrollments = new ArrayList<>();
-    private List<Assignment> assignments = new ArrayList<>();
+public class Student extends User {
+    private List<Enrollment> enrollments;
+    private List<Assignment> submittedAssignments; // To track submitted assignments
 
-    // Constructor
-    public Student(String studentID, String name, String email, String address) {
-        this.studentID = studentID;
-        this.name = name;
-        this.email = email;
-        this.address = address;
+    public Student(String studentID, String name, String email) {
+        super(studentID, name, email);
+        this.enrollments = new ArrayList<>();
+        this.submittedAssignments = new ArrayList<>();
     }
 
-    // Getters and Setters
-    public String getStudentID() { return studentID; }
-    public void setStudentID(String studentID) { this.studentID = studentID; }
+    public String getStudentID() {
+        return super.userID;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
-
+    // Getters
     public List<Enrollment> getEnrollments() { return enrollments; }
-    public List<Assignment> getAssignments() { return assignments; }
+    public List<Assignment> getSubmittedAssignments() { return submittedAssignments; }
 
-    // Methods
     public void enrollInCourse(Course course) {
-        Enrollment enrollment = new Enrollment("E" + (enrollments.size() + 1), this, course, "Enrolled");
+        String enrollmentID = Utils.generateID("E", enrollments.size() + 1);
+        Enrollment enrollment = new Enrollment(enrollmentID, this, course);
         if (course.addEnrollment(enrollment)) {
             enrollments.add(enrollment);
-            System.out.println(name + " successfully enrolled in " + course.getCourseName());
+            Utils.displayMessage(name + " successfully enrolled in " + course.getCourseName());
+            saveEnrollment(enrollment);
         }
     }
 
     public void submitAssignment(Assignment assignment) {
-        assignments.add(assignment);
-        System.out.println(name + " submitted assignment: " + assignment.getTitle());
+        submittedAssignments.add(assignment);
+        Utils.displayMessage(name + " submitted assignment: " + assignment.getTitle());
     }
 
-    public void listCourses() {
-        enrollments.forEach(enrollment ->
-                System.out.println("- " + enrollment.getCourse().getCourseName())
-        );
+    private void saveEnrollment(Enrollment enrollment) {
+        FileUtils.writeToFile("enrollments.txt", enrollment.toString());
     }
 
-    public void listSubmittedAssignments() {
-        assignments.forEach(assignment ->
-                System.out.println("- " + assignment.getTitle() + " (Course: " + assignment.getCourse().getCourseName() + ")")
-        );
+    @Override
+    public void displayInfo() {
+        System.out.println("Student ID: " + userID + ", Name: " + name + ", Email: " + email);
     }
+
+    @Override
+    public String toString() {
+        return userID + "," + name + "," + email;
+    }
+
+    public static List<Student> loadStudents() {
+        List<Student> students = new ArrayList<>();
+        List<String> lines = FileUtils.readFromFile("students.txt");
+        for (String line : lines) {
+            String[] data = line.split(","); // Assuming CSV format
+            students.add(new Student(data[0], data[1], data[2]));
+        }
+        return students;
+    }
+
+
 }
