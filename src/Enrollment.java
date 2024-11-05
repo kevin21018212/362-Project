@@ -1,21 +1,39 @@
+import helpers.FileUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Enrollment {
-    private String enrollmentID;
-    private Student student;
-    private Course course;
+    private String studentId;
+    private String courseId;
 
-    public Enrollment(String enrollmentID, Student student, Course course) {
-        this.enrollmentID = enrollmentID;
-        this.student = student;
-        this.course = course;
-
+    public Enrollment(String studentId, String courseId) {
+        this.studentId = studentId;
+        this.courseId = courseId;
     }
+
     // Getters
-    public String getEnrollmentID() { return enrollmentID; }
-    public Student getStudent() { return student; }
-    public Course getCourse() { return course; }
+    public String getStudentId() { return studentId; }
+    public String getCourseId() { return courseId; }
 
     @Override
     public String toString() {
-        return enrollmentID + "," + student.getId() + "," + course.getId();
+        return studentId + "," + courseId;
+    }
+
+    // Load enrollments
+    public static List<Enrollment> loadEnrollments() {
+        List<Enrollment> enrollments = new ArrayList<>();
+        List<String> lines = FileUtils.readFromFile("", "enrollments.txt");
+        for (String line : lines) {
+            String[] data = line.split(",");
+            enrollments.add(new Enrollment(data[0], data[1]));
+        }
+        return enrollments;
+    }
+
+    // Save enrollment
+    public static void saveEnrollment(Enrollment enrollment) {
+        FileUtils.writeToFile("", "enrollments.txt", enrollment.toString());
     }
 }
