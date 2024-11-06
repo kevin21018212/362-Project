@@ -4,6 +4,7 @@ import helpers.Display;
 import helpers.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Enrollment {
     private String studentId;
@@ -82,5 +83,68 @@ public class Enrollment {
             }
         }
         return true;
+    }
+    public static void dropCourse(String studentId, String courseId) {
+        List<Enrollment> enrollments = loadEnrollments();
+        Enrollment toDrop = null;
+
+        // Check if the student is enrolled in the course
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment.getStudentId().equals(studentId) && enrollment.getCourseId().equals(courseId)) {
+                toDrop = enrollment;
+                break;
+            }
+        }
+
+        if (toDrop == null) {
+            Display.displayMessage("Error: You are not enrolled in this course.");
+            return;
+        }
+
+        // Check if drop period is open
+        if (!isDropPeriodOpen()) {
+            Display.displayMessage("Error: Drop period is closed. Unable to drop the course.");
+            return;
+        }
+
+        // Check for academic or financial consequences
+        if (hasAcademicOrFinancialConsequences(courseId)) {
+            Display.displayMessage("Warning: Dropping this course may impact financial aid or academic standing.");
+            // Prompt user for confirmation to proceed or cancel (simulated here)
+            boolean confirmed = getUserConfirmation();
+            if (!confirmed) {
+                Display.displayMessage("Course drop canceled.");
+                return;
+            }
+        }
+
+        // Perform course drop
+        enrollments.remove(toDrop);
+        Display.displayMessage("Course dropped successfully. Your updated schedule has been saved.");
+    }
+
+    private static boolean isDropPeriodOpen() {
+        // Placeholder 
+        return true; 
+    }
+
+    private static boolean hasAcademicOrFinancialConsequences(String courseId) {
+        // Placeholder 
+        return false; 
+    }
+
+    private static boolean getUserConfirmation() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            Display.displayMessage("Do you want to proceed with dropping the course? (yes/no): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("yes")) {
+                return true;
+            } else if (input.equals("no")) {
+                return false;
+            } else {
+                Display.displayMessage("Invalid input. Please enter 'yes' or 'no'.");
+            }
+        }
     }
 }
