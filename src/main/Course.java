@@ -49,15 +49,15 @@ public class Course {
             String id = parts[0].trim();
             String name = parts[1].trim();
             String instructorId = parts[2].trim();
-            List<String> prereqs = parsePrerequisites(parts[3].trim());
-            int[] capacity = parseCapacity(parts[4].trim());
+            List<String> prereqs = checkPrerequisites(parts[3].trim());
+            int[] capacity = checkCapacity(parts[4].trim());
 
             courses.add(new Course(id, name, instructorId, prereqs, capacity[0], capacity[1]));
         }
         return courses;
     }
 
-    private static List<String> parsePrerequisites(String prereqStr) {
+    private static List<String> checkPrerequisites(String prereqStr) {
         List<String> prereqs = new ArrayList<>();
         for (String prereq : prereqStr.replace("[", "").replace("]", "").split(",")) {
             if (!prereq.trim().isEmpty()) prereqs.add(prereq.trim());
@@ -65,7 +65,7 @@ public class Course {
         return prereqs;
     }
 
-    private static int[] parseCapacity(String capacityStr) {
+    private static int[] checkCapacity(String capacityStr) {
         String[] parts = capacityStr.replace("[", "").replace("]", "").split(",");
         int enrolled = Integer.parseInt(parts[0].trim());
         int size = Integer.parseInt(parts[1].trim());
