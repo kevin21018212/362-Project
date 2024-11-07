@@ -74,6 +74,7 @@ public class Course {
 
     public static Course findCourseById(String id) {
         for (Course course : allCourses) {
+
             if (course.getId().equals(id)) {
                 return course;
             }

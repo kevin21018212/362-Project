@@ -8,6 +8,8 @@ import helpers.Utils;
 import main.Assignment;
 import main.Course;
 import main.Enrollment;
+import main.Submission;
+
 import java.util.List;
 
 
@@ -73,7 +75,7 @@ public class Student extends User {
 
         System.out.println("Assignments not yet submitted:");
         for (Assignment assignment : assignments) {
-            if (!Assignment.isSubmitted(courseId, this.id, assignment.getId())) {
+            if (!Submission.isSubmitted(courseId, this.id, assignment.getId())) {
                 System.out.println(assignment);
                 hasUnsubmittedAssignments = true;
             }
@@ -86,10 +88,10 @@ public class Student extends User {
 
         // Ask for assignment ID
         String assignmentId = Utils.getInput("\nEnter Assignment ID: ");
-        if (Assignment.isSubmitted(courseId, this.id, assignmentId)) {
+        if (Submission.isSubmitted(courseId, this.id, assignmentId)) {
             Display.displayMessage("This assignment has already been submitted.");
         } else {
-            Assignment.submit(courseId, this.id, assignmentId);
+            Submission.submit(courseId, this.id, assignmentId);
             Display.displayMessage("Assignment submitted successfully.");
         }
     }
