@@ -12,17 +12,11 @@ import main.Submission;
 
 import java.util.List;
 
-
 public class Student extends User {
 
     public Student(String id, String name, String email) {
         super(id, name, email);
     }
-
-
-
-
-
 
 
     public void enrollInCourse() {
@@ -104,6 +98,7 @@ public class Student extends User {
     public static Student findStudentById(String id) {
         return DataAccess.findStudentById(id);
     }
+
 
 }
 

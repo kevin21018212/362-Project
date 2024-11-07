@@ -3,6 +3,7 @@ package helpers;
 import main.Course;
 import users.DataAccess;
 import users.Instructor;
+import users.Registrar;
 import users.Student;
 
 
@@ -86,6 +87,52 @@ public class Display {
                     displayMessage("Bad Baka");
             }
         }
+    }
+
+    public static void displayRegistrarMenu() {
+        String id = Utils.getInput("Enter Registrar ID: ");
+//        Registrar registrar = DataAccess.findRegistrarById(id);
+        Registrar registrar = new Registrar("1", "registrar", "jd@em.com");
+
+        if (registrar == null) {
+            displayMessage("Registrar not found.");
+            return;
+        }
+
+        while (true) {
+            displayMessage("\nRegistrar Menu:");
+            displayMessage("1. Register New Student");
+            displayMessage("2. Generate Transcript");
+            displayMessage("3. Logout\n");
+
+            String choice = Utils.getInput("Select an option: ");
+            switch (choice) {
+                case "1":
+                    registerNewStudent(registrar);
+                    break;
+                case "2":
+                    String studentId = Utils.getInput("Enter student ID: ");
+                    registrar.generateTranscript(studentId);
+                    break;
+                case "3":
+                    return;
+                default:
+                    displayMessage("Invalid option");
+            }
+        }
+    }
+
+    private static void registerNewStudent(Registrar registrar) {
+        displayMessage("\nNew Student Registration Form");
+        String fullName = Utils.getInput("Enter full name: ");
+        String dateOfBirth = Utils.getInput("Enter date of birth (YYYY-MM-DD): ");
+        String contactInfo = Utils.getInput("Enter email: ");
+        String address = Utils.getInput("Enter address: ");
+        String programOfStudy = Utils.getInput("Enter program of study: ");
+        String academicTerm = Utils.getInput("Enter academic term (e.g., FALL2024): ");
+
+        registrar.enrollNewStudent(fullName, dateOfBirth, contactInfo,
+                address, programOfStudy, academicTerm);
     }
 
     public static void displayMessage(String message) {
