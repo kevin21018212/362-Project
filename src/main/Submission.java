@@ -66,6 +66,10 @@ public class Submission {
         FileUtils.writeToFile("", fileName, data);
     }
 
+    public List<Submission> getSubmissions(String courseId) {
+        return Submission.loadSubmissions(courseId, this.id);
+    }
+
     @Override
     public String toString() {
         return "Submission ID: " + id + ", Assignment ID: " + assignmentId + ", Student ID: " + studentId +

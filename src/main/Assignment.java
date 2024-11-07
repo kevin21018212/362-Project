@@ -32,4 +32,22 @@ public class Assignment {
                 .forEach(data -> assignments.add(new Assignment(data[0], data[1], data[2])));
         return assignments;
     }
+
+    public static List<String[]> getSubmissions(String courseId, String assignmentId) {
+        List<Submission> submissions = Submission.loadSubmissions(courseId, assignmentId);
+        List<String[]> submissionData = new ArrayList<>();
+
+        for (Submission submission : submissions) {
+            String[] data = {
+                    submission.getId(),
+                    submission.getAssignmentId(),
+                    submission.getStudentId(),
+                    submission.getGrade(),
+                    submission.getSubmittedDate()
+            };
+            submissionData.add(data);
+        }
+
+        return submissionData;
+    }
 }
