@@ -7,6 +7,7 @@ import helpers.Utils;
 import main.Assignment;
 import main.Course;
 import main.Enrollment;
+import main.Submission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class Instructor extends User {
     }
 
     private void gradeSelectedAssignment(String courseId, Assignment assignment) {
-        List<String[]> submissions = Assignment.getSubmissions(courseId, assignment.getId());
+        List<Submission> submissions = Submission.loadSubmissions(courseId, assignment.getId());
 
         if (submissions.isEmpty()) {
             Display.displayMessage("No submissions found for this assignment.");
@@ -60,10 +61,10 @@ public class Instructor extends User {
         }
 
         List<String> updatedSubmissions = new ArrayList<>();
-        for (String[] submission : submissions) {
-            String studentId = submission[2];
-            String grade = submission[3];
-            String submittedDate = submission[4];
+        for (Submission submission : submissions) {
+            String studentId = submission.getStudentId();
+            String grade = submission.getGrade();
+            String submittedDate = submission.getSubmittedDate();
 
             if ("Not Graded".equals(grade)) {
                 Display.displayMessage("Student ID: " + studentId + ", Submitted on: " + submittedDate);
@@ -72,9 +73,9 @@ public class Instructor extends User {
                 }
 
                 String newGrade = Utils.getInput("Enter grade for this assignment: ");
-                submission[3] = newGrade;
+                submission.setGrade(newGrade);
             }
-            updatedSubmissions.add(String.join(",", submission));
+            updatedSubmissions.add(submission.toString());
         }
 
         String fileName = "courses/" + courseId + "/submissions.txt";
