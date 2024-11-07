@@ -23,8 +23,12 @@ public class Instructor extends User {
     }
 
     public void gradeAssignments() {
+        // Display all available courses before prompting for a course ID
+        Course.displayAllCourses();
+
         String courseId = Utils.getInput("Enter Course ID: ");
         Course course = Course.findCourseById(courseId);
+
         if (course != null && course.getInstructorId().equals(this.id)) {
             List<Assignment> assignments = Assignment.loadAssignments(courseId);
             if (assignments.isEmpty()) {
@@ -51,6 +55,7 @@ public class Instructor extends User {
             Display.displayMessage("Course not found or you are not the instructor for this course.");
         }
     }
+
 
     private void gradeSelectedAssignment(String courseId, Assignment assignment) {
         List<Submission> submissions = Submission.loadSubmissions(courseId, assignment.getId());
