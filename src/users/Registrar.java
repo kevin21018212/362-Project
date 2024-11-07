@@ -7,6 +7,7 @@ import main.StudentRegistration;
 import main.Transcript;
 import Interfaces.RegistrarInterface;
 
+import java.io.File;
 import java.util.Random;
 
 public class Registrar extends User implements RegistrarInterface {
@@ -52,17 +53,23 @@ public class Registrar extends User implements RegistrarInterface {
             return;
         }
 
-        Display.displayMessage("Transcript generated and saved successfully.");
+        // Create and generate transcript
+        Transcript transcript = new Transcript(studentId);
+        String transcriptContent = transcript.generateTranscript();
 
-//        Transcript transcript = new Transcript(studentId);
-//        String transcriptContent = transcript.generateTranscript();
-//
-//        // Save transcript to file
-//        String fileName = "transcripts/" + studentId + "_" + System.currentTimeMillis() + ".txt";
-//        FileUtils.writeToFile("registrar", fileName, transcriptContent);
-//
-//        Display.displayMessage("Transcript generated successfully.");
-//        Display.displayMessage(transcriptContent);
+        // Save transcript to file with timestamp
+        String timestamp = java.time.LocalDateTime.now().format(
+                java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String fileName = "transcripts/" + studentId + "_" + timestamp + ".txt";
+
+        // Ensure directory exists
+        new File("src/data/registrar/transcripts").mkdirs();
+
+        // Save transcript
+        FileUtils.writeToFile("registrar", fileName, transcriptContent);
+
+        Display.displayMessage("Transcript generated and saved to: " + fileName);
+        Display.displayMessage("\nTranscript Content:\n" + transcriptContent);
     }
 
     @Override
