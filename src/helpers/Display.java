@@ -30,7 +30,7 @@ public class Display {
             displayMessage("1 View my Courses");
             displayMessage("2 Enroll in Course");
             displayMessage("3 Submit Assignment");
-            displayMessage("4 Select/Edit Major");
+            displayMessage("4 View or Change Major");
             displayMessage("5 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
