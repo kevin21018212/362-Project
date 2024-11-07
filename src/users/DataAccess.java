@@ -14,7 +14,7 @@ public class DataAccess {
 
         for (String line : lines) {
             String[] data = line.split(",");
-            students.add(new Student(data[0], data[1], data[2]));
+            students.add(new Student(data[0], data[1], data[2], data[3]));
         }
 
         return students;
