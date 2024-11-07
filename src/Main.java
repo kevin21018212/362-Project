@@ -19,11 +19,12 @@ public class Main {
                         Display.displayInstructorMenu();
                         break;
                     case "3":
-                        //faculty?
+                        Display.displayRegistrarMenu();
                         break;
                     case "4":
                         System.out.println("End");
                         return;
+
                     default:
                         System.out.println("Bad Baka");
                 }
