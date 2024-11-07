@@ -34,7 +34,7 @@ public class Registrar extends User implements RegistrarInterface {
             return;
         }
 
-        Student newStudent = new Student(studentId, fullName, contactInfo);
+        Student newStudent = new Student(studentId, fullName, contactInfo, "");
         FileUtils.writeToFile("", "students.txt", newStudent.toString());
 
         // Save additional student information
