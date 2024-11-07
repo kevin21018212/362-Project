@@ -10,13 +10,12 @@ import main.Course;
 import main.Enrollment;
 import main.Submission;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends User {
+    private static final String FILE_PATH = "src/data/students.txt";
     private String major;
 
     public Student(String id, String name, String email, String major) {
@@ -26,6 +25,10 @@ public class Student extends User {
 
     public String getMajor() {
         return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
     }
 
     public void enrollInCourse() {
@@ -60,7 +63,7 @@ public class Student extends User {
     }
 
     /**
-     * Change the major of a student
+     * Full console prompts and file updating to change the major of the student logged-in
      */
     public void changeMajor(){
         System.out.println("1. View Major");
@@ -75,32 +78,98 @@ public class Student extends User {
                 return;
             case "2":
                 Display.displayMessage("Your current Major is: " + getMajor());
-                System.out.println("1. Type 1 to change your major.");
-                System.out.println("2. Press 2 for No, go back.");
-                String choice = Utils.getInput("\nAre you sure you want to change your major?");
+                System.out.println("1. Type 1 to change your major. ");
+                System.out.println("2. Press 2 for No, go back. ");
+                String choice = Utils.getInput("\nAre you sure you want to change your major? ");
 
                 if (choice.equals("1")) {
-                    System.out.println("To choose a new major, select a department to view their majors.");
-                    displayDepartmentNames();
-                } else if (choice.equals("2")) {
-                    changeMajor();
+                    boolean selectingMajor = true;
+
+                    while (selectingMajor) {
+                        System.out.println("Changing your major...");
+                        displayDepartmentNames();
+                        String departmentName = Utils.getInput("\nTo choose a new major, select a department to view their majors, or type 'back' to cancel:");
+
+                        if (departmentName.equalsIgnoreCase("back")) {
+                            break;
+                        }
+
+                        displayMajors(departmentName);
+
+                        String selectedMajor = Utils.getInput("\nSelect a major from this list, type 'back' to view departments again, or press '1' to cancel:");
+
+                        if (selectedMajor.equals("1")) {
+                            selectingMajor = false;
+                        } else if (selectedMajor.equalsIgnoreCase("back")) {
+                            // Loop back to the department selection without exiting
+                            continue;
+                        } else {
+                            setMajor(selectedMajor);
+                            updateMajorInFile();
+                            Display.displayMessage("Your new Major is: " + getMajor());
+                            selectingMajor = false;
+                        }
+                    }
+                }
+                else if (choice.equals("2")) {
+                    changeMajor(); //done
                 } else {
-                    System.out.println("Error");
+                    System.out.println("Error"); //done
                 }
                 return;
             case "3":
-                Display.displayMessage("Your current Major is: " + getStudentDepartment());
+                Display.displayMessage("Your current Major is: " + getStudentDepartment()); //done
                 return;
             case "4":
-                Display.displayStudentMenu();
+                Display.displayStudentMenu(); //done
                 return;
 
             default:
                 System.out.println("Yikers");
         }
-        //displayMajors(selectedDepartment);
     }
 
+    /**
+     * Updates the major in the students.txt file of the logged-in student using studentID
+     * Ex: 4992,John Smith,john.smith@university.edu,Stats
+     * Would change "Stats"
+     */
+    public void updateMajorInFile() {
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+
+                // Check if the line matches the student's ID
+                if (parts[0].equals(this.id)) {
+                    // Update the major field in the line
+                    line = parts[0] + "," + parts[1] + "," + parts[2] + "," + this.major;
+                }
+
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Write the updated lines back to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Reads the majors.txt file to gather all majors from the list for the specified department
+     * @param department - the selected department
+     * @return A List of the available majors for the specified departments.
+     */
     public List<String> getMajors(String department) {
         List<String> majors = new ArrayList<>();
         String filePath = "src/data/majors.txt"; // Update the path as needed
@@ -124,7 +193,10 @@ public class Student extends User {
         return majors;
     }
 
-    // Method to display majors for a specified department
+    /**
+     * Displays the majors available for the specified department
+     * @param department - the selected department for which you want to view majors
+     */
     public void displayMajors(String department) {
         List<String> majors = getMajors(department);
         System.out.println("Majors in " + department + " Department:");
@@ -137,6 +209,7 @@ public class Student extends User {
      * Helper method to display department names to the console
      */
     public void displayDepartmentNames(){
+        System.out.println("\nDepartments Available: ");
         List<String> departmentNames = getAllDepartments();
 
         // Print each department name on its own line
@@ -168,6 +241,10 @@ public class Student extends User {
         return departmentNames;
     }
 
+    /**
+     * Uses the majors.txt file to get the department of the currently logged in student
+     * @return - the major of the logged-in student as a String (Ex: "Stats")
+     */
     public String getStudentDepartment() {
         String filePath = "src/data/majors.txt"; // Update with the correct path
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
