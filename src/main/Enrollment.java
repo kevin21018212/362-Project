@@ -108,15 +108,13 @@ public class Enrollment {
         }
 
         // Check for academic or financial consequences
-        if (hasAcademicOrFinancialConsequences(courseId)) {
-            Display.displayMessage("Warning: Dropping this course may impact financial aid or academic standing.");
+        
             // Prompt user for confirmation to proceed or cancel (simulated here)
             boolean confirmed = getUserConfirmation();
             if (!confirmed) {
                 Display.displayMessage("Course drop canceled.");
                 return;
             }
-        }
 
         // Perform course drop
         enrollments.remove(toDrop);
@@ -126,11 +124,6 @@ public class Enrollment {
     private static boolean isDropPeriodOpen() {
         // Placeholder 
         return true; 
-    }
-
-    private static boolean hasAcademicOrFinancialConsequences(String courseId) {
-        // Placeholder 
-        return false; 
     }
 
     private static boolean getUserConfirmation() {
