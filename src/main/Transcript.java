@@ -4,9 +4,9 @@ import helpers.FileUtils;
 import users.Student;
 import users.DataAccess;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 public class Transcript {
     private final Student student;
@@ -14,7 +14,8 @@ public class Transcript {
     private double gpa;
     private int creditsCompleted;
     private int creditsInProgress;
-    private Map<String, String> grades;
+    private Map<String, CourseRecord> courseRecords;
+
     private static final Map<String, Double> GRADE_POINTS = new HashMap<>();
 
     static {
@@ -31,25 +32,42 @@ public class Transcript {
         GRADE_POINTS.put("F", 0.0);
     }
 
+    private static class CourseRecord {
+        String courseId;
+        String grade;
+        String term;
+
+        CourseRecord(String courseId, String grade, String term) {
+            this.courseId = courseId;
+            this.grade = grade;
+            this.term = term;
+        }
+    }
+
     public Transcript(String studentId) {
         this.student = DataAccess.findStudentById(studentId);
-        this.enrollments = Enrollment.loadEnrollments().stream()
-                .filter(e -> e.getStudentId().equals(studentId))
-                .collect(Collectors.toList());
-        this.grades = loadGrades(studentId);
+        this.enrollments = loadEnrollments(studentId);
+        this.courseRecords = loadCourseRecords(studentId);
         calculateStats();
     }
 
-    private Map<String, String> loadGrades(String studentId) {
-        Map<String, String> gradeMap = new HashMap<>();
+    private List<Enrollment> loadEnrollments(String studentId) {
+        return Enrollment.loadEnrollments().stream()
+                .filter(e -> e.getStudentId().equals(studentId))
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, CourseRecord> loadCourseRecords(String studentId) {
+        Map<String, CourseRecord> records = new HashMap<>();
         List<String> lines = FileUtils.readFromFile("", "grades.txt");
+
         for (String line : lines) {
             String[] parts = line.split(",");
             if (parts[0].equals(studentId)) {
-                gradeMap.put(parts[1], parts[2]); // courseId -> grade
+                records.put(parts[1], new CourseRecord(parts[1], parts[2], parts[3]));
             }
         }
-        return gradeMap;
+        return records;
     }
 
     private void calculateStats() {
@@ -58,18 +76,17 @@ public class Transcript {
         creditsInProgress = 0;
 
         for (Enrollment enrollment : enrollments) {
-            Course course = Course.findCourseById(enrollment.getCourseId());
-            if (course != null) {
-                String grade = grades.get(course.getId());
-                if (grade != null) {
-                    Double gradePoints = GRADE_POINTS.get(grade);
-                    if (gradePoints != null) {
-                        totalPoints += gradePoints * 3; // 3 credits per course
-                        creditsCompleted += 3;
-                    }
-                } else {
-                    creditsInProgress += 3;
+            String courseId = enrollment.getCourseId();
+            CourseRecord record = courseRecords.get(courseId);
+
+            if (record != null && record.grade != null) {
+                Double gradePoints = GRADE_POINTS.get(record.grade);
+                if (gradePoints != null) {
+                    totalPoints += gradePoints * 3; // 3 credits per course
+                    creditsCompleted += 3;
                 }
+            } else {
+                creditsInProgress += 3;
             }
         }
 
@@ -80,29 +97,44 @@ public class Transcript {
         StringBuilder transcript = new StringBuilder();
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
+        // Header
         transcript.append("OFFICIAL TRANSCRIPT\n");
         transcript.append("Generated: ").append(timestamp).append("\n\n");
 
+        // Student Information
         transcript.append("STUDENT INFORMATION\n");
         transcript.append("==================\n");
         transcript.append("ID: ").append(student.getId()).append("\n");
         transcript.append("Name: ").append(student.getName()).append("\n");
         transcript.append("Email: ").append(student.getEmail()).append("\n\n");
 
+        // Course History
         transcript.append("COURSE HISTORY\n");
         transcript.append("=============\n");
+        Map<String, List<CourseRecord>> termRecords = new TreeMap<>();
+
         for (Enrollment enrollment : enrollments) {
-            Course course = Course.findCourseById(enrollment.getCourseId());
-            if (course != null) {
-                String grade = grades.getOrDefault(course.getId(), "IP");
-                transcript.append(String.format("%-8s %-35s %2s credits  Grade: %s\n",
-                        course.getId(),
-                        course.getName(),
+            String courseId = enrollment.getCourseId();
+            CourseRecord record = courseRecords.get(courseId);
+            String term = record != null ? record.term : "Current Term";
+
+            termRecords.computeIfAbsent(term, k -> new ArrayList<>())
+                    .add(new CourseRecord(courseId,
+                            record != null ? record.grade : "IP",
+                            term));
+        }
+
+        for (Map.Entry<String, List<CourseRecord>> entry : termRecords.entrySet()) {
+            transcript.append("\nTerm: ").append(entry.getKey()).append("\n");
+            for (CourseRecord record : entry.getValue()) {
+                transcript.append(String.format("%-8s %2s credits  Grade: %s\n",
+                        record.courseId,
                         "3",
-                        grade));
+                        record.grade));
             }
         }
 
+        // Academic Summary
         transcript.append("\nACADEMIC SUMMARY\n");
         transcript.append("================\n");
         transcript.append(String.format("Cumulative GPA: %.2f\n", gpa));
@@ -110,15 +142,10 @@ public class Transcript {
         transcript.append(String.format("Credits In Progress: %d\n", creditsInProgress));
         transcript.append(String.format("Total Credits: %d\n", creditsCompleted + creditsInProgress));
 
+        // Notes
         transcript.append("\nNOTES\n");
         transcript.append("=====\n");
         transcript.append("IP = In Progress\n");
-        transcript.append("This transcript is unofficial unless signed by the registrar\n");
-
-        // Placeholder for university bill
-        transcript.append("\nFINANCIAL STATUS\n");
-        transcript.append("===============\n");
-        transcript.append("Please contact the Bursar's office for current account status.\n");
 
         return transcript.toString();
     }
