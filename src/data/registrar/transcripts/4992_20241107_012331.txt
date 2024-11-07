@@ -1,0 +1,30 @@
+OFFICIAL TRANSCRIPT
+Generated: 2024-11-07 01:21:59
+
+STUDENT INFORMATION
+==================
+ID: 4992
+Name: John Smith
+Email: john.smith@university.edu
+
+COURSE HISTORY
+=============
+
+Term: FALL2023
+CS101     3 credits  Grade: A
+MATH101   3 credits  Grade: B+
+
+Term: SPRING2024
+CS201     3 credits  Grade: A-
+
+ACADEMIC SUMMARY
+================
+Cumulative GPA: 3.67
+Credits Completed: 9
+Credits In Progress: 0
+Total Credits: 9
+
+NOTES
+=====
+IP = In Progress
+
