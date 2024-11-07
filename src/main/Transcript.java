@@ -15,6 +15,7 @@ public class Transcript {
     private int creditsCompleted;
     private int creditsInProgress;
     private Map<String, CourseRecord> courseRecords;
+    private boolean generateTranscript;
 
     private static final Map<String, Double> GRADE_POINTS = new HashMap<>();
 
@@ -48,7 +49,13 @@ public class Transcript {
         this.student = DataAccess.findStudentById(studentId);
         this.enrollments = loadEnrollments(studentId);
         this.courseRecords = loadCourseRecords(studentId);
+        if (student == null || enrollments.isEmpty() || courseRecords.isEmpty()) {
+            System.out.println("Error: Student or course records not found.");
+            this.generateTranscript = false;
+            return;
+        }
         calculateStats();
+        this.generateTranscript = true;
     }
 
     private List<Enrollment> loadEnrollments(String studentId) {
@@ -66,6 +73,10 @@ public class Transcript {
             if (parts[0].equals(studentId)) {
                 records.put(parts[1], new CourseRecord(parts[1], parts[2], parts[3]));
             }
+        }
+        if (records.isEmpty()) {
+            System.out.println("No course records found for student ID: " + studentId);
+            return null;
         }
         return records;
     }
@@ -94,6 +105,9 @@ public class Transcript {
     }
 
     public String generateTranscript() {
+        if (!generateTranscript) {
+            return "Error: Transcript generation failed.";
+        }
         StringBuilder transcript = new StringBuilder();
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
