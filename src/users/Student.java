@@ -90,17 +90,7 @@ public class Student extends User {
         return DataAccess.findStudentById(id);
     }
 
-    public String toStorageFormat() {
-        return DataStorage.joinFields(
-                id,
-                name,
-                email,
-                dateOfBirth != null ? dateOfBirth : "",
-                address != null ? address : "",
-                programOfStudy != null ? programOfStudy : "",
-                academicTerm != null ? academicTerm : ""
-        );
-    }
+  public
 
 }
 

@@ -92,7 +92,7 @@ public class Display {
     public static void displayRegistrarMenu() {
         String id = Utils.getInput("Enter Registrar ID: ");
 //        Registrar registrar = DataAccess.findRegistrarById(id);
-        Registrar registrar = new Registrar("1", "registrar", "jd@em.com)
+        Registrar registrar = new Registrar("1", "registrar", "jd@em.com");
 
         if (registrar == null) {
             displayMessage("Registrar not found.");

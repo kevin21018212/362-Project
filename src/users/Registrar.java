@@ -72,4 +72,26 @@ public class Registrar extends User implements RegistrarInterface {
         long timestamp = System.currentTimeMillis();
         return "STU" + timestamp % 10000;
     }
+
+
+    //TODO Implement the following methods or delete them if not needed
+    @Override
+    public boolean validateRegistrar(String employeeId) {
+        return false;
+    }
+
+    @Override
+    public boolean assignDegreeProgram(String studentId, String programId) {
+        return false;
+    }
+
+    @Override
+    public boolean processEnrollment(String studentId, String courseId) {
+        return false;
+    }
+
+    @Override
+    public boolean generateStudentDocuments(String studentId) {
+        return false;
+    }
 }
