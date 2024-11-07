@@ -96,4 +96,3 @@ public class Course {
                 ", Prerequisites: " + prerequisites + ", Enrollment: " + studentsEnrolled + "/" + classSize;
     }
 }
-

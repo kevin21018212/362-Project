@@ -83,10 +83,4 @@ public class Registrar extends User implements RegistrarInterface {
         Random random = new Random(timestamp);
         return random.nextInt(9999)+"";
     }
-
-
-
-
-
-
 }

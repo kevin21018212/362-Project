@@ -232,7 +232,4 @@ public class Student extends User {
     public static Student findStudentById(String id) {
         return DataAccess.findStudentById(id);
     }
-
-
 }
-

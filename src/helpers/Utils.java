@@ -8,9 +8,7 @@ public class Utils {
         return prefix + String.format("%03d", number);
     }
 
-    // Future use
-
-
+    // Future use @TODO
 
     public static String getInput(String prompt) {
         System.out.print(prompt);

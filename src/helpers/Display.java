@@ -9,9 +9,6 @@ import users.Student;
 
 
 public class Display {
-
-
-
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID or 'new' to create an account: ");
         Student student = DataAccess.findStudentById(id);
@@ -142,5 +139,4 @@ public class Display {
     public static void displayMessage(String message) {
         System.out.println(message);
     }
-
 }

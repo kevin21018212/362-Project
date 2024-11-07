@@ -27,5 +27,4 @@ public abstract class User {
     public String toString() {
         return id + "," + name + "," + email;
     }
-
 }
