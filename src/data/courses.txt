@@ -1,3 +1,2 @@
-101,Model Walk Swag,001,[]
-102, Nicko-logy,001,[101,190]
-
+101,Model Walk Swag,001,[],[10,32]
+102, Nicko-logy,001,[101],[10,10]

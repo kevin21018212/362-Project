@@ -27,14 +27,21 @@ public class Student extends User {
                 return;
             }
 
+            if (course.isFull()) {
+                Display.displayMessage("This course is full.");
+                return;
+            }
+
             for (Enrollment enrollment : Enrollment.loadEnrollments()) {
                 if (enrollment.getStudentId().equals(this.id) && enrollment.getCourseId().equals(courseId)) {
                     Display.displayMessage("You are already enrolled in this course.");
                     return;
                 }
             }
+
             Enrollment enrollment = new Enrollment(this.id, courseId);
             Enrollment.saveEnrollment(enrollment);
+            course.incrementEnrollment();
             Display.displayMessage("Enrolled in course " + course.getName());
         } else {
             Display.displayMessage("Course not found.");
