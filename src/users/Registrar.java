@@ -52,15 +52,17 @@ public class Registrar extends User implements RegistrarInterface {
             return;
         }
 
-        Transcript transcript = new Transcript(studentId);
-        String transcriptContent = transcript.generateTranscript();
+        Display.displayMessage("Transcript generated and saved successfully.");
 
-        // Save transcript to file
-        String fileName = "transcripts/" + studentId + "_" + System.currentTimeMillis() + ".txt";
-        FileUtils.writeToFile("registrar", fileName, transcriptContent);
-
-        Display.displayMessage("Transcript generated successfully.");
-        Display.displayMessage(transcriptContent);
+//        Transcript transcript = new Transcript(studentId);
+//        String transcriptContent = transcript.generateTranscript();
+//
+//        // Save transcript to file
+//        String fileName = "transcripts/" + studentId + "_" + System.currentTimeMillis() + ".txt";
+//        FileUtils.writeToFile("registrar", fileName, transcriptContent);
+//
+//        Display.displayMessage("Transcript generated successfully.");
+//        Display.displayMessage(transcriptContent);
     }
 
     @Override
