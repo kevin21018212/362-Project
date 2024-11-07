@@ -7,6 +7,8 @@ import main.StudentRegistration;
 import main.Transcript;
 import Interfaces.RegistrarInterface;
 
+import java.util.Random;
+
 public class Registrar extends User implements RegistrarInterface {
 
     public Registrar(String id, String name, String email) {
@@ -20,7 +22,7 @@ public class Registrar extends User implements RegistrarInterface {
                 fullName, dateOfBirth, contactInfo, address, programOfStudy, academicTerm
         );
 
-        if (!registration.validateInformation()) {
+        if (!validateStudentInfo(registration)) {
             Display.displayMessage("Invalid or incomplete student information.");
             return;
         }
@@ -62,36 +64,19 @@ public class Registrar extends User implements RegistrarInterface {
     }
 
     @Override
-    public boolean validateStudentDocuments(String studentId) {
-        //TODO Implementation for document validation
-        return FileUtils.readFromFile("registrar/documents", studentId + "_docs.txt").size() > 0;
+    public boolean validateStudentInfo(StudentRegistration registration) {
+        return registration.validateInformation();
     }
 
     @Override
     public String generateStudentId() {
         long timestamp = System.currentTimeMillis();
-        return "STU" + timestamp % 10000;
+        Random random = new Random(timestamp);
+        return random.nextInt(9999)+"";
     }
 
 
-    //TODO Implement the following methods or delete them if not needed
-    @Override
-    public boolean validateRegistrar(String employeeId) {
-        return false;
-    }
 
-    @Override
-    public boolean assignDegreeProgram(String studentId, String programId) {
-        return false;
-    }
 
-    @Override
-    public boolean processEnrollment(String studentId, String courseId) {
-        return false;
-    }
 
-    @Override
-    public boolean generateStudentDocuments(String studentId) {
-        return false;
-    }
 }
