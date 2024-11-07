@@ -9,18 +9,13 @@ import main.Assignment;
 import main.Course;
 import main.Enrollment;
 import java.util.List;
-
+import helpers.DataStorage
 
 public class Student extends User {
 
     public Student(String id, String name, String email) {
         super(id, name, email);
     }
-
-
-
-
-
 
 
     public void enrollInCourse() {
@@ -94,6 +89,18 @@ public class Student extends User {
 
     public static Student findStudentById(String id) {
         return DataAccess.findStudentById(id);
+    }
+
+    public String toStorageFormat() {
+        return DataStorage.joinFields(
+                id,
+                name,
+                email,
+                dateOfBirth != null ? dateOfBirth : "",
+                address != null ? address : "",
+                programOfStudy != null ? programOfStudy : "",
+                academicTerm != null ? academicTerm : ""
+        );
     }
 
 }
