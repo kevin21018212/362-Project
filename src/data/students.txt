@@ -1,6 +1,3 @@
-4992,john.smith@university.edu
+4992,John Smith,john.smith@university.edu
 6969,Emma Davis,emma.d@university.edu
-001,one,one@example.com
-002,two,two@example.com
-STU594,Michael Jackson,mj@isu.edu
-4992,Max,max@maxi
+

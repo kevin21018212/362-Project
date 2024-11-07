@@ -65,5 +65,10 @@ public class DataAccess {
         return null;
     }
 
+    // Add this method to check for duplicate student IDs
+    public static boolean isStudentIdUnique(String studentId) {
+        return findStudentById(studentId) == null;
+    }
+
 
 }
