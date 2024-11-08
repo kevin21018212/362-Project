@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Enrollment {
+    private static final String[] HEADERS = {"StudentId", "CourseId"};
     private String studentId;
     private String courseId;
 
@@ -20,21 +21,35 @@ public class Enrollment {
 
     @Override
     public String toString() {
-        return studentId + "," + courseId;
+        return studentId + "::" + courseId;
     }
 
     public static List<Enrollment> loadEnrollments() {
         List<Enrollment> enrollments = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("", "enrollments.txt");
-        for (String line : lines) {
-            String[] data = line.split(",");
-            enrollments.add(new Enrollment(data[0], data[1]));
+        List<String[]> lines = FileUtils.readStructuredData("", "enrollments.txt");
+
+        for (String[] data : lines) {
+            if (data.length >= 2) {
+                enrollments.add(new Enrollment(data[0], data[1]));
+            }
         }
         return enrollments;
     }
 
     public static void saveEnrollment(Enrollment enrollment) {
-        FileUtils.writeToFile("", "enrollments.txt", enrollment.toString());
+        List<String[]> existingData = FileUtils.readStructuredData("", "enrollments.txt");
+        List<String[]> newData = new ArrayList<>(existingData);
+        newData.add(new String[]{enrollment.getStudentId(), enrollment.getCourseId()});
+
+        FileUtils.writeStructuredData("", "enrollments.txt", HEADERS, newData);
+    }
+
+    public static void saveAllEnrollments(List<Enrollment> enrollments) {
+        List<String[]> data = new ArrayList<>();
+        for (Enrollment enrollment : enrollments) {
+            data.add(new String[]{enrollment.getStudentId(), enrollment.getCourseId()});
+        }
+        FileUtils.writeStructuredData("", "enrollments.txt", HEADERS, data);
     }
 
     public static void displayAllEnrolledCourses(String studentId) {
@@ -84,11 +99,11 @@ public class Enrollment {
         }
         return true;
     }
+
     public static void dropCourse(String studentId, String courseId) {
         List<Enrollment> enrollments = loadEnrollments();
         Enrollment toDrop = null;
 
-        // Check if the student is enrolled in the course
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getStudentId().equals(studentId) && enrollment.getCourseId().equals(courseId)) {
                 toDrop = enrollment;
@@ -101,29 +116,22 @@ public class Enrollment {
             return;
         }
 
-        // Check if drop period is open
         if (!isDropPeriodOpen()) {
             Display.displayMessage("Error: Drop period is closed. Unable to drop the course.");
             return;
         }
 
-        // Check for academic or financial consequences
-        
-            // Prompt user for confirmation to proceed or cancel (simulated here)
-            boolean confirmed = getUserConfirmation();
-            if (!confirmed) {
-                Display.displayMessage("Course drop canceled.");
-                return;
-            }
-
-        // Perform course drop
-        enrollments.remove(toDrop);
-        Display.displayMessage("Course dropped successfully. Your updated schedule has been saved.");
+        if (getUserConfirmation()) {
+            enrollments.remove(toDrop);
+            saveAllEnrollments(enrollments);
+            Display.displayMessage("Course dropped successfully. Your updated schedule has been saved.");
+        } else {
+            Display.displayMessage("Course drop canceled.");
+        }
     }
 
     private static boolean isDropPeriodOpen() {
-        // Placeholder 
-        return true; 
+        return true; // Placeholder implementation
     }
 
     private static boolean getUserConfirmation() {

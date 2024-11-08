@@ -66,12 +66,11 @@ public class Transcript {
 
     private Map<String, CourseRecord> loadCourseRecords(String studentId) {
         Map<String, CourseRecord> records = new HashMap<>();
-        List<String> lines = FileUtils.readFromFile("", "grades.txt");
+        List<String[]> data = FileUtils.readStructuredData("", "grades.txt");
 
-        for (String line : lines) {
-            String[] parts = line.split(",");
-            if (parts[0].equals(studentId)) {
-                records.put(parts[1], new CourseRecord(parts[1], parts[2], parts[3]));
+        for (String[] row : data) {
+            if (row[0].equals(studentId)) {
+                records.put(row[1], new CourseRecord(row[1], row[2], row[3]));
             }
         }
         if (records.isEmpty()) {
@@ -79,6 +78,16 @@ public class Transcript {
             return null;
         }
         return records;
+    }
+
+    public void saveTranscript() {
+        String fileName = String.format("transcripts/%s_%s.txt",
+                student.getId(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")));
+        List<String[]> transcriptData = new ArrayList<>();
+        transcriptData.add(new String[]{"Content", generateTranscript()});
+        FileUtils.writeStructuredData("registrar", fileName,
+                new String[]{"Type", "Content"}, transcriptData);
     }
 
     private void calculateStats() {
@@ -162,12 +171,5 @@ public class Transcript {
         transcript.append("IP = In Progress\n");
 
         return transcript.toString();
-    }
-
-    public void saveTranscript() {
-        String fileName = String.format("transcripts/%s_%s.txt",
-                student.getId(),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")));
-        FileUtils.writeToFile("registrar", fileName, generateTranscript());
     }
 }

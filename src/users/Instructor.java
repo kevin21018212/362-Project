@@ -59,32 +59,35 @@ public class Instructor extends User {
 
     private void gradeSelectedAssignment(String courseId, Assignment assignment) {
         List<Submission> submissions = Submission.loadSubmissions(courseId, assignment.getId());
-
         if (submissions.isEmpty()) {
             Display.displayMessage("No submissions found for this assignment.");
             return;
         }
 
-        List<String> updatedSubmissions = new ArrayList<>();
+        List<String[]> updatedSubmissions = new ArrayList<>();
         for (Submission submission : submissions) {
-            String studentId = submission.getStudentId();
-            String grade = submission.getGrade();
-            String submittedDate = submission.getSubmittedDate();
+            String[] submissionData = new String[5];
+            submissionData[0] = submission.getId();
+            submissionData[1] = submission.getAssignmentId();
+            submissionData[2] = submission.getStudentId();
+            submissionData[3] = submission.getGrade();
+            submissionData[4] = submission.getSubmittedDate();
 
-            if ("Not Graded".equals(grade)) {
-                Display.displayMessage("Student ID: " + studentId + ", Submitted on: " + submittedDate);
-                if (isLate(assignment.getDueDate(), submittedDate)) {
+            if ("Not Graded".equals(submission.getGrade())) {
+                Display.displayMessage("Student ID: " + submission.getStudentId() +
+                        ", Submitted on: " + submission.getSubmittedDate());
+                if (isLate(assignment.getDueDate(), submission.getSubmittedDate())) {
                     Display.displayMessage("This submission is late.\n");
                 }
-
-                String newGrade = Utils.getInput("Enter grade for this assignment: ");
-                submission.setGrade(newGrade);
+                submissionData[3] = Utils.getInput("Enter grade for this assignment: ");
             }
-            updatedSubmissions.add(submission.toString());
+            updatedSubmissions.add(submissionData);
         }
 
         String fileName = "courses/" + courseId + "/submissions.txt";
-        FileUtils.OverwriteFile("", fileName, updatedSubmissions);
+        FileUtils.writeStructuredData("", fileName,
+                new String[]{"SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"},
+                updatedSubmissions);
         Display.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
 

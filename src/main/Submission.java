@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Submission {
+    private static final String[] SUBMISSION_HEADERS = {
+            "SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"
+    };
+
     private final String id;
     private final String assignmentId;
     private final String studentId;
@@ -34,24 +38,24 @@ public class Submission {
     public static List<Submission> loadSubmissions(String courseId, String assignmentId) {
         List<Submission> submissions = new ArrayList<>();
         String fileName = "courses/" + courseId + "/submissions.txt";
+        List<String[]> data = FileUtils.readStructuredData("", fileName);
 
-        FileUtils.readFromFile("", fileName).stream()
-                .map(line -> line.split(","))
-                .filter(data -> data.length >= 5 && data[1].equals(assignmentId))
-                .forEach(data -> submissions.add(new Submission(
-                        data[0], data[1], data[2], data[3], data[4]
-                )));
-
+        for (String[] row : data) {
+            if (row.length >= 5 && row[1].equals(assignmentId)) {
+                submissions.add(new Submission(
+                        row[0], row[1], row[2], row[3], row[4]
+                ));
+            }
+        }
         return submissions;
     }
 
     public static boolean isSubmitted(String courseId, String studentId, String assignmentId) {
         String fileName = "courses/" + courseId + "/submissions.txt";
-        List<String> submissions = FileUtils.readFromFile("", fileName);
+        List<String[]> data = FileUtils.readStructuredData("", fileName);
 
-        for (String submission : submissions) {
-            String[] data = submission.split(",");
-            if (data[1].equals(assignmentId) && data[2].equals(studentId)) {
+        for (String[] row : data) {
+            if (row.length >= 3 && row[1].equals(assignmentId) && row[2].equals(studentId)) {
                 return true;
             }
         }
@@ -61,9 +65,26 @@ public class Submission {
     public static void submit(String courseId, String studentId, String assignmentId) {
         String submissionId = "sub_" + System.currentTimeMillis();
         String submittedDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
-        String data = submissionId + "," + assignmentId + "," + studentId + ",Not Graded," + submittedDate;
+
+        // Create submission data array
+        String[] submissionData = {
+                submissionId,
+                assignmentId,
+                studentId,
+                "Not Graded",
+                submittedDate
+        };
+
         String fileName = "courses/" + courseId + "/submissions.txt";
-        FileUtils.writeToFile("", fileName, data);
+
+        // Read existing submissions
+        List<String[]> existingSubmissions = FileUtils.readStructuredData("", fileName);
+
+        // Add new submission
+        existingSubmissions.add(submissionData);
+
+        // Write back to file with headers
+        FileUtils.writeStructuredData("", fileName, SUBMISSION_HEADERS, existingSubmissions);
     }
 
     public List<Submission> getSubmissions(String courseId) {
@@ -72,7 +93,6 @@ public class Submission {
 
     @Override
     public String toString() {
-        return "Submission ID: " + id + ", Assignment ID: " + assignmentId + ", Student ID: " + studentId +
-                ", Grade: " + grade + ", Submitted Date: " + submittedDate;
+        return id + "::" + assignmentId + "::" + studentId + "::" + grade + "::" + submittedDate;
     }
 }

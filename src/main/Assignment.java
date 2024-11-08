@@ -18,19 +18,23 @@ public class Assignment {
     public String getId() { return id; }
     public String getDueDate() { return dueDate; }
 
-    @Override
-    public String toString() {
-        return "Assignment ID: " + id + ", Title: " + title + ", Due Date: " + dueDate;
-    }
 
     public static List<Assignment> loadAssignments(String courseId) {
         List<Assignment> assignments = new ArrayList<>();
         String fileName = "courses/" + courseId + "/assignments.txt";
-        FileUtils.readFromFile("", fileName).stream()
-                .map(line -> line.split(","))
-                .filter(data -> data.length == 3)
-                .forEach(data -> assignments.add(new Assignment(data[0], data[1], data[2])));
+        List<String[]> data = FileUtils.readStructuredData("", fileName);
+
+        for (String[] row : data) {
+            if (row.length >= 3) {
+                assignments.add(new Assignment(row[0], row[1], row[2]));
+            }
+        }
         return assignments;
+    }
+
+    @Override
+    public String toString() {
+        return id + "::" + title + "::" + dueDate;
     }
 
     public static List<String[]> getSubmissions(String courseId, String assignmentId) {
