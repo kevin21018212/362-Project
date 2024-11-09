@@ -1,3 +1,2 @@
-4992,John Smith,john.smith@university.edu,Software Engineering
-6969,Emma Davis,emma.d@university.edu, Civil Engineering
-
+ID::Name::Email::Major##
+2935::Max may::maxmay@m::##
