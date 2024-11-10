@@ -29,7 +29,7 @@ public class Display {
             displayMessage("2 Enroll in Course");
             displayMessage("3 Submit Assignment");
             displayMessage("4 View or Change Major");
-            displayMessage("5 View Grades\n");
+            displayMessage("5 View Grades");
             displayMessage("6 Drop a course");
             displayMessage("7 Logout\n");
             String choice = Utils.getInput("Select an option: ");
@@ -55,7 +55,7 @@ public class Display {
                     student.viewGrades();
                     break;
                 case "6":
-                    Course.displayAllCourses();
+                    //Course.displayAllCourses();
                 	Enrollment.dropCourse(student.id);
                 	break;
                 default:

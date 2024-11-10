@@ -91,13 +91,12 @@ public class Enrollment {
     public static void dropCourse(String studentId) {
         List<Enrollment> enrollments = loadEnrollments();
         Enrollment toDrop = null;
-        String courseId = Utils.getInput("Select a course ID to drop: ");
+        String courseId = Utils.getInput("Select a course ID to drop: ").toUpperCase();
 
         // Check if the student is enrolled in the course
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getStudentId().equals(studentId) && enrollment.getCourseId().equals(courseId)) {
                 toDrop = enrollment;
-                Display.displayMessage(toDrop.toString());
                 break;
             }
         }
@@ -112,7 +111,7 @@ public class Enrollment {
             Display.displayMessage("Error: Drop period is closed. Unable to drop the course.");
             return;
         }
-            boolean confirmed = getUserConfirmation();
+            boolean confirmed = getUserConfirmation(courseId);
             if (!confirmed) {
                 Display.displayMessage("Course drop canceled.");
                 return;
@@ -130,10 +129,10 @@ public class Enrollment {
         return true; 
     }
 
-    private static boolean getUserConfirmation() {
+    private static boolean getUserConfirmation(String course) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            Display.displayMessage("Do you want to proceed with dropping the course? (yes/no): ");
+            Display.displayMessage("Do you want to proceed with dropping " + course + " (yes/no): ");
             String input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("yes")) {
                 return true;
