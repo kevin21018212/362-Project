@@ -69,6 +69,10 @@ public class Registrar extends User implements RegistrarInterface {
         // Create and generate transcript
         Transcript transcript = new Transcript(studentId);
         String transcriptContent = transcript.generateTranscript();
+        if (!transcript.isGenerateTranscript()) {
+            Display.displayMessage("Error: Transcript could not be generated.");
+            return;
+        }
 
         // Save transcript to file with timestamp
         String timestamp = java.time.LocalDateTime.now().format(

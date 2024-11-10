@@ -172,4 +172,8 @@ public class Transcript {
 
         return transcript.toString();
     }
+
+    public boolean isGenerateTranscript() {
+        return generateTranscript;
+    }
 }
