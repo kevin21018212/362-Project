@@ -16,7 +16,7 @@ public class DataAccess {
 
         for (String[] row : data) {
             if (row.length >= 3) {
-                students.add(new Student(row[0], row[1], row[2]));
+                students.add(new Student(row[0], row[1], row[2], row[3]));
             }
         }
         return students;
@@ -97,7 +97,7 @@ public class DataAccess {
 
         for (String[] row : data) {
             if (row.length >= 3 && row[0].equals(id)) {
-                return new Student(row[0], row[1], row[2]);
+                return new Student(row[0], row[1], row[2], row[3]);
             }
         }
         return null;

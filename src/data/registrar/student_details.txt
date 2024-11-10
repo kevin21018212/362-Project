@@ -1,3 +1,5 @@
 StudentID::DateOfBirth::Address::ProgramOfStudy::AcademicTerm##
 4992,1234-56-78,123,gyat,FALL2024##
 2935::2003-04-06::2152 booty ln::ComS::FALL2024##
+3058::6969::123 Freaky Ln::Econ::FALL2024##
+5926::12\::addy::COMS::FALL2024##

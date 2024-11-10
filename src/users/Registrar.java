@@ -41,7 +41,7 @@ public class Registrar extends User implements RegistrarInterface {
         }
 
         // Create new student data
-        String[] studentData = {studentId, fullName, contactInfo, ""};
+        String[] studentData = {studentId, fullName, contactInfo, programOfStudy};
         List<String[]> existingStudents = FileUtils.readStructuredData("", "students.txt");
         existingStudents.add(studentData);
         FileUtils.writeStructuredData("", "students.txt", STUDENT_HEADERS, existingStudents);

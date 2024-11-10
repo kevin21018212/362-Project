@@ -15,9 +15,9 @@ public class Student extends User {
     private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major"};
     private String major;
 
-    public Student(String id, String name, String email) {
+    public Student(String id, String name, String email, String major) {
         super(id, name, email);
-//        this.major = major;
+        this.major = major;
     }
 
     public String getMajor() { return major; }
