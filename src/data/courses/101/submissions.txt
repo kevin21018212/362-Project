@@ -1,2 +1,1 @@
-sub_1730783903002,002,001,B,2024-11-04
-sub_1730783925494,001,001,Z,2024-11-04
+Submission ID: sub_1730783925494, Assignment ID: 001, Student ID: 001, Grade: A, Submitted Date: 2024-11-04

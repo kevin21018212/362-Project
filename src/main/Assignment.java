@@ -1,8 +1,6 @@
 package main;
 
 import helpers.FileUtils;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,35 +34,20 @@ public class Assignment {
     }
 
     public static List<String[]> getSubmissions(String courseId, String assignmentId) {
-        String fileName = "courses/" + courseId + "/submissions.txt";
-        List<String[]> submissions = new ArrayList<>();
+        List<Submission> submissions = Submission.loadSubmissions(courseId, assignmentId);
+        List<String[]> submissionData = new ArrayList<>();
 
-        FileUtils.readFromFile("", fileName).stream()
-                .map(line -> line.split(","))
-                .filter(data -> data[1].equals(assignmentId))
-                .forEach(submissions::add);
-
-        return submissions;
-    }
-
-    public static boolean isSubmitted(String courseId, String studentId, String assignmentId) {
-        String fileName = "courses/" + courseId + "/submissions.txt";
-        List<String> submissions = FileUtils.readFromFile("", fileName);
-
-        for (String submission : submissions) {
-            String[] data = submission.split(",");
-            if (data[1].equals(assignmentId) && data[2].equals(studentId)) {
-                return true;
-            }
+        for (Submission submission : submissions) {
+            String[] data = {
+                    submission.getId(),
+                    submission.getAssignmentId(),
+                    submission.getStudentId(),
+                    submission.getGrade(),
+                    submission.getSubmittedDate()
+            };
+            submissionData.add(data);
         }
-        return false;
-    }
 
-    public static void submit(String courseId, String studentId, String assignmentId) {
-        String submissionId = "sub_" + System.currentTimeMillis();
-        String submittedDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
-        String data = submissionId + "," + assignmentId + "," + studentId + ",Not Graded," + submittedDate;
-        String fileName = "courses/" + courseId + "/submissions.txt";
-        FileUtils.writeToFile("", fileName, data);
+        return submissionData;
     }
 }

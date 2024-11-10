@@ -14,7 +14,7 @@ public class DataAccess {
 
         for (String line : lines) {
             String[] data = line.split(",");
-            students.add(new Student(data[0], data[1], data[2]));
+            students.add(new Student(data[0], data[1], data[2], data[3]));
         }
 
         return students;
@@ -54,6 +54,14 @@ public class DataAccess {
         return null;
     }
 
-
-
+    public static Registrar findRegistrarById(String id) {
+        List<String> lines = FileUtils.readFromFile("", "registrar.txt");
+        for (String line : lines) {
+            String[] data = line.split(",");
+            if (data[0].equals(id)) {
+                return new Registrar(data[0], data[1], data[2]);
+            }
+        }
+        return null;
+    }
 }

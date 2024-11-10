@@ -1,3 +1,7 @@
-101,Model Walk Swag,001,[]
-102, Nicko-logy,001,[101,190]
+CS101,Introduction to Programming,PROF001,3,[],30
+CS201,Data Structures,PROF002,3,[CS101],25
+MATH101,Calculus I,PROF003,3,[],30
+PHYS101,Physics I,PROF004,3,[],30
 
+101,Model Walk Swag,001,[],[10,32]
+102, Nicko-logy,001,[101],[10,10]

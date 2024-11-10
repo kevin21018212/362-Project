@@ -1,2 +1,3 @@
-001,one,one@example.com
-002,two,two@example.com
+4992,John Smith,john.smith@university.edu,Software Engineering
+6969,Emma Davis,emma.d@university.edu, Civil Engineering
+
