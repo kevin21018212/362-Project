@@ -7,9 +7,12 @@ public class FileUtils {
     private static final String BASE_PATH = "src/data/";
     private static final String DELIMITER = "::";
     private static final String ROW_END = "##";
+    private static final String ARRAY_START = "[";
+    private static final String ARRAY_END = "]";
+    private static final String ARRAY_SEPARATOR = ", ";
 
     /**
-     * Writes structured data with arrays
+     * Writes structured data with support for arrays
      */
     public static void writeStructuredData(String directory, String fileName, String[] headers, List<String[]> data) {
         try {
@@ -26,7 +29,20 @@ public class FileUtils {
 
                 // Write data rows
                 for (String[] row : data) {
-                    writer.write(String.join(DELIMITER, row) + ROW_END);
+                    StringBuilder rowBuilder = new StringBuilder();
+                    for (int i = 0; i < row.length; i++) {
+                        String value = row[i];
+                        if (value.startsWith(ARRAY_START) && value.endsWith(ARRAY_END)) {
+                            rowBuilder.append(value); // Keep array format intact
+                        } else {
+                            rowBuilder.append(value);
+                        }
+                        if (i < row.length - 1) {
+                            rowBuilder.append(DELIMITER);
+                        }
+                    }
+                    rowBuilder.append(ROW_END);
+                    writer.write(rowBuilder.toString());
                     writer.newLine();
                 }
             }
@@ -36,7 +52,7 @@ public class FileUtils {
     }
 
     /**
-     * Reads structured data and returns as List<String[]>
+     * Reads structured data including arrays and returns as List<String[]>
      */
     public static List<String[]> readStructuredData(String directory, String fileName) {
         List<String[]> data = new ArrayList<>();
@@ -52,10 +68,37 @@ public class FileUtils {
 
                 while ((line = reader.readLine()) != null) {
                     if (!line.trim().isEmpty()) {
-                        // Remove row end marker and split by delimiter
                         String cleanLine = line.replace(ROW_END, "");
-                        if (!firstLine) { // Skip header line
-                            data.add(cleanLine.split(DELIMITER));
+                        if (!firstLine) {
+                            // Handle arrays in the data
+                            List<String> rowValues = new ArrayList<>();
+                            StringBuilder currentValue = new StringBuilder();
+                            boolean insideArray = false;
+
+                            for (char c : cleanLine.toCharArray()) {
+                                if (c == '[') {
+                                    insideArray = true;
+                                    currentValue.append(c);
+                                } else if (c == ']') {
+                                    insideArray = false;
+                                    currentValue.append(c);
+                                    rowValues.add(currentValue.toString());
+                                    currentValue = new StringBuilder();
+                                } else if (c == ':' && !insideArray && cleanLine.charAt(cleanLine.indexOf(c) + 1) == ':') {
+                                    if (currentValue.length() > 0) {
+                                        rowValues.add(currentValue.toString());
+                                        currentValue = new StringBuilder();
+                                    }
+                                } else {
+                                    currentValue.append(c);
+                                }
+                            }
+
+                            if (currentValue.length() > 0) {
+                                rowValues.add(currentValue.toString());
+                            }
+
+                            data.add(rowValues.toArray(new String[0]));
                         }
                         firstLine = false;
                     }
@@ -68,68 +111,22 @@ public class FileUtils {
     }
 
     /**
-     * Gets headers from structured data file
+     * Converts a string array representation to List<String>
      */
-    public static String[] readHeaders(String directory, String fileName) {
-        try {
-            File file = new File(BASE_PATH + directory, fileName);
-            if (!file.exists()) {
-                return new String[0];
-            }
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line = reader.readLine();
-                if (line != null) {
-                    return line.replace(ROW_END, "").split(DELIMITER);
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading headers: " + e.getMessage());
+    public static List<String> parseArray(String arrayStr) {
+        if (arrayStr == null || !arrayStr.startsWith(ARRAY_START) || !arrayStr.endsWith(ARRAY_END)) {
+            return new ArrayList<>();
         }
-        return new String[0];
+
+        String content = arrayStr.substring(1, arrayStr.length() - 1);
+        String[] elements = content.split(ARRAY_SEPARATOR);
+        return Arrays.asList(elements);
     }
 
     /**
-     * Appends a single row to existing file
+     * Converts List<String> to array string representation
      */
-    public static void appendRow(String directory, String fileName, String[] rowData) {
-        try {
-            File file = new File(BASE_PATH + directory, fileName);
-            if (!file.exists()) {
-                throw new FileNotFoundException("File does not exist");
-            }
-
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-                writer.write(String.join(DELIMITER, rowData) + ROW_END);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("Error appending row: " + e.getMessage());
-        }
+    public static String formatArray(List<String> array) {
+        return ARRAY_START + String.join(ARRAY_SEPARATOR, array) + ARRAY_END;
     }
-
-    /**
-     * Converts List<String> to List<String[]>
-     */
-    public static List<String[]> convertToStringArray(List<String> lines) {
-        List<String[]> result = new ArrayList<>();
-        for (String line : lines) {
-            String cleanLine = line.replace(ROW_END, "");
-            result.add(cleanLine.split(DELIMITER));
-        }
-        return result;
-    }
-
-    /**
-     * Converts List<String[]> to List<String>
-     */
-    public static List<String> convertToString(List<String[]> data) {
-        List<String> result = new ArrayList<>();
-        for (String[] row : data) {
-            result.add(String.join(DELIMITER, row) + ROW_END);
-        }
-        return result;
-    }
-
-
 }
