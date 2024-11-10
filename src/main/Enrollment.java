@@ -2,6 +2,8 @@ package main;
 
 import helpers.Display;
 import helpers.FileUtils;
+import helpers.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -84,14 +86,16 @@ public class Enrollment {
         }
         return true;
     }
-    public static void dropCourse(String studentId, String courseId) {
+    public static void dropCourse(String studentId) {
         List<Enrollment> enrollments = loadEnrollments();
         Enrollment toDrop = null;
+        String courseId = Utils.getInput("Select a course ID to drop: ");
 
         // Check if the student is enrolled in the course
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getStudentId().equals(studentId) && enrollment.getCourseId().equals(courseId)) {
                 toDrop = enrollment;
+                Display.displayMessage(toDrop.toString());
                 break;
             }
         }
@@ -106,18 +110,16 @@ public class Enrollment {
             Display.displayMessage("Error: Drop period is closed. Unable to drop the course.");
             return;
         }
-
-        // Check for academic or financial consequences
-        
-            // Prompt user for confirmation to proceed or cancel (simulated here)
             boolean confirmed = getUserConfirmation();
             if (!confirmed) {
                 Display.displayMessage("Course drop canceled.");
                 return;
             }
 
-        // Perform course drop
         enrollments.remove(toDrop);
+        for (Enrollment enrollment : enrollments) {
+            saveEnrollment(enrollment);
+        }       
         Display.displayMessage("Course dropped successfully. Your updated schedule has been saved.");
     }
 

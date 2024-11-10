@@ -4,6 +4,7 @@ import main.Course;
 import users.DataAccess;
 import users.Instructor;
 import users.Student;
+import main.Enrollment;
 
 
 
@@ -29,12 +30,13 @@ public class Display {
             displayMessage("1 View my Courses");
             displayMessage("2 Enroll in Course");
             displayMessage("3 Submit Assignment");
-            displayMessage("4 Logout\n");
+            displayMessage("4 Drop a course");
+            displayMessage("5 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
                 case "1":
-
+                	Course.displayAllCourses();
                     break;
                 case "2":
                     assert student != null;
@@ -46,6 +48,10 @@ public class Display {
                     student.submitAssignment();
                     break;
                 case "4":
+                	Course.displayAllCourses();
+                	Enrollment.dropCourse(student.id);
+                	break;
+                case "5":
                     return;
                 default:
                     displayMessage("Bad Baka");
