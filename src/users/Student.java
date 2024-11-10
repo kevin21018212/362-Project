@@ -49,8 +49,16 @@ public class Student extends User {
 
         for (String[] row : data) {
             if (row.length > 0 && row[0].trim().equalsIgnoreCase(department)) {
-                for (int i = 1; i < row.length; i++) {
-                    majors.add(row[i].trim());
+                if (row.length > 1) {
+                    String majorsStr = row[1].trim();
+                    // Remove brackets and split by comma
+                    majorsStr = majorsStr.replaceAll("[\\[\\]]", ""); // Remove [ and ]
+                    String[] majorArray = majorsStr.split(",");
+
+                    // Add each major to the list, trimming whitespace
+                    for (String major : majorArray) {
+                        majors.add(major.trim());
+                    }
                 }
                 break;
             }

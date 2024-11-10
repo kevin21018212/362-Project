@@ -1,4 +1,4 @@
 Department::[Majors]##
-Math::[6, Mathematics, Applied Mathematics, Pure Mathematics, Computational Mathematics, Mathematics , Computer Science]##
-Science::[5, Biology, Chemistry, Physics, Environmental Science, Earth Science]##
-Engineering::[4, Civil Engineering, Mechanical Engineering, Electrical Engineering, Computer Engineering]##
+Math::[Mathematics, Applied Mathematics, Pure Mathematics, Computational Mathematics, Mathematics , Computer Science]##
+Science::[Biology, Chemistry, Physics, Environmental Science, Earth Science]##
+Engineering::[Civil Engineering, Mechanical Engineering, Electrical Engineering, Computer Engineering]##
