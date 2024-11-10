@@ -309,4 +309,31 @@ public class Student extends User {
     public static Student findStudentById(String id) {
         return DataAccess.findStudentById(id);
     }
+
+    public void viewGrades() {
+        // Load the student's enrollments
+        List<Enrollment> enrollments = Enrollment.loadEnrollments();
+        boolean hasGrades = false;
+
+
+        System.out.println("Grades for " + this.getName() + ":");
+        for (Enrollment enrollment : enrollments) {
+            // Check if the enrollment belongs to the current student
+            if (enrollment.getStudentId().equals(this.id)) {
+                Course course = Course.findCourseById(enrollment.getCourseId());
+                if (course != null) {
+                    // Retrieve and display the grade for each course
+                    double grade = enrollment.getGrade();
+                    System.out.println("Course: " + course.getName() + " - Grade: " + (grade >= 0 ? grade : "Not graded yet"));
+                    hasGrades = true;
+                }
+            }
+        }
+
+
+        if (!hasGrades) {
+            System.out.println("No grades available.");
+        }
+    }
+
 }
