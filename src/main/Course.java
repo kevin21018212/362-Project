@@ -39,6 +39,24 @@ public class Course {
         this.studentsEnrolled++;
     }
 
+    public void updateEnrollmentCount() {
+        this.studentsEnrolled++;
+        // Save updated course data to file
+        List<Course> allCourses = loadCourses();
+        List<String[]> courseData = new ArrayList<>();
+        for (Course course : allCourses) {
+            String[] data = {
+                    course.getId(),
+                    course.getName(),
+                    course.getInstructorId(),
+                    course.getPrerequisites().toString(),
+                    "[" + course.getStudentsEnrolled() + "," + course.getClassSize() + "]"
+            };
+            courseData.add(data);
+        }
+        FileUtils.writeStructuredData("", "courses.txt", new String[]{"id", "name", "instructor", "prerequisites", "capacity"}, courseData);
+    }
+
     public static List<Course> loadCourses() {
         List<Course> courses = new ArrayList<>();
         List<String[]> data = FileUtils.readStructuredData("", "courses.txt");

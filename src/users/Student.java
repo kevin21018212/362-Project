@@ -96,35 +96,34 @@ public class Student extends User {
 
     // Rest of the methods remain the same, just update file operations
     public void enrollInCourse() {
-        String courseId = Utils.getInput("\nEnter Course ID to enroll: ");
+        String courseId = Utils.getInput("Enter course ID: ");
         Course course = Course.findCourseById(courseId);
 
-        if (course != null) {
-            if (!Enrollment.checkPrerequisites(this.id, course)) {
-                Display.displayMessage("Prerequisites not met for this course.");
-                return;
-            }
-            if (course.isFull()) {
-                Display.displayMessage("This course is full.");
-                return;
-            }
-
-            List<Enrollment> enrollments = Enrollment.loadEnrollments();
-            for (Enrollment enrollment : enrollments) {
-                if (enrollment.getStudentId().equals(this.id) &&
-                        enrollment.getCourseId().equals(courseId)) {
-                    Display.displayMessage("You are already enrolled in this course.");
-                    return;
-                }
-            }
-
-            Enrollment enrollment = new Enrollment(this.id, courseId);
-            Enrollment.saveEnrollment(enrollment);
-            course.incrementEnrollment();
-            Display.displayMessage("Enrolled in course " + course.getName());
-        } else {
-            Display.displayMessage("Course not found.");
+        if (course == null) {
+            Display.displayMessage("Course not found");
+            return;
         }
+
+        // Validate enrollment
+        if (course.isFull()) {
+            Display.displayMessage("Course is full");
+            return;
+        }
+
+        if (!Enrollment.checkPrerequisites(this.getId(), course)) {
+            Display.displayMessage("Prerequisites not met");
+            return;
+        }
+
+        // Create and save enrollment
+        Enrollment enrollment = new Enrollment(this.getId(), courseId);
+        Enrollment.saveEnrollment(enrollment);
+
+        // Update course capacity
+        course.incrementEnrollment();
+        course.updateEnrollmentCount();
+
+        Display.displayMessage("Successfully enrolled in " + course.getName());
     }
 
     public void changeMajor() {
