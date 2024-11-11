@@ -1,2 +1,6 @@
-001,Assignment 1,2024-11-10
-002,Assignment 2,2024-05-01
+AssignmentID::Title::DueDate##
+001::Introduction to UML::2024-11-20##
+002::Design Patterns Basics::2024-11-25##
+003::GRASP Principles::2024-12-01##
+004::Sequence Diagrams::2024-12-10##
+005::Class Diagrams::2024-12-15##

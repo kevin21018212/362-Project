@@ -1,7 +1,7 @@
 id::name::instructor::prerequisites::capacity##
-CS101::Introduction to Programming::PROF001::[]::[0,30]##
-CS201::Data Structures::PROF002::[CS101]::[15,25]##
-MATH101::Calculus I::PROF003::[]::[20,35]##
-PHYS201::Physics II::PROF004::[PHYS101]::[12,30]##
+CS101::Introduction to Programming::001::[]::[0,30]##
+CS201::Data Structures::002::[CS101]::[15,25]##
+MATH101::Calculus I::003::[]::[20,35]##
+PHYS201::Physics II::004::[PHYS101]::[12,30]##
 BIO101::Introduction to Biology::PROF005::[]::[5,25]##
-CHEM201::Organic Chemistry::PROF006::[CHEM101]::[18,30]##
+CHEM201::Organic Chemistry::006::[CHEM101]::[18,30]##

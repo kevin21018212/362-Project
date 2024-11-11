@@ -1,1 +1,6 @@
-Submission ID: sub_1730783925494, Assignment ID: 001, Student ID: 001, Grade: A, Submitted Date: 2024-11-04
+SubmissionID::AssignmentID::StudentID::Grade::SubmittedDate##
+sub_001::001::6969::A::2024-11-15##
+sub_002::001::3058::B+::2024-11-16##
+sub_003::002::5926::A-::2024-11-20##
+sub_004::002::6969::B::2024-11-21##
+sub_005::003::3058::A::2024-11-25##
