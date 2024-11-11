@@ -21,12 +21,19 @@ public class Assignment {
 
     public static List<Assignment> loadAssignments(String courseId) {
         List<Assignment> assignments = new ArrayList<>();
-        String fileName = "courses/" + courseId + "/assignments.txt";
-        List<String[]> data = FileUtils.readStructuredData("", fileName);
+        String fileName = "assignments.txt";
+        List<String[]> data = FileUtils.readStructuredData("courses", fileName);
 
-        for (String[] row : data) {
-            if (row.length >= 3) {
-                assignments.add(new Assignment(row[0], row[1], row[2]));
+        for (String[] fields : data) {
+//            String[] fields = row.split("::");
+
+            String assignmentId = fields[0].trim();
+            String courseid = fields[1].trim();
+            String dueDate = fields[2].replace("##", "").trim();
+
+            // Only add assignments for the specified course
+            if (courseid.equals(courseId)) {
+                assignments.add(new Assignment(assignmentId, courseid, dueDate));
             }
         }
         return assignments;

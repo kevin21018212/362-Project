@@ -84,10 +84,24 @@ public class Instructor extends User {
             updatedSubmissions.add(submissionData);
         }
 
-        String fileName = "courses/" + courseId + "/submissions.txt";
-        FileUtils.writeStructuredData("", fileName,
-                new String[]{"SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"},
-                updatedSubmissions);
+        // In gradeSelectedAssignment method
+        String fileName = assignment.getId()+"_graded_submissions.txt";
+        List<String[]> updatedSubmissionData = new ArrayList<>();
+
+        for (Submission submission : submissions) {
+            String[] data = {
+                    submission.getId() + "::" +
+                    submission.getAssignmentId() + "::" +
+                    submission.getStudentId() + "::" +
+                    submission.getGrade() + "::" +
+                    submission.getSubmittedDate() + "##"
+            };
+            updatedSubmissionData.add(data);
+        }
+
+        FileUtils.writeStructuredData("courses", fileName,
+                new String[]{"SubmissionID::AssignmentID::StudentID::Grade::SubmittedDate##"},
+                updatedSubmissionData);
         Display.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
 

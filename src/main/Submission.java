@@ -37,15 +37,22 @@ public class Submission {
 
     public static List<Submission> loadSubmissions(String courseId, String assignmentId) {
         List<Submission> submissions = new ArrayList<>();
-        String fileName = "courses/" + courseId + "/submissions.txt";
-        List<String[]> data = FileUtils.readStructuredData("", fileName);
+        String fileName = "submissions.txt";
+        List<String[]> data = FileUtils.readStructuredData("courses", fileName);
 
-        for (String[] row : data) {
-            if (row.length >= 5 && row[1].equals(assignmentId)) {
-                submissions.add(new Submission(
-                        row[0], row[1], row[2], row[3], row[4]
-                ));
+        for (String[] fields : data) {
+
+            String submissionId = fields[0].trim();
+            String assignId = fields[1].trim();
+            String studentId = fields[2].trim();
+            String grade = fields[3].trim();
+            String submittedDate = fields[4].replace("##", "").trim();
+
+            // Only add submissions for the specified assignment
+            if (assignId.equals(assignmentId)) {
+                submissions.add(new Submission(submissionId, assignId, studentId, grade, submittedDate));
             }
+
         }
         return submissions;
     }
