@@ -94,7 +94,7 @@ public class Instructor extends User {
                     submission.getAssignmentId() + "::" +
                     submission.getStudentId() + "::" +
                     submission.getGrade() + "::" +
-                    submission.getSubmittedDate() + "##"
+                    submission.getSubmittedDate()
             };
             updatedSubmissionData.add(data);
         }
