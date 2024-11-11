@@ -2,6 +2,10 @@ package main;
 
 import helpers.Display;
 import helpers.FileUtils;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -147,5 +151,34 @@ public class Enrollment {
                 Display.displayMessage("Invalid input. Please enter 'yes' or 'no'.");
             }
         }
+    }
+
+    /**
+     * Retrieves the grade for this enrollment.
+     * @return the grade as a double, or -1 if no grade is found.
+     */
+    public double getGrade() {
+        String filePath = "src/data/grades.txt"; // Path to the grades file
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length == 3) {
+                    String studentId = data[0].trim();
+                    String courseId = data[1].trim();
+                    double grade = Double.parseDouble(data[2].trim());
+
+                    // Check if the grade matches this enrollment's student and course IDs
+                    if (studentId.equals(this.studentId) && courseId.equals(this.courseId)) {
+                        return grade;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Return -1 if no grade is found
+        return -1;
     }
 }

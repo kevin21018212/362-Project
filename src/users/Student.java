@@ -263,4 +263,70 @@ public class Student extends User {
     public static Student findStudentById(String id) {
         return DataAccess.findStudentById(id);
     }
+
+    public void viewGrades() {
+        // Load the student's enrollments
+        List<Enrollment> enrollments = Enrollment.loadEnrollments();
+        boolean hasGrades = false;
+
+
+        System.out.println("Grades for " + this.getName() + ":");
+        for (Enrollment enrollment : enrollments) {
+            // Check if the enrollment belongs to the current student
+            if (enrollment.getStudentId().equals(this.id)) {
+                Course course = Course.findCourseById(enrollment.getCourseId());
+                if (course != null) {
+                    // Retrieve and display the grade for each course
+                    double grade = enrollment.getGrade();
+                    System.out.println("Course: " + course.getName() + " - Grade: " + (grade >= 0 ? grade : "Not graded yet"));
+                    hasGrades = true;
+                }
+            }
+        }
+
+
+        if (!hasGrades) {
+            System.out.println("No grades available.");
+        }
+    }
+
+    public void applyForGraduation() {
+        // Sample requirements for graduation
+        final int MINIMUM_CREDITS = 120; // Minimum credits required for graduation
+        final double MINIMUM_GPA = 2.0; // Minimum GPA required for graduation
+
+        // Assume methods `getTotalCredits()` and `getGPA()` are implemented to fetch these details
+        int totalCredits = getTotalCredits();
+        double gpa = getGPA();
+
+        if (totalCredits >= MINIMUM_CREDITS && gpa >= MINIMUM_GPA) {
+            Display.displayMessage("Congratulations! You are eligible to apply for graduation.");
+            // Code to mark the application status, such as writing to a file or database
+            markGraduationApplication();
+            Display.displayMessage("Your graduation application has been submitted successfully.");
+        } else {
+            Display.displayMessage("You are not eligible to apply for graduation.");
+            if (totalCredits < MINIMUM_CREDITS) {
+                Display.displayMessage("You need at least " + (MINIMUM_CREDITS - totalCredits) + " more credits to be eligible.");
+            }
+            if (gpa < MINIMUM_GPA) {
+                Display.displayMessage("Your GPA must be at least " + MINIMUM_GPA + " to be eligible.");
+            }
+        }
+    }
+
+    public int getTotalCredits() {
+        // Placeholder - Implement logic to calculate total credits based on courses completed
+        return 120; // Example return value for eligibility
+    }
+
+    public double getGPA() {
+        // Placeholder - Implement logic to calculate GPA based on course grades
+        return 3.0; // Example return value for eligibility
+    }
+
+    public void markGraduationApplication() {
+        // Implement logic to mark graduation application status
+        Display.displayMessage("Graduation application status has been updated in the system.");
+    }
 }

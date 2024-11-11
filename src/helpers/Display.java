@@ -28,12 +28,14 @@ public class Display {
             displayMessage("2 Enroll in Course");
             displayMessage("3 Submit Assignment");
             displayMessage("4 View or Change Major");
-            displayMessage("5 Logout\n");
+            displayMessage("5 View Grades");
+            displayMessage("6 Apply for Graduation");
+            displayMessage("7 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
                 case "1":
-
+                    //display all courses
                     break;
                 case "2":
                     assert student != null;
@@ -48,7 +50,13 @@ public class Display {
                     assert student != null;
                     student.changeMajor();
                 case "5":
-                    return;
+                    assert student != null;
+                    student.viewGrades();
+                    break;
+                case "6":
+                    assert student != null;
+                    student.applyForGraduation();
+                    break;
                 default:
                     displayMessage("Bad Baka");
             }
