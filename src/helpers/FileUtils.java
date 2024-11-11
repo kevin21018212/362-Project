@@ -109,24 +109,5 @@ public class FileUtils {
         }
         return data;
     }
-
-    /**
-     * Converts a string array representation to List<String>
-     */
-    public static List<String> parseArray(String arrayStr) {
-        if (arrayStr == null || !arrayStr.startsWith(ARRAY_START) || !arrayStr.endsWith(ARRAY_END)) {
-            return new ArrayList<>();
-        }
-
-        String content = arrayStr.substring(1, arrayStr.length() - 1);
-        String[] elements = content.split(ARRAY_SEPARATOR);
-        return Arrays.asList(elements);
-    }
-
-    /**
-     * Converts List<String> to array string representation
-     */
-    public static String formatArray(List<String> array) {
-        return ARRAY_START + String.join(ARRAY_SEPARATOR, array) + ARRAY_END;
-    }
+    
 }
