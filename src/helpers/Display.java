@@ -5,6 +5,7 @@ import users.DataAccess;
 import users.Instructor;
 import users.Registrar;
 import users.Student;
+import main.Enrollment;
 
 
 
@@ -30,7 +31,8 @@ public class Display {
             displayMessage("4 View or Change Major");
             displayMessage("5 View Grades");
             displayMessage("6 Apply for Graduation");
-            displayMessage("7 Logout\n");
+            displayMessage("7 Drop a class");
+            displayMessage("8 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -57,6 +59,10 @@ public class Display {
                     assert student != null;
                     student.applyForGraduation();
                     break;
+                case "7":
+                    assert student != null;
+                    Enrollment.dropCourse(student.id);
+                	break;
                 default:
                     displayMessage("Bad Baka");
             }
