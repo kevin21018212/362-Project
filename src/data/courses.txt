@@ -1,7 +1,7 @@
-CS101,Introduction to Programming,PROF001,3,[],30
-CS201,Data Structures,PROF002,3,[CS101],25
-MATH101,Calculus I,PROF003,3,[],30
-PHYS101,Physics I,PROF004,3,[],30
-
-101,Model Walk Swag,001,[],[10,32]
-102, Nicko-logy,001,[101],[10,10]
+id::name::instructor::prerequisites::capacity##
+CS101::Introduction to Programming::001::[]::[0,30]##
+CS201::Data Structures::002::[CS101]::[15,25]##
+MATH101::Calculus I::003::[]::[20,35]##
+PHYS201::Physics II::004::[PHYS101]::[12,30]##
+BIO101::Introduction to Biology::PROF005::[]::[5,25]##
+CHEM201::Organic Chemistry::006::[CHEM101]::[18,30]##

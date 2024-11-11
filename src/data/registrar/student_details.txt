@@ -1,2 +1,5 @@
-STU594,2000-05-15,27 blah ln, baltwn, IL 69699,CS,FALL2024
-4992,1234-56-78,123,gyat,FALL2024
+StudentID::DateOfBirth::Address::ProgramOfStudy::AcademicTerm##
+2935::2003-04-06::2152 booty ln::ComS::FALL2024##
+3058::6969::123 Freaky Ln::Econ::FALL2024##
+5926::12\::addy::COMS::FALL2024##
+7828::1234341::12213123123::COMS::FALL2024##

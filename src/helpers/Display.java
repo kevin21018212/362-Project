@@ -12,15 +12,15 @@ public class Display {
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID or 'new' to create an account: ");
         Student student = DataAccess.findStudentById(id);
-        if (id.equalsIgnoreCase("new")) {
-            displayMessage("LOL");
-        } else {
-            student = Student.findStudentById(id);
+//        if (id.equalsIgnoreCase("new")) {
+//            displayMessage("LOL");
+//        } else {
+//            student = Student.findStudentById(id);
             if (student == null) {
                 displayMessage("Student not found.");
                 return;
             }
-        }
+//        }
 
         while (true) {
             displayMessage("\nStudent Menu:");
@@ -35,7 +35,7 @@ public class Display {
 
             switch (choice) {
                 case "1":
-
+                    //display all courses
                     break;
                 case "2":
                     assert student != null;
