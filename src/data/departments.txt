@@ -1,3 +1,4 @@
-Math
-Science
-Engineering
+department_name##
+Math##
+Science##
+Engineering##

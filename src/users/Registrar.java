@@ -8,9 +8,15 @@ import main.Transcript;
 import Interfaces.RegistrarInterface;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Registrar extends User implements RegistrarInterface {
+    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major"};
+    private static final String[] STUDENT_DETAILS_HEADERS = {
+            "StudentID", "DateOfBirth", "Address", "ProgramOfStudy", "AcademicTerm"
+    };
 
     public Registrar(String id, String name, String email) {
         super(id, name, email);
@@ -34,13 +40,20 @@ public class Registrar extends User implements RegistrarInterface {
             return;
         }
 
-        Student newStudent = new Student(studentId, fullName, contactInfo, "");
-        FileUtils.writeToFile("", "students.txt", newStudent.toString());
+        // Create new student data
+        String[] studentData = {studentId, fullName, contactInfo, programOfStudy};
+        List<String[]> existingStudents = FileUtils.readStructuredData("", "students.txt");
+        existingStudents.add(studentData);
+        FileUtils.writeStructuredData("", "students.txt", STUDENT_HEADERS, existingStudents);
 
         // Save additional student information
-        String studentInfo = String.join(",", studentId, dateOfBirth, address,
-                programOfStudy, academicTerm);
-        FileUtils.writeToFile("registrar", "student_details.txt", studentInfo);
+        String[] detailsData = {
+                studentId, dateOfBirth, address, programOfStudy, academicTerm
+        };
+        List<String[]> existingDetails = FileUtils.readStructuredData("registrar", "student_details.txt");
+        existingDetails.add(detailsData);
+        FileUtils.writeStructuredData("registrar", "student_details.txt",
+                STUDENT_DETAILS_HEADERS, existingDetails);
 
         Display.displayMessage("Student successfully enrolled with ID: " + studentId);
     }
@@ -56,6 +69,10 @@ public class Registrar extends User implements RegistrarInterface {
         // Create and generate transcript
         Transcript transcript = new Transcript(studentId);
         String transcriptContent = transcript.generateTranscript();
+        if (!transcript.isGenerateTranscript()) {
+            Display.displayMessage("Error: Transcript could not be generated.");
+            return;
+        }
 
         // Save transcript to file with timestamp
         String timestamp = java.time.LocalDateTime.now().format(
@@ -65,8 +82,11 @@ public class Registrar extends User implements RegistrarInterface {
         // Ensure directory exists
         new File("src/data/registrar/transcripts").mkdirs();
 
-        // Save transcript
-        FileUtils.writeToFile("registrar", fileName, transcriptContent);
+        // Save transcript with headers
+        List<String[]> transcriptData = new ArrayList<>();
+        transcriptData.add(new String[]{"Content", transcriptContent});
+        FileUtils.writeStructuredData("registrar", fileName,
+                new String[]{"Type", "Content"}, transcriptData);
 
         Display.displayMessage("Transcript generated and saved to: " + fileName);
         Display.displayMessage("\nTranscript Content:\n" + transcriptContent);
@@ -81,6 +101,6 @@ public class Registrar extends User implements RegistrarInterface {
     public String generateStudentId() {
         long timestamp = System.currentTimeMillis();
         Random random = new Random(timestamp);
-        return random.nextInt(9999)+"";
+        return String.format("%04d", random.nextInt(9999));
     }
 }

@@ -39,23 +39,43 @@ public class Course {
         this.studentsEnrolled++;
     }
 
+    public void updateEnrollmentCount() {
+        this.studentsEnrolled++;
+        // Save updated course data to file
+        List<Course> allCourses = loadCourses();
+        List<String[]> courseData = new ArrayList<>();
+        for (Course course : allCourses) {
+            String[] data = {
+                    course.getId(),
+                    course.getName(),
+                    course.getInstructorId(),
+                    course.getPrerequisites().toString(),
+                    "[" + course.getStudentsEnrolled() + "," + course.getClassSize() + "]"
+            };
+            courseData.add(data);
+        }
+        FileUtils.writeStructuredData("", "courses.txt", new String[]{"id", "name", "instructor", "prerequisites", "capacity"}, courseData);
+    }
+
     public static List<Course> loadCourses() {
         List<Course> courses = new ArrayList<>();
-        List<String> lines = FileUtils.readFromFile("", "courses.txt");
+        List<String[]> data = FileUtils.readStructuredData("", "courses.txt");
 
-        for (String line : lines) {
-            String[] parts = line.split(",", 5);
-            if (parts.length < 5) continue;
-            String id = parts[0].trim();
-            String name = parts[1].trim();
-            String instructorId = parts[2].trim();
-            List<String> prereqs = checkPrerequisites(parts[3].trim());
-            int[] capacity = checkCapacity(parts[4].trim());
+        for (String[] row : data) {
+            if (row.length >= 5) {
+                String id = row[0].trim();
+                String name = row[1].trim();
+                String instructorId = row[2].trim();
+                List<String> prereqs = checkPrerequisites(row[3].trim());
+                int[] capacity = checkCapacity(row[4].trim());
 
-            courses.add(new Course(id, name, instructorId, prereqs, capacity[0], capacity[1]));
+                courses.add(new Course(id, name, instructorId, prereqs, capacity[0], capacity[1]));
+            }
         }
         return courses;
     }
+
+
 
     private static List<String> checkPrerequisites(String prereqStr) {
         List<String> prereqs = new ArrayList<>();
@@ -92,7 +112,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course ID: " + id + ", Name: " + name + ", Instructor ID: " + instructorId +
-                ", Prerequisites: " + prerequisites + ", Enrollment: " + studentsEnrolled + "/" + classSize;
+        return id + "::" + name + "::" + instructorId + "::" +
+                prerequisites.toString() + "::" + studentsEnrolled + "::" + classSize;
     }
 }

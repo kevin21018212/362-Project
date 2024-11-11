@@ -18,19 +18,30 @@ public class Assignment {
     public String getId() { return id; }
     public String getDueDate() { return dueDate; }
 
-    @Override
-    public String toString() {
-        return "Assignment ID: " + id + ", Title: " + title + ", Due Date: " + dueDate;
-    }
 
     public static List<Assignment> loadAssignments(String courseId) {
         List<Assignment> assignments = new ArrayList<>();
-        String fileName = "courses/" + courseId + "/assignments.txt";
-        FileUtils.readFromFile("", fileName).stream()
-                .map(line -> line.split(","))
-                .filter(data -> data.length == 3)
-                .forEach(data -> assignments.add(new Assignment(data[0], data[1], data[2])));
+        String fileName = "assignments.txt";
+        List<String[]> data = FileUtils.readStructuredData("courses", fileName);
+
+        for (String[] fields : data) {
+//            String[] fields = row.split("::");
+
+            String assignmentId = fields[0].trim();
+            String courseid = fields[1].trim();
+            String dueDate = fields[2].replace("##", "").trim();
+
+            // Only add assignments for the specified course
+            if (courseid.equals(courseId)) {
+                assignments.add(new Assignment(assignmentId, courseid, dueDate));
+            }
+        }
         return assignments;
+    }
+
+    @Override
+    public String toString() {
+        return id + "::" + title + "::" + dueDate;
     }
 
     public static List<String[]> getSubmissions(String courseId, String assignmentId) {

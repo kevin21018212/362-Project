@@ -13,15 +13,15 @@ public class Display {
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID or 'new' to create an account: ");
         Student student = DataAccess.findStudentById(id);
-        if (id.equalsIgnoreCase("new")) {
-            displayMessage("LOL");
-        } else {
-            student = Student.findStudentById(id);
+//        if (id.equalsIgnoreCase("new")) {
+//            displayMessage("LOL");
+//        } else {
+//            student = Student.findStudentById(id);
             if (student == null) {
                 displayMessage("Student not found.");
                 return;
             }
-        }
+//        }
 
         while (true) {
             displayMessage("\nStudent Menu:");
@@ -30,13 +30,14 @@ public class Display {
             displayMessage("3 Submit Assignment");
             displayMessage("4 View or Change Major");
             displayMessage("5 View Grades");
-            displayMessage("6 Drop a course");
-            displayMessage("7 Logout\n");
+            displayMessage("6 Apply for Graduation");
+            displayMessage("7 Drop a class");
+            displayMessage("8 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
                 case "1":
-                	Course.displayAllCourses();
+                    //display all courses
                     break;
                 case "2":
                     assert student != null;
@@ -55,8 +56,12 @@ public class Display {
                     student.viewGrades();
                     break;
                 case "6":
-                    //Course.displayAllCourses();
-                	Enrollment.dropCourse(student.id);
+                    assert student != null;
+                    student.applyForGraduation();
+                    break;
+                case "7":
+                    assert student != null;
+                    Enrollment.dropCourse(student.id);
                 	break;
                 default:
                     displayMessage("Bad Baka");
