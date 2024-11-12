@@ -51,6 +51,23 @@ public class FileUtils {
         }
     }
 
+    public static void OverwriteFile(String directory, String fileName, List<String> dataLines) {
+        try {
+            // Ensure directory exists
+            File dir = new File("src/data/" + directory);
+
+            File file = new File(dir, fileName);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                for (String data : dataLines) {
+                    writer.write(data);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Writing error: " + e.getMessage());
+        }
+    }
+
     /**
      * Reads structured data including arrays and returns as List<String[]>
      */

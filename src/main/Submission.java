@@ -1,5 +1,6 @@
 package main;
 
+import helpers.Display;
 import helpers.FileUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,8 +39,7 @@ public class Submission {
     public static List<Submission> loadSubmissions(String courseId, String assignmentId) {
         List<Submission> submissions = new ArrayList<>();
         String fileName = "submissions.txt";
-        List<String[]> data = FileUtils.readStructuredData("courses", fileName);
-
+        List<String[]> data = FileUtils.readStructuredData("courses/" + courseId + "/", fileName);
         for (String[] fields : data) {
 
             String submissionId = fields[0].trim();

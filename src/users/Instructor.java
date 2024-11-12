@@ -49,6 +49,7 @@ public class Instructor extends User {
             }
 
             Assignment selectedAssignment = assignments.get(assignmentChoice);
+
             checkMissingSubmissions(courseId, selectedAssignment);
             gradeSelectedAssignment(courseId, selectedAssignment);
         } else {
@@ -57,8 +58,9 @@ public class Instructor extends User {
     }
 
 
-    private void gradeSelectedAssignment(String courseId, Assignment assignment) {
+   private void gradeSelectedAssignment(String courseId, Assignment assignment) {
         List<Submission> submissions = Submission.loadSubmissions(courseId, assignment.getId());
+
         if (submissions.isEmpty()) {
             Display.displayMessage("No submissions found for this assignment.");
             return;
@@ -84,26 +86,19 @@ public class Instructor extends User {
             updatedSubmissions.add(submissionData);
         }
 
-        // In gradeSelectedAssignment method
-        String fileName = assignment.getId()+"_graded_submissions.txt";
-        List<String[]> updatedSubmissionData = new ArrayList<>();
+        // Define headers for the file
+        String[] headers = {"Submission ID", "Assignment ID", "Student ID", "Grade", "Submitted Date"};
+        String directory = "courses/" + courseId+"/";
+        String fileName = "submissions.txt";
 
-        for (Submission submission : submissions) {
-            String[] data = {
-                    submission.getId() + "::" +
-                    submission.getAssignmentId() + "::" +
-                    submission.getStudentId() + "::" +
-                    submission.getGrade() + "::" +
-                    submission.getSubmittedDate()
-            };
-            updatedSubmissionData.add(data);
-        }
-
-        FileUtils.writeStructuredData("courses", fileName,
-                new String[]{"SubmissionID::AssignmentID::StudentID::Grade::SubmittedDate##"},
-                updatedSubmissionData);
+        // Write the updated submission data to the file using writeStructuredData
+        FileUtils.writeStructuredData(directory, fileName, headers, updatedSubmissions);
         Display.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
+
+
+
+
 
     private void checkMissingSubmissions(String courseId, Assignment assignment) {
         List<Enrollment> enrollments = Enrollment.loadEnrollments();
