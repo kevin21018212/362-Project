@@ -1,0 +1,29 @@
+Type::Content####
+Type::Content####
+Content::OFFICIAL TRANSCRIPT
+Generated: 2024-11-12 14:25:33
+
+STUDENT INFORMATION
+==================
+ID: 3058
+Name: Freak Bob
+Email: ski@mask.com
+
+COURSE HISTORY
+=============
+
+Term: Current Term
+PHYS201   3 credits  Grade: IP
+BIO101    3 credits  Grade: IP
+
+ACADEMIC SUMMARY
+================
+Cumulative GPA: 0.00
+Credits Completed: 0
+Credits In Progress: 6
+Total Credits: 6
+
+NOTES
+=====
+IP = In Progress
+####
