@@ -12,21 +12,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends User {
-    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major"};
+    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition"};
     private String major;
+    private String scholarshipAmount;
+    private String tuitionAmount;
+
     private final int IN_STATE_TUITION_PER_CLASS = 800;
     private final int OUT_OF_STATE_TUITION_PER_CLASS = 1500;
+    private final int IOWA_RESIDENT_SCHOLARSHIP = 200;
     private final int HEALTH_FEE = 100;
     private final int TECHNOLOGY_FEE = 300;
     private final int COST_PER_BOOK = 50;
 
-    public Student(String id, String name, String email, String major) {
+    public Student(String id, String name, String email, String major, String scholarshipAmount, String tuitionAmount) {
         super(id, name, email);
         this.major = major;
+        this.scholarshipAmount = scholarshipAmount;
+        this.tuitionAmount = tuitionAmount;
     }
 
     public String getMajor() { return major; }
     public void setMajor(String major) { this.major = major; }
+
+    public int getScholarshipAmount(){return Integer.parseInt(scholarshipAmount);}
+    public void setScholarshipAmount(String amount) { this.scholarshipAmount = amount; }
+    public int getTuitionAmount(){return Integer.parseInt(tuitionAmount);}
+    public void setTuitionAmount(String amount) { this.tuitionAmount = amount; }
+
 
     public int getStudentID(){
         return Integer.parseInt(id);
@@ -34,16 +46,22 @@ public class Student extends User {
 
     @Override
     public String toString() {
-        return id + "::" + name + "::" + email + "::" + major;
+        return id + "::" + name + "::" + email + "::" + major + "::" + scholarshipAmount + "::" + tuitionAmount;
     }
 
-    public void updateMajorInFile() {
+    public void updateStudentRecordInFile() {
         List<String[]> data = FileUtils.readStructuredData("", "students.txt");
         List<String[]> updatedData = new ArrayList<>();
 
+        // Convert tuition and scholarship amounts to strings to match file format
+        String tuition = this.tuitionAmount != null ? this.tuitionAmount : "0";
+        String scholarship = this.scholarshipAmount != null ? this.scholarshipAmount : "0";
+
         for (String[] row : data) {
+            // Check if the row corresponds to the current student by ID
             if (row[0].equals(this.id)) {
-                updatedData.add(new String[]{this.id, this.name, this.email, this.major});
+                // Update the row with the current student's info
+                updatedData.add(new String[]{this.id, this.name, this.email, this.major, tuition, scholarship});
             } else {
                 updatedData.add(row);
             }
@@ -51,6 +69,7 @@ public class Student extends User {
 
         FileUtils.writeStructuredData("", "students.txt", STUDENT_HEADERS, updatedData);
     }
+
 
     public List<String> getMajors(String department) {
         List<String[]> data = FileUtils.readStructuredData("", "majors.txt");
@@ -183,7 +202,7 @@ public class Student extends User {
                     selectingMajor = false;
                 } else if (!selectedMajor.equalsIgnoreCase("back")) {
                     setMajor(selectedMajor);
-                    updateMajorInFile();
+                    updateStudentRecordInFile();
                     Display.displayMessage("Your new Major is: " + getMajor());
                     selectingMajor = false;
                 }
@@ -203,12 +222,17 @@ public class Student extends User {
     }
 
     public void viewUniversityBill() {
+        //Tuition calculation, printing, and file updating
         System.out.println("\nUniversity Bill: Fall2024");
-        int classCount = getClassCountFromFile(getStudentID());
-        int tuition = calculateTuition(classCount);
 
-        if(tuition != 0){
-            System.out.println("Total Tuition: $" + tuition);
+        System.out.println("\nTuition");
+        int classCount = getClassCountFromFile(getStudentID());
+        int tempTuition = calculateTuition(classCount);
+        tuitionAmount = Integer.toString(tempTuition);
+        setTuitionAmount(tuitionAmount);
+
+        if(!tuitionAmount.equals("0")){
+            System.out.println("Total Tuition: $" + tuitionAmount);
         } else {
             System.out.println("You are not enrolled in any classes.");
         }
@@ -219,10 +243,12 @@ public class Student extends User {
         System.out.println("Books/Materials: $" + bookCost);
 
         int totalFees = HEALTH_FEE + TECHNOLOGY_FEE + bookCost;
-        int totalCost = tuition + totalFees;
+        int totalCost = tempTuition + totalFees;
         System.out.println("\nTotal Cost: $" + totalCost);
 
-        // Calculate scholarships here if needed
+        // Scholarship calculations, printing, and file updating
+        int tempScholarshipAmount = calculateScholarshipAmount();
+        updateStudentRecordInFile();
 
         // Display final total
         // Select payment method if required
@@ -243,6 +269,63 @@ public class Student extends User {
         System.out.println("Tuition per class: $" + tuitionPerClass);
 
         return totalTuition;
+    }
+
+    public int calculateScholarshipAmount(){
+        final int HS_GPA_TOP = 400;
+        final int HS_GPA_MED = 200;
+        final int HS_GPA_SMALL = 100;
+        final int ACT_TOP = 200;
+        final int ACT_MED = 100;
+        final int ACT_SMALL = 100;
+        int runningTotal = 0;
+
+        //Calculate in-state scholarship
+        System.out.println("\nScholarships:");
+        String isInState = Utils.getInput("Are you an Iowa resident? (yes/no): ");
+
+        if(isInState.equalsIgnoreCase("yes")){
+            runningTotal += IOWA_RESIDENT_SCHOLARSHIP;
+        }
+
+        //calculate high school GPA scholarship
+        System.out.println("Please enter your high school GPA such as '3.5'.");
+        float highSchoolGPA = Float.parseFloat(Utils.getInput("\nGPA: "));
+
+        if(highSchoolGPA >= 3.8){
+            System.out.println("Congrats! You have earned the top GPA Scholarship!");
+            runningTotal += HS_GPA_TOP;
+        } else if(highSchoolGPA < 3.8 && highSchoolGPA >= 3.3){
+            System.out.println("Congrats! You have earned the medium GPA Scholarship!");
+            runningTotal += HS_GPA_MED;
+        } else if(highSchoolGPA < 3.3 && highSchoolGPA >= 3.0){
+            System.out.println("Congrats! You have earned a small GPA Scholarship!");
+            runningTotal += HS_GPA_SMALL;
+        } else {
+            System.out.println("Sorry! You do not qualify for a GPA Scholarship!");
+        }
+
+        //calculate ACT-based scholarship
+        System.out.println("Please enter your ACT score such as '25'.");
+        int studentACT = Integer.parseInt(Utils.getInput("\nACT Score: "));
+        if(studentACT >= 32){
+            System.out.println("Congrats! You have earned the top ACT Scholarship!");
+            runningTotal += ACT_TOP;
+        } else if(studentACT < 32 && studentACT >= 27){
+            System.out.println("Congrats! You have earned the medium ACT Scholarship!");
+            runningTotal += ACT_MED;
+        } else if(studentACT < 27 && studentACT >= 24){
+            System.out.println("Congrats! You have earned a small ACT Scholarship!");
+            runningTotal += ACT_SMALL;
+        } else {
+            System.out.println("Sorry! You do not qualify for a ACT Scholarship!");
+        }
+
+        System.out.println("\nThank you for applying for Academic Scholarships!");
+        System.out.println("You have earned: $" + runningTotal);
+        setScholarshipAmount(Integer.toString(runningTotal));
+
+        return runningTotal;
     }
 
     public int getClassCountFromFile(int studentId) {

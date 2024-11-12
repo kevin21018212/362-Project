@@ -67,8 +67,10 @@ public class Display {
                 case "8":
                     assert student != null;
                     student.viewUniversityBill();
+                    break;
                 case "9":
                     System.out.println("Logged Out");
+                    break;
                 default:
                     displayMessage("Bad Baka");
             }
