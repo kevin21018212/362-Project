@@ -5,12 +5,13 @@ import users.DataAccess;
 import users.Instructor;
 import users.Registrar;
 import users.Student;
+import main.Enrollment;
 
 
 
 public class Display {
     public static void displayStudentMenu() {
-        String id = Utils.getInput("Enter Student ID or 'new' to create an account: ");
+        String id = Utils.getInput("Enter Student ID to login. Please visit the Registrar menu to create an account: ");
         Student student = DataAccess.findStudentById(id);
 //        if (id.equalsIgnoreCase("new")) {
 //            displayMessage("LOL");
@@ -30,7 +31,9 @@ public class Display {
             displayMessage("4 View or Change Major");
             displayMessage("5 View Grades");
             displayMessage("6 Apply for Graduation");
-            displayMessage("7 Logout\n");
+            displayMessage("7 Drop a class");
+            displayMessage("8 View University Bill");
+            displayMessage("9 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -56,6 +59,17 @@ public class Display {
                 case "6":
                     assert student != null;
                     student.applyForGraduation();
+                    break;
+                case "7":
+                    assert student != null;
+                    Enrollment.dropCourse(student.id);
+                	break;
+                case "8":
+                    assert student != null;
+                    student.viewUniversityBill();
+                    break;
+                case "9":
+                    System.out.println("Logged Out");
                     break;
                 default:
                     displayMessage("Bad Baka");

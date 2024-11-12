@@ -2,7 +2,7 @@ package main;
 
 import helpers.Display;
 import helpers.FileUtils;
-
+import helpers.Utils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -103,10 +103,10 @@ public class Enrollment {
         }
         return true;
     }
-
-    public static void dropCourse(String studentId, String courseId) {
+    public static void dropCourse(String studentId) {
         List<Enrollment> enrollments = loadEnrollments();
         Enrollment toDrop = null;
+        String courseId = Utils.getInput("Select a course ID to drop: ").toUpperCase();
 
         for (Enrollment enrollment : enrollments) {
             if (enrollment.getStudentId().equals(studentId) && enrollment.getCourseId().equals(courseId)) {
@@ -125,7 +125,7 @@ public class Enrollment {
             return;
         }
 
-        if (getUserConfirmation()) {
+        if (getUserConfirmation(courseId)) {
             enrollments.remove(toDrop);
             saveAllEnrollments(enrollments);
             Display.displayMessage("Course dropped successfully. Your updated schedule has been saved.");
@@ -138,10 +138,10 @@ public class Enrollment {
         return true; // Placeholder implementation
     }
 
-    private static boolean getUserConfirmation() {
+    private static boolean getUserConfirmation(String course) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            Display.displayMessage("Do you want to proceed with dropping the course? (yes/no): ");
+            Display.displayMessage("Do you want to proceed with dropping " + course + " (yes/no): ");
             String input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("yes")) {
                 return true;
