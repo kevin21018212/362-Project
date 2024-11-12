@@ -114,6 +114,12 @@ public class Student extends User {
             Display.displayMessage("Prerequisites not met");
             return;
         }
+        for (Enrollment enrollment : Enrollment.loadEnrollments()) {
+            if (enrollment.getStudentId().equals(this.id) && enrollment.getCourseId().equals(courseId)) {
+                Display.displayMessage("You are already enrolled in this course.");
+                return;
+            }
+        }
 
         // Create and save enrollment
         Enrollment enrollment = new Enrollment(this.getId(), courseId);
