@@ -37,8 +37,8 @@ public class Submission {
 
     public static List<Submission> loadSubmissions(String courseId, String assignmentId) {
         List<Submission> submissions = new ArrayList<>();
-        String fileName = "submissions.txt";
-        List<String[]> data = FileUtils.readStructuredData("courses", fileName);
+        String direc = "courses/"+courseId+"/";
+        List<String[]> data = FileUtils.readStructuredData(direc, "submissions.txt");
 
         for (String[] fields : data) {
 
