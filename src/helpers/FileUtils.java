@@ -3,19 +3,48 @@ package helpers;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Utility class for handling file operations in the course management system.
+ * Provides methods for reading and writing structured data to files with support
+ * for arrays and custom delimiters.
+ */
 public class FileUtils {
+    /** Base directory path for all data files */
     private static final String BASE_PATH = "src/data/";
+
+    /** Delimiter used to separate fields in the data files */
     private static final String DELIMITER = "::";
+
+    /** Marker used to indicate the end of a data row */
     private static final String ROW_END = "##";
+
+    /** Character marking the start of an array in the data */
     private static final String ARRAY_START = "[";
+
+    /** Character marking the end of an array in the data */
     private static final String ARRAY_END = "]";
+
+    /** Separator used between array elements */
     private static final String ARRAY_SEPARATOR = ", ";
 
     /**
-     * Writes structured data with support for arrays
+     * Writes structured data to a file with support for arrays.
+     *
+     * @param directory The subdirectory within BASE_PATH where the file should be written
+     * @param fileName The name of the file to write to
+     * @param headers Array of column headers for the data
+     * @param data List of string arrays containing the data to write
+     *
+     * File Format:
+     * - Headers are written on the first line, separated by DELIMITER
+     * - Each data row is written on a new line
+     * - Fields within a row are separated by DELIMITER
+     * - Each row ends with ROW_END
+     * - Arrays are preserved with their brackets
      */
     public static void writeStructuredData(String directory, String fileName, String[] headers, List<String[]> data) {
         try {
+            // Create directory if it doesn't exist
             File dir = new File(BASE_PATH + directory);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -23,24 +52,27 @@ public class FileUtils {
 
             File file = new File(dir, fileName);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                // Write headers
+                // Write headers with delimiter and row end marker
                 writer.write(String.join(DELIMITER, headers) + ROW_END);
                 writer.newLine();
 
-                // Write data rows
+                // Process each data row
                 for (String[] row : data) {
                     StringBuilder rowBuilder = new StringBuilder();
                     for (int i = 0; i < row.length; i++) {
                         String value = row[i];
+                        // Preserve array format if value is an array
                         if (value.startsWith(ARRAY_START) && value.endsWith(ARRAY_END)) {
-                            rowBuilder.append(value); // Keep array format intact
+                            rowBuilder.append(value);
                         } else {
                             rowBuilder.append(value);
                         }
+                        // Add delimiter between fields (except for last field)
                         if (i < row.length - 1) {
                             rowBuilder.append(DELIMITER);
                         }
                     }
+                    // Add row end marker and write line
                     rowBuilder.append(ROW_END);
                     writer.write(rowBuilder.toString());
                     writer.newLine();
@@ -52,7 +84,19 @@ public class FileUtils {
     }
 
     /**
-     * Reads structured data including arrays and returns as List<String[]>
+     * Reads structured data from a file and returns it as a List of String arrays.
+     * Handles special formatting including arrays and delimiters.
+     *
+     * @param directory The subdirectory within BASE_PATH where the file is located
+     * @param fileName The name of the file to read from
+     * @return List<String[]> containing the parsed data (excluding headers)
+     *
+     * Reading Process:
+     * - Skips the header line (first line)
+     * - Handles nested arrays by tracking array boundaries
+     * - Splits fields based on DELIMITER
+     * - Removes ROW_END markers
+     * - Preserves array structure in the data
      */
     public static List<String[]> readStructuredData(String directory, String fileName) {
         List<String[]> data = new ArrayList<>();
@@ -68,13 +112,15 @@ public class FileUtils {
 
                 while ((line = reader.readLine()) != null) {
                     if (!line.trim().isEmpty()) {
+                        // Remove row end marker
                         String cleanLine = line.replace(ROW_END, "");
                         if (!firstLine) {
-                            // Handle arrays in the data
+                            // Parse data row
                             List<String> rowValues = new ArrayList<>();
                             StringBuilder currentValue = new StringBuilder();
                             boolean insideArray = false;
 
+                            // Process each character to handle arrays and delimiters
                             for (char c : cleanLine.toCharArray()) {
                                 if (c == '[') {
                                     insideArray = true;
@@ -84,7 +130,8 @@ public class FileUtils {
                                     currentValue.append(c);
                                     rowValues.add(currentValue.toString());
                                     currentValue = new StringBuilder();
-                                } else if (c == ':' && !insideArray && cleanLine.charAt(cleanLine.indexOf(c) + 1) == ':') {
+                                } else if (c == ':' && !insideArray &&
+                                        cleanLine.charAt(cleanLine.indexOf(c) + 1) == ':') {
                                     if (currentValue.length() > 0) {
                                         rowValues.add(currentValue.toString());
                                         currentValue = new StringBuilder();
@@ -94,6 +141,7 @@ public class FileUtils {
                                 }
                             }
 
+                            // Add any remaining value
                             if (currentValue.length() > 0) {
                                 rowValues.add(currentValue.toString());
                             }
