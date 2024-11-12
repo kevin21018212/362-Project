@@ -11,6 +11,8 @@ import helpers.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static helpers.Display.displayMessage;
+
 public class Student extends User {
     private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition"};
     private String major;
@@ -49,6 +51,10 @@ public class Student extends User {
         return id + "::" + name + "::" + email + "::" + major + "::" + scholarshipAmount + "::" + tuitionAmount;
     }
 
+    /**
+     * Updates the student records in the students.txt file
+     * Currently used for updating major, scholarship amount, and tuition amount
+     */
     public void updateStudentRecordInFile() {
         List<String[]> data = FileUtils.readStructuredData("", "students.txt");
         List<String[]> updatedData = new ArrayList<>();
@@ -94,6 +100,9 @@ public class Student extends User {
         return majors;
     }
 
+    /**
+     * @return a List of the available departments
+     */
     public List<String> getAllDepartments() {
         List<String[]> data = FileUtils.readStructuredData("", "departments.txt");
         List<String> departmentNames = new ArrayList<>();
@@ -106,6 +115,9 @@ public class Student extends User {
         return departmentNames;
     }
 
+    /**
+     * @return A simple string of the department the student's major is a part of
+     */
     public String getStudentDepartment() {
         List<String[]> data = FileUtils.readStructuredData("", "majors.txt");
 
@@ -122,23 +134,26 @@ public class Student extends User {
         return "Department not found";
     }
 
+    /**
+     * Enrolls a student in a course (broken rn?)
+     */
     public void enrollInCourse() {
         String courseId = Utils.getInput("Enter course ID: ");
         Course course = Course.findCourseById(courseId);
 
         if (course == null) {
-            Display.displayMessage("Course not found");
+            displayMessage("Course not found");
             return;
         }
 
         // Validate enrollment
         if (course.isFull()) {
-            Display.displayMessage("Course is full");
+            displayMessage("Course is full");
             return;
         }
 
         if (!Enrollment.checkPrerequisites(this.getId(), course)) {
-            Display.displayMessage("Prerequisites not met");
+            displayMessage("Prerequisites not met");
             return;
         }
 
@@ -150,10 +165,13 @@ public class Student extends User {
         course.incrementEnrollment();
         course.updateEnrollmentCount();
 
-        Display.displayMessage("Successfully enrolled in " + course.getName());
+        displayMessage("Successfully enrolled in " + course.getName());
     }
 
-    public void changeMajor() {
+    /**
+     * Initial display options for changing major, viewing major/department
+     */
+    public void changeMajorDisplay() {
         System.out.println("1. View Major");
         System.out.println("2. Change Major");
         System.out.println("3. View Department");
@@ -162,13 +180,13 @@ public class Student extends User {
         String num = Utils.getInput("\nChoose an Option to Proceed:");
         switch(num) {
             case "1":
-                Display.displayMessage("Your current Major is: " + getMajor());
+                displayMessage("Your current Major is: " + getMajor());
                 break;
             case "2":
                 handleMajorChange();
                 break;
             case "3":
-                Display.displayMessage("Your current Department is: " + getStudentDepartment());
+                displayMessage("Your current Department is: " + getStudentDepartment());
                 break;
             case "4":
                 Display.displayStudentMenu();
@@ -178,8 +196,12 @@ public class Student extends User {
         }
     }
 
+    /**
+     * Handles the logic and user walkthrough of changing the logged-in student's major.
+     * Also updates the students.txt file with any changes to their major
+     */
     private void handleMajorChange() {
-        Display.displayMessage("Your current Major is: " + getMajor());
+        displayMessage("Your current Major is: " + getMajor());
         System.out.println("1. Type 1 to change your major.");
         System.out.println("2. Press 2 for No, go back.");
 
@@ -203,24 +225,66 @@ public class Student extends User {
                 } else if (!selectedMajor.equalsIgnoreCase("back")) {
                     setMajor(selectedMajor);
                     updateStudentRecordInFile();
-                    Display.displayMessage("Your new Major is: " + getMajor());
+                    displayMessage("Your new Major is: " + getMajor());
                     selectingMajor = false;
                 }
             }
         }
     }
 
+    /**
+     * Displays a list of all the available majors for the specified majors
+     * @param department
+     */
     public void displayMajors(String department) {
         List<String> majors = getMajors(department);
         System.out.println("Majors in " + department + " Department:");
         majors.forEach(System.out::println);
     }
 
+    /**
+     * Displays a list of all the available departments
+     */
     public void displayDepartmentNames() {
         System.out.println("\nDepartments Available:");
         getAllDepartments().forEach(Display::displayMessage);
     }
 
+    public void viewUniversityBillingOptions(){
+        System.out.println("Please Select an option regarding your University Bill or Scholarships:");
+        displayMessage("1 View current University Tuition and Fees");
+        displayMessage("2 View current scholarship amount.");
+        displayMessage("3 Apply/Reapply for Tuition and Scholarships");
+        String choice = Utils.getInput("Select an option: ");
+        switch (choice) {
+            case "1":
+                System.out.println("Your current Tuition costs are: $" + tuitionAmount);
+                if(tuitionAmount.equals("0")){
+                    System.out.println("You must apply for tuition and scholarships, please press option 3.");
+                    viewUniversityBillingOptions();
+                }
+                break;
+            case "2":
+                System.out.println("\nYour current Scholarships total: $" + scholarshipAmount);
+                if(scholarshipAmount.equals("0")){
+                    System.out.println("You must apply for tuition and scholarships, please press option 3.\n");
+                    viewUniversityBillingOptions();
+                }
+                break;
+            case "3":
+                viewUniversityBill();
+                break;
+            default:
+                displayMessage("Incorrect Input, Please try again");
+                viewUniversityBillingOptions();
+                break;
+        }
+    }
+
+    /**
+     * Walks the user through their tuition and scholarship costs.
+     * Prints out the total amount owed for the logged-in student.
+     */
     public void viewUniversityBill() {
         //Tuition calculation, printing, and file updating
         System.out.println("\nUniversity Bill: Fall2024");
@@ -229,7 +293,6 @@ public class Student extends User {
         int classCount = getClassCountFromFile(getStudentID());
         int tempTuition = calculateTuition(classCount);
         tuitionAmount = Integer.toString(tempTuition);
-        setTuitionAmount(tuitionAmount);
 
         if(!tuitionAmount.equals("0")){
             System.out.println("Total Tuition: $" + tuitionAmount);
@@ -237,23 +300,41 @@ public class Student extends User {
             System.out.println("You are not enrolled in any classes.");
         }
 
+        //Fees and Books costs
         System.out.println("\nHealth Fee: $" + HEALTH_FEE);
         System.out.println("Technology Fee: $" + TECHNOLOGY_FEE);
         int bookCost = classCount * COST_PER_BOOK;
         System.out.println("Books/Materials: $" + bookCost);
 
+        //Calculate total cost of tuition + fees
         int totalFees = HEALTH_FEE + TECHNOLOGY_FEE + bookCost;
         int totalCost = tempTuition + totalFees;
-        System.out.println("\nTotal Cost: $" + totalCost);
+        System.out.println("\nTotal Costs: $" + totalCost);
 
         // Scholarship calculations, printing, and file updating
         int tempScholarshipAmount = calculateScholarshipAmount();
         updateStudentRecordInFile();
+        System.out.println("Your student record has been updated!\n");
 
-        // Display final total
-        // Select payment method if required
+        //Print out Final Bill
+        System.out.println("Final Bill:");
+        System.out.println("Total Costs = $" + totalCost);
+        System.out.println("Total Scholarships Earned = $" + tempScholarshipAmount);
+
+        //ensure amount owed cannot be negative
+        int amountOwed = totalCost - tempScholarshipAmount;
+        if(amountOwed < 0){
+            amountOwed = 0;
+            System.out.println("Congrats! You owe $" + amountOwed + "because your scholarships cover your costs!");
+        } else {
+            System.out.println("You owe: $" + amountOwed);
+        }
     }
 
+    /**
+     * @param classCount
+     * @return the integer amount of tuition the student will owe. Also UPDATES the student.txt file with the result
+     */
     public int calculateTuition(int classCount) {
         String isInState = Utils.getInput("\nAre you an Iowa resident? (yes/no): ");
 
@@ -267,10 +348,15 @@ public class Student extends User {
 
         System.out.println("Classes enrolled: " + classCount);
         System.out.println("Tuition per class: $" + tuitionPerClass);
+        setTuitionAmount(Integer.toString(totalTuition));
 
         return totalTuition;
     }
 
+    /**
+     * @return The integer amount of scholarships the student has earned based on GPA and ACT score.
+     * Updates the students.txt file with the new amount
+     */
     public int calculateScholarshipAmount(){
         final int HS_GPA_TOP = 400;
         final int HS_GPA_MED = 200;
@@ -322,12 +408,17 @@ public class Student extends User {
         }
 
         System.out.println("\nThank you for applying for Academic Scholarships!");
-        System.out.println("You have earned: $" + runningTotal);
+        System.out.println("You have earned a total of: $" + runningTotal);
         setScholarshipAmount(Integer.toString(runningTotal));
 
         return runningTotal;
     }
 
+    /**
+     * @param studentId
+     * @return The integer amount (Ex: 2) of classes the logged-in student is enrolled in.
+     * Used to calculate various metrics for tuition and fees
+     */
     public int getClassCountFromFile(int studentId) {
         int classCount = 0;
 
@@ -355,7 +446,7 @@ public class Student extends User {
         String courseId = Utils.getInput("\nEnter Course ID from the list above: ");
         Course course = Course.findCourseById(courseId);
         if (course == null) {
-            Display.displayMessage("Invalid Course ID.");
+            displayMessage("Invalid Course ID.");
             return;
         }
 
@@ -372,7 +463,7 @@ public class Student extends User {
         }
 
         if (!hasUnsubmittedAssignments) {
-            Display.displayMessage("All assignments have been submitted for this course.");
+            displayMessage("All assignments have been submitted for this course.");
             return;
         }
 
@@ -380,7 +471,7 @@ public class Student extends User {
         String assignmentId = Utils.getInput("\nEnter Assignment ID: ");
 
         if (Submission.isSubmitted(courseId, this.id, assignmentId)) {
-            Display.displayMessage("This assignment has already been submitted.");
+            displayMessage("This assignment has already been submitted.");
         } else {
             // Create submission data
             String submissionId = "sub_" + System.currentTimeMillis();
@@ -407,10 +498,9 @@ public class Student extends User {
                     new String[]{"SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"},
                     existingSubmissions);
 
-            Display.displayMessage("Assignment submitted successfully.");
+            displayMessage("Assignment submitted successfully.");
         }
     }
-
 
     public static Student findStudentById(String id) {
         return DataAccess.findStudentById(id);
@@ -452,17 +542,17 @@ public class Student extends User {
         double gpa = getGPA();
 
         if (totalCredits >= MINIMUM_CREDITS && gpa >= MINIMUM_GPA) {
-            Display.displayMessage("Congratulations! You are eligible to apply for graduation.");
+            displayMessage("Congratulations! You are eligible to apply for graduation.");
             // Code to mark the application status, such as writing to a file or database
             markGraduationApplication();
-            Display.displayMessage("Your graduation application has been submitted successfully.");
+            displayMessage("Your graduation application has been submitted successfully.");
         } else {
-            Display.displayMessage("You are not eligible to apply for graduation.");
+            displayMessage("You are not eligible to apply for graduation.");
             if (totalCredits < MINIMUM_CREDITS) {
-                Display.displayMessage("You need at least " + (MINIMUM_CREDITS - totalCredits) + " more credits to be eligible.");
+                displayMessage("You need at least " + (MINIMUM_CREDITS - totalCredits) + " more credits to be eligible.");
             }
             if (gpa < MINIMUM_GPA) {
-                Display.displayMessage("Your GPA must be at least " + MINIMUM_GPA + " to be eligible.");
+                displayMessage("Your GPA must be at least " + MINIMUM_GPA + " to be eligible.");
             }
         }
     }
@@ -479,7 +569,7 @@ public class Student extends User {
 
     public void markGraduationApplication() {
         // Implement logic to mark graduation application status
-        Display.displayMessage("Graduation application status has been updated in the system.");
+        displayMessage("Graduation application status has been updated in the system.");
     }
 
 }

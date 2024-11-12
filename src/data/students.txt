@@ -3,4 +3,4 @@ ID::Name::Email::Major::Scholarships::Tuition##
 3058::Freak Bob::ski@mask.com::Biology::0::0##
 1234::max12::email::Physics::0::0##
 7828::freak::jajkfjafj::COMS::0::0##
-6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::0::0##
+6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::0::500##
