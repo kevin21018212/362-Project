@@ -1,6 +1,6 @@
-ID::Name::Email::Major####
+ID::Name::Email::Major::Scholarships::Tuition##
 6969::Max may::maxmay@m::Biology::3000::600##
-3058::Freak Bob::ski@mask.com::Biology::0::0##
+3058::Freak Bob::ski@mask.com::Biology::2400::300##
 1234::max12::email::Physics::0::0##
 6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::0::0##
-9917::Max may::maxmay@m::Biology####
+9917::Max may::maxmay@m::Biology##

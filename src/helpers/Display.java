@@ -70,7 +70,7 @@ public class Display {
                     break;
                 case "9":
                     System.out.println("Logged Out");
-                    break;
+                    return;
                 default:
                     displayMessage("Bad Baka");
             }
