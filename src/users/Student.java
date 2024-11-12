@@ -243,7 +243,7 @@ public class Student extends User {
             };
 
             // Read existing submissions
-            String fileName = "courses/" + courseId + "/submissions.txt";
+            String fileName = "courses/submissions.txt";
             List<String[]> existingSubmissions = FileUtils.readStructuredData("", fileName);
 
             // Add new submission
