@@ -11,7 +11,7 @@ import main.Enrollment;
 
 public class Display {
     public static void displayStudentMenu() {
-        String id = Utils.getInput("Enter Student ID or 'new' to create an account: ");
+        String id = Utils.getInput("Enter Student ID to login. Please visit the Registrar menu to create an account: ");
         Student student = DataAccess.findStudentById(id);
 //        if (id.equalsIgnoreCase("new")) {
 //            displayMessage("LOL");
@@ -32,7 +32,8 @@ public class Display {
             displayMessage("5 View Grades");
             displayMessage("6 Apply for Graduation");
             displayMessage("7 Drop a class");
-            displayMessage("8 Logout\n");
+            displayMessage("8 View University Bill");
+            displayMessage("9 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -63,6 +64,11 @@ public class Display {
                     assert student != null;
                     Enrollment.dropCourse(student.id);
                 	break;
+                case "8":
+                    assert student != null;
+                    student.viewUniversityBill();
+                case "9":
+                    System.out.println("Logged Out");
                 default:
                     displayMessage("Bad Baka");
             }

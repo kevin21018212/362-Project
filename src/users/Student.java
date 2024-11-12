@@ -14,6 +14,11 @@ import java.util.List;
 public class Student extends User {
     private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major"};
     private String major;
+    private final int IN_STATE_TUITION_PER_CLASS = 800;
+    private final int OUT_OF_STATE_TUITION_PER_CLASS = 1500;
+    private final int HEALTH_FEE = 100;
+    private final int TECHNOLOGY_FEE = 300;
+    private final int COST_PER_BOOK = 50;
 
     public Student(String id, String name, String email, String major) {
         super(id, name, email);
@@ -22,6 +27,10 @@ public class Student extends User {
 
     public String getMajor() { return major; }
     public void setMajor(String major) { this.major = major; }
+
+    public int getStudentID(){
+        return Integer.parseInt(id);
+    }
 
     @Override
     public String toString() {
@@ -94,7 +103,6 @@ public class Student extends User {
         return "Department not found";
     }
 
-    // Rest of the methods remain the same, just update file operations
     public void enrollInCourse() {
         String courseId = Utils.getInput("Enter course ID: ");
         Course course = Course.findCourseById(courseId);
@@ -194,6 +202,68 @@ public class Student extends User {
         getAllDepartments().forEach(Display::displayMessage);
     }
 
+    public void viewUniversityBill() {
+        System.out.println("\nUniversity Bill: Fall2024");
+        int classCount = getClassCountFromFile(getStudentID());
+        int tuition = calculateTuition(classCount);
+
+        if(tuition != 0){
+            System.out.println("Total Tuition: $" + tuition);
+        } else {
+            System.out.println("You are not enrolled in any classes.");
+        }
+
+        System.out.println("\nHealth Fee: $" + HEALTH_FEE);
+        System.out.println("Technology Fee: $" + TECHNOLOGY_FEE);
+        int bookCost = classCount * COST_PER_BOOK;
+        System.out.println("Books/Materials: $" + bookCost);
+
+        int totalFees = HEALTH_FEE + TECHNOLOGY_FEE + bookCost;
+        int totalCost = tuition + totalFees;
+        System.out.println("\nTotal Cost: $" + totalCost);
+
+        // Calculate scholarships here if needed
+
+        // Display final total
+        // Select payment method if required
+    }
+
+    public int calculateTuition(int classCount) {
+        String isInState = Utils.getInput("\nAre you an Iowa resident? (yes/no): ");
+
+        int tuitionPerClass = OUT_OF_STATE_TUITION_PER_CLASS;
+
+        if(isInState.equalsIgnoreCase("yes")){
+            tuitionPerClass = IN_STATE_TUITION_PER_CLASS;
+        }
+
+        int totalTuition = classCount * tuitionPerClass;
+
+        System.out.println("Classes enrolled: " + classCount);
+        System.out.println("Tuition per class: $" + tuitionPerClass);
+
+        return totalTuition;
+    }
+
+    public int getClassCountFromFile(int studentId) {
+        int classCount = 0;
+
+        // Read structured data from enrollments.txt
+        List<String[]> data = FileUtils.readStructuredData("", "enrollments.txt");
+
+        // Iterate through each row of data
+        for (String[] row : data) {
+            if (row.length > 1) {
+                // Check if the StudentId matches the specified studentId
+                if (row[0].trim().equals(String.valueOf(studentId))) {
+                    classCount++;
+                }
+            }
+        }
+
+        return classCount;
+    }
+
     public void submitAssignment() {
         // Display all enrolled courses for the student
         Enrollment.displayAllEnrolledCourses(this.id);
@@ -257,7 +327,6 @@ public class Student extends User {
             Display.displayMessage("Assignment submitted successfully.");
         }
     }
-
 
 
     public static Student findStudentById(String id) {
