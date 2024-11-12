@@ -136,15 +136,24 @@ public class Student extends User {
         for (String[] row : data) {
             if (row.length > 1) {
                 String departmentName = row[0].trim();
-                for (int i = 1; i < row.length; i++) {
-                    if (row[i].trim().equalsIgnoreCase(major)) {
+                String majorsList = row[1].trim();
+
+                // Remove the square brackets around the majors list and split by comma
+                majorsList = majorsList.replace("[", "").replace("]", "");
+                String[] majors = majorsList.split(",");
+
+                // Check if the current student's major is in the majors array
+                for (String major : majors) {
+                    if (major.trim().equalsIgnoreCase(this.major)) {
                         return departmentName;
                     }
                 }
             }
         }
+
         return "Department not found";
     }
+
 
     /**
      * Enrolls a student in a course (broken rn?)

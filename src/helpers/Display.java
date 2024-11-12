@@ -52,6 +52,7 @@ public class Display {
                 case "4":
                     assert student != null;
                     student.changeMajorDisplay();
+                    break;
                 case "5":
                     assert student != null;
                     student.viewGrades();
