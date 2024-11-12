@@ -36,7 +36,19 @@ public class Student extends User {
     public String getMajor() { return major; }
     public void setMajor(String major) { this.major = major; }
 
-    public int getScholarshipAmount(){return Integer.parseInt(scholarshipAmount);}
+    public int getScholarshipAmount() {
+        List<String[]> data = FileUtils.readStructuredData("", "students.txt");
+
+        for (String[] row : data) {
+            // Check if this row is the current student's row by matching ID
+            if (row[0].equals(this.id)) {
+                return Integer.parseInt(row[4]);
+            }
+        }
+
+        return 0;
+    }
+
     public void setScholarshipAmount(String amount) { this.scholarshipAmount = amount; }
     public int getTuitionAmount(){return Integer.parseInt(tuitionAmount);}
     public void setTuitionAmount(String amount) { this.tuitionAmount = amount; }
@@ -67,7 +79,7 @@ public class Student extends User {
             // Check if the row corresponds to the current student by ID
             if (row[0].equals(this.id)) {
                 // Update the row with the current student's info
-                updatedData.add(new String[]{this.id, this.name, this.email, this.major, tuition, scholarship});
+                updatedData.add(new String[]{this.id, this.name, this.email, this.major, scholarship, tuition});
             } else {
                 updatedData.add(row);
             }
@@ -251,21 +263,21 @@ public class Student extends User {
     }
 
     public void viewUniversityBillingOptions(){
-        System.out.println("Please Select an option regarding your University Bill or Scholarships:");
+        System.out.println("\nPlease Select an option regarding your University Bill or Scholarships:");
         displayMessage("1 View current University Tuition and Fees");
         displayMessage("2 View current scholarship amount.");
         displayMessage("3 Apply/Reapply for Tuition and Scholarships");
         String choice = Utils.getInput("Select an option: ");
         switch (choice) {
             case "1":
-                System.out.println("Your current Tuition costs are: $" + tuitionAmount);
+                System.out.println("\nYour current Tuition/Fees total: $" + tuitionAmount);
                 if(tuitionAmount.equals("0")){
                     System.out.println("You must apply for tuition and scholarships, please press option 3.");
                     viewUniversityBillingOptions();
                 }
                 break;
             case "2":
-                System.out.println("\nYour current Scholarships total: $" + scholarshipAmount);
+                System.out.println("\nYour current Scholarships total: $" + getScholarshipAmount());
                 if(scholarshipAmount.equals("0")){
                     System.out.println("You must apply for tuition and scholarships, please press option 3.\n");
                     viewUniversityBillingOptions();
@@ -275,7 +287,7 @@ public class Student extends User {
                 viewUniversityBill();
                 break;
             default:
-                displayMessage("Incorrect Input, Please try again");
+                displayMessage("\nIncorrect Input, Please try again");
                 viewUniversityBillingOptions();
                 break;
         }
@@ -309,6 +321,7 @@ public class Student extends User {
         //Calculate total cost of tuition + fees
         int totalFees = HEALTH_FEE + TECHNOLOGY_FEE + bookCost;
         int totalCost = tempTuition + totalFees;
+        setTuitionAmount(Integer.toString(totalCost));
         System.out.println("\nTotal Costs: $" + totalCost);
 
         // Scholarship calculations, printing, and file updating
@@ -325,7 +338,7 @@ public class Student extends User {
         int amountOwed = totalCost - tempScholarshipAmount;
         if(amountOwed < 0){
             amountOwed = 0;
-            System.out.println("Congrats! You owe $" + amountOwed + "because your scholarships cover your costs!");
+            System.out.println("Congrats! You owe $" + amountOwed + " because your scholarships cover your costs!");
         } else {
             System.out.println("You owe: $" + amountOwed);
         }
@@ -348,7 +361,6 @@ public class Student extends User {
 
         System.out.println("Classes enrolled: " + classCount);
         System.out.println("Tuition per class: $" + tuitionPerClass);
-        setTuitionAmount(Integer.toString(totalTuition));
 
         return totalTuition;
     }
@@ -392,8 +404,8 @@ public class Student extends User {
         }
 
         //calculate ACT-based scholarship
-        System.out.println("Please enter your ACT score such as '25'.");
-        int studentACT = Integer.parseInt(Utils.getInput("\nACT Score: "));
+        System.out.println("\nPlease enter your ACT score such as '25'.");
+        int studentACT = Integer.parseInt(Utils.getInput("ACT Score: "));
         if(studentACT >= 32){
             System.out.println("Congrats! You have earned the top ACT Scholarship!");
             runningTotal += ACT_TOP;
