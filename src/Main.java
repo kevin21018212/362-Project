@@ -21,6 +21,7 @@ public class Main {
                         break;
                     case "3":
                         //TODO @Kev
+                        System.out.println("In progress");
                         break;
                     case "4":
                         Display.displayRegistrarMenu();

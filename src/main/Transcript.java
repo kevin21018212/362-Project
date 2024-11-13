@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a student's academic transcript, containing course records, grades, and academic statistics.
+ * This class manages the creation, calculation, and generation of official student transcripts.
+ */
 public class Transcript {
     private final Student student;
     private final List<Enrollment> enrollments;
@@ -17,6 +21,7 @@ public class Transcript {
     private Map<String, CourseRecord> courseRecords;
     private boolean generateTranscript;
 
+    /** Maps letter grades to their corresponding grade point values */
     private static final Map<String, Double> GRADE_POINTS = new HashMap<>();
 
     static {
@@ -33,11 +38,20 @@ public class Transcript {
         GRADE_POINTS.put("F", 0.0);
     }
 
+    /**
+     * Inner class representing a single course record in a student's transcript.
+     */
     private static class CourseRecord {
         String courseId;
         String grade;
         String term;
 
+        /**
+         * Constructs a new CourseRecord with the specified details.
+         * @param courseId The unique identifier of the course
+         * @param grade The grade received in the course
+         * @param term The academic term in which the course was taken
+         */
         CourseRecord(String courseId, String grade, String term) {
             this.courseId = courseId;
             this.grade = grade;
@@ -45,6 +59,10 @@ public class Transcript {
         }
     }
 
+    /**
+     * Constructs a new Transcript for the specified student.
+     * @param studentId The unique identifier of the student
+     */
     public Transcript(String studentId) {
         this.student = DataAccess.findStudentById(studentId);
         this.enrollments = loadEnrollments(studentId);
@@ -58,12 +76,22 @@ public class Transcript {
         this.generateTranscript = true;
     }
 
+    /**
+     * Loads all enrollments for the specified student.
+     * @param studentId The unique identifier of the student
+     * @return A list of enrollments for the student
+     */
     private List<Enrollment> loadEnrollments(String studentId) {
         return Enrollment.loadEnrollments().stream()
                 .filter(e -> e.getStudentId().equals(studentId))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Loads course records for the specified student from the grades file.
+     * @param studentId The unique identifier of the student
+     * @return A map of course IDs to CourseRecord objects
+     */
     private Map<String, CourseRecord> loadCourseRecords(String studentId) {
         Map<String, CourseRecord> records = new HashMap<>();
         List<String[]> data = FileUtils.readStructuredData("", "grades.txt");
@@ -80,6 +108,9 @@ public class Transcript {
         return records;
     }
 
+    /**
+     * Saves the generated transcript to a file in the transcripts directory.
+     */
     public void saveTranscript() {
         String fileName = String.format("transcripts/%s_%s.txt",
                 student.getId(),
@@ -90,6 +121,9 @@ public class Transcript {
                 new String[]{"Type", "Content"}, transcriptData);
     }
 
+    /**
+     * Calculates academic statistics including GPA and credit totals.
+     */
     private void calculateStats() {
         double totalPoints = 0;
         creditsCompleted = 0;
@@ -102,7 +136,7 @@ public class Transcript {
             if (record != null && record.grade != null) {
                 Double gradePoints = GRADE_POINTS.get(record.grade);
                 if (gradePoints != null) {
-                    totalPoints += gradePoints * 3; // 3 credits per course
+                    totalPoints += gradePoints * 3;
                     creditsCompleted += 3;
                 }
             } else {
@@ -113,6 +147,10 @@ public class Transcript {
         this.gpa = creditsCompleted > 0 ? totalPoints / creditsCompleted : 0.0;
     }
 
+    /**
+     * Generates a formatted transcript string containing all academic information.
+     * @return A formatted string representing the complete transcript
+     */
     public String generateTranscript() {
         if (!generateTranscript) {
             return "Error: Transcript generation failed.";
@@ -173,6 +211,10 @@ public class Transcript {
         return transcript.toString();
     }
 
+    /**
+     * Checks if the transcript can be generated.
+     * @return true if the transcript can be generated, false otherwise
+     */
     public boolean isGenerateTranscript() {
         return generateTranscript;
     }

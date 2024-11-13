@@ -21,8 +21,9 @@ public class Assignment {
 
     public static List<Assignment> loadAssignments(String courseId) {
         List<Assignment> assignments = new ArrayList<>();
-        String fileName = "assignments.txt";
-        List<String[]> data = FileUtils.readStructuredData("courses", fileName);
+//        String fileName = "assignments.txt";
+        String directory = "courses/" + courseId;
+        List<String[]> data = FileUtils.readStructuredData(directory, "assignments.txt");
 
         for (String[] fields : data) {
 //            String[] fields = row.split("::");
