@@ -51,7 +51,8 @@ public class Display {
                     break;
                 case "4":
                     assert student != null;
-                    student.changeMajor();
+                    student.changeMajorDisplay();
+                    break;
                 case "5":
                     assert student != null;
                     student.viewGrades();
@@ -66,7 +67,8 @@ public class Display {
                 	break;
                 case "8":
                     assert student != null;
-                    student.viewUniversityBill();
+                    student.viewUniversityBillingOptions();
+                    //student.viewUniversityBill();
                     break;
                 case "9":
                     System.out.println("Logged Out");
