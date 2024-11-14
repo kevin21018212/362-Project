@@ -19,15 +19,7 @@ import java.util.Random;
 public class Registrar extends User implements RegistrarInterface {
     /** Headers for the students.txt file */
     private static final String[] STUDENT_HEADERS = {"ID::Name::Email::Major##"};
-
-    public void displayAllStudents(){
-        List<String[]> students = FileUtils.readStructuredData("", "students.txt");
-        Display.displayMessage("All Students:");
-        Display.displayMessage("ID::Name::Email::Major");
-        for (String[] student : students) {
-            Display.displayMessage(student[0]+"::"+student[1]+"::"+student[2]+"::"+student[3]);
-        }
-    }
+    
 
     /** Headers for the student_details.txt file */
     private static final String[] STUDENT_DETAILS_HEADERS = {
