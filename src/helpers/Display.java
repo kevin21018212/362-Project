@@ -148,6 +148,7 @@ public class Display {
     }
 
     private static void registerNewStudent(Registrar registrar) {
+        registrar.displayAllStudents();
         displayMessage("\nNew Student Registration Form");
         String fullName = Utils.getInput("Enter full name: ");
         String dateOfBirth = Utils.getInput("Enter date of birth (YYYY-MM-DD): ");

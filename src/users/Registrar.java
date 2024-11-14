@@ -36,6 +36,15 @@ public class Registrar extends User implements RegistrarInterface {
         super(id, name, email);
     }
 
+    public void displayAllStudents(){
+        List<String[]> students = FileUtils.readStructuredData("", "students.txt");
+        Display.displayMessage("All Students:");
+        Display.displayMessage("ID::Name::Email::Major::Scholarships::Tuition");
+        for (String[] student : students) {
+            Display.displayMessage(student[0]+"::"+student[1]+"::"+student[2]+"::"+student[3]);
+        }
+    }
+
     /**
      * Enrolls a new student in the system with complete registration information.
      * Creates entries in both students.txt and student_details.txt.
