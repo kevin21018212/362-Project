@@ -71,7 +71,8 @@ public class Display {
                     //student.viewUniversityBill();
                     break;
                 case "9":
-                    return;
+                    System.out.println("Logged Out");
+                    break;
                 default:
                     displayMessage("Bad Baka");
             }
