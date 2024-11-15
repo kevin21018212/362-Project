@@ -604,5 +604,4 @@ public class Student extends User {
         // Implement logic to mark graduation application status
         displayMessage("Graduation application status has been updated in the system.");
     }
-
 }
