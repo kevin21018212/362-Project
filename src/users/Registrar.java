@@ -19,15 +19,7 @@ import java.util.Random;
 public class Registrar extends User implements RegistrarInterface {
     /** Headers for the students.txt file */
     private static final String[] STUDENT_HEADERS = {"ID::Name::Email::Major##"};
-
-    public void displayAllStudents(){
-        List<String[]> students = FileUtils.readStructuredData("", "students.txt");
-        Display.displayMessage("All Students:");
-        Display.displayMessage("ID::Name::Email::Major");
-        for (String[] student : students) {
-            Display.displayMessage(student[0]+"::"+student[1]+"::"+student[2]+"::"+student[3]);
-        }
-    }
+    
 
     /** Headers for the student_details.txt file */
     private static final String[] STUDENT_DETAILS_HEADERS = {
@@ -43,6 +35,15 @@ public class Registrar extends User implements RegistrarInterface {
      */
     public Registrar(String id, String name, String email) {
         super(id, name, email);
+    }
+
+    public void displayAllStudents(){
+        List<String[]> students = FileUtils.readStructuredData("", "students.txt");
+        Display.displayMessage("All Students:");
+        Display.displayMessage("ID::Name::Email::Major::Scholarships::Tuition");
+        for (String[] student : students) {
+            Display.displayMessage(student[0]+"::"+student[1]+"::"+student[2]+"::"+student[3]);
+        }
     }
 
     /**
@@ -76,7 +77,7 @@ public class Registrar extends User implements RegistrarInterface {
 
         // Create student record in students.txt
         String[] studentData = {
-                studentId + "::" + fullName + "::" + contactInfo + "::" + programOfStudy + "##"
+                studentId + "::" + fullName + "::" + contactInfo + "::" + programOfStudy
         };
         List<String[]> existingStudents = FileUtils.readStructuredData("", "students.txt");
         existingStudents.add(studentData);
@@ -85,7 +86,7 @@ public class Registrar extends User implements RegistrarInterface {
         // Create detailed record in student_details.txt
         String[] detailsData = {
                 studentId + "::" + dateOfBirth + "::" + address + "::" +
-                        programOfStudy + "::" + academicTerm + "##"
+                        programOfStudy + "::" + academicTerm
         };
         List<String[]> existingDetails = FileUtils.readStructuredData("registrar", "student_details.txt");
         existingDetails.add(detailsData);
