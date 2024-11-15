@@ -8,10 +8,6 @@ import main.Course;
 import main.Enrollment;
 import main.Submission;
 import helpers.FileUtils;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -532,38 +528,30 @@ public class Student extends User {
     }
 
     public void viewGrades() {
-        String filePath = "src/data/grades.txt"; // Path to the grades file
+        // Load the student's enrollments
+        List<Enrollment> enrollments = Enrollment.loadEnrollments();
         boolean hasGrades = false;
 
-        Display.displayMessage("Your Current Grades:");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length >= 3) {
-                    String studentIdFromFile = data[0].trim();
-                    String courseId = data[1].trim();
-                    String grade = data[2].trim();
-
-                    // Check if the entry is for the current student
-                    if (studentIdFromFile.equals(this.id)) {
-                        Display.displayMessage(courseId + ": " + grade);
-                        hasGrades = true;
-                    }
+        System.out.println("Grades for " + this.getName() + ":");
+        for (Enrollment enrollment : enrollments) {
+            // Check if the enrollment belongs to the current student
+            if (enrollment.getStudentId().equals(this.id)) {
+                Course course = Course.findCourseById(enrollment.getCourseId());
+                if (course != null) {
+                    // Retrieve and display the grade for each course
+                    double grade = enrollment.getGrade();
+                    System.out.println("Course: " + course.getName() + " - Grade: " + (grade >= 0 ? grade : "Not graded yet"));
+                    hasGrades = true;
                 }
             }
-        } catch (IOException e) {
-            Display.displayMessage("Error reading grades file.");
-            e.printStackTrace();
         }
 
-        // If no grades are found for the student
+
         if (!hasGrades) {
-            Display.displayMessage("No grades available for your enrolled courses.");
+            System.out.println("No grades available.");
         }
     }
-
 
     public void applyForGraduation() {
         // Sample requirements for graduation
