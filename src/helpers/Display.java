@@ -38,7 +38,7 @@ public class Display {
 
             switch (choice) {
                 case "1":
-                    student.viewCourses();
+                    //display all courses
                     break;
                 case "2":
                     assert student != null;
@@ -94,14 +94,14 @@ public class Display {
 
         while (true) {
             displayMessage("\nInstructor Menu:");
-            displayMessage("1 View Courses");
+            displayMessage("1 Create Assignment");
             displayMessage("2 Grade Assignments");
             displayMessage("3 Logout");
             String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
                 case "1":
-                    instructor.viewCourses();
+                    //create assigment
                     break;
                 case "2":
                     instructor.gradeAssignments();
