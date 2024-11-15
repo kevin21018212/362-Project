@@ -65,8 +65,6 @@ public class Instructor extends User {
         }
 
         List<String[]> updatedSubmissions = new ArrayList<>();
-        int i = 0;
-        ArrayList<Integer> gradedSubmissions = new ArrayList<>();
         for (Submission submission : submissions) {
             String[] submissionData = new String[5];
             submissionData[0] = submission.getId();
@@ -82,10 +80,8 @@ public class Instructor extends User {
                     Display.displayMessage("This submission is late.\n");
                 }
                 submissionData[3] = Utils.getInput("Enter grade for this assignment: ");
-                gradedSubmissions.add(i);
             }
             updatedSubmissions.add(submissionData);
-            i+=1;
         }
         System.out.println(updatedSubmissions);
         // In gradeSelectedAssignment method
@@ -93,7 +89,6 @@ public class Instructor extends User {
         String fileName = "submissions.txt";
         List<String[]> updatedSubmissionData = new ArrayList<>();
 
-        i = 0;
         for (String[] submission : updatedSubmissions) {
             String[] data = {
                     submission[0] + "::" +
@@ -103,8 +98,6 @@ public class Instructor extends User {
                     submission[4]
             };
             updatedSubmissionData.add(data);
-            submissions.get(i).setGrade(submission[3]);
-            i += 1;
         }
 //        for (Submission submission : submissions) {
 //            String[] data = {

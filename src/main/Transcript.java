@@ -109,6 +109,19 @@ public class Transcript {
     }
 
     /**
+     * Saves the generated transcript to a file in the transcripts directory.
+     */
+    public void saveTranscript() {
+        String fileName = String.format("transcripts/%s_%s.txt",
+                student.getId(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")));
+        List<String[]> transcriptData = new ArrayList<>();
+        transcriptData.add(new String[]{"Content", generateTranscript()});
+        FileUtils.writeStructuredData("registrar", fileName,
+                new String[]{"Type", "Content"}, transcriptData);
+    }
+
+    /**
      * Calculates academic statistics including GPA and credit totals.
      */
     private void calculateStats() {

@@ -1,9 +1,6 @@
-StudentID::DateOfBirth::Address::ProgramOfStudy::AcademicTerm####
+StudentID::DateOfBirth::Address::ProgramOfStudy::AcademicTerm##
 2935::2003-04-06::2152 booty ln::ComS::FALL2024##
 3058::6969::123 Freaky Ln::Econ::FALL2024##
 5926::12\::addy::COMS::FALL2024##
 7828::1234341::12213123123::COMS::FALL2024##
 6037::2003-03-01::111 Lynn Ave, Ames Iowa::Software Engineering::Spring 2025##
-9917::0000::123::Biology::FALL2024##
-9981::1234-12-12::2234::COMS::FALL2024##
-4082::1123-12-12::123::COMS::FALL2024##
