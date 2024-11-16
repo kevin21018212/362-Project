@@ -8,6 +8,8 @@ public interface RegistrarInterface {
     void generateTranscript(String studentId);
     boolean validateStudentInfo(StudentRegistration registration);
     String generateStudentId();
+    void processWithdrawal(String studentId);
+    void swapCourseSection(String studentId, String courseId, String sectionId);
 
 }
 

@@ -157,4 +157,14 @@ public class Registrar extends User implements RegistrarInterface {
         Random random = new Random(timestamp);
         return String.format("%04d", random.nextInt(9999));
     }
+
+    @Override
+    public void processWithdrawal(String studentId) {
+
+    }
+
+    @Override
+    public void swapCourseSection(String studentId, String courseId, String sectionId) {
+
+    }
 }

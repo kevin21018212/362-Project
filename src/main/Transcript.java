@@ -1,5 +1,6 @@
 package main;
 
+import Interfaces.TranscriptInterface;
 import helpers.FileUtils;
 import users.Student;
 import users.DataAccess;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
  * Represents a student's academic transcript, containing course records, grades, and academic statistics.
  * This class manages the creation, calculation, and generation of official student transcripts.
  */
-public class Transcript {
+public class Transcript implements TranscriptInterface {
     private final Student student;
     private final List<Enrollment> enrollments;
     private double gpa;
@@ -59,24 +60,12 @@ public class Transcript {
         }
     }
 
-    public void gradesToTranscript() {
-        List<String[]> grades = FileUtils.readStructuredData("", "grades.txt");
-        List<String[]> transcript = new ArrayList<>();
-        for (String[] unpsplitGrades : grades) {
-            for (String stringGrade : unpsplitGrades) {
-                String[] grade = stringGrade.split(",");
-                transcript.add(new String[]{grade[0], grade[1], grade[2], grade[3]});
-            }
-        }
-        FileUtils.writeStructuredData("", "transcriptGrades.txt", new String[]{"StudentId", "CourseId", "Grade", "Term"}, transcript);
-    }
 
     /**
      * Constructs a new Transcript for the specified student.
      * @param studentId The unique identifier of the student
      */
     public Transcript(String studentId) {
-        gradesToTranscript();
         this.student = DataAccess.findStudentById(studentId);
         this.enrollments = loadEnrollments(studentId);
         this.courseRecords = loadCourseRecords(studentId);
@@ -100,12 +89,25 @@ public class Transcript {
                 .collect(Collectors.toList());
     }
 
+    public void gradesToTranscript() {
+        List<String[]> grades = FileUtils.readStructuredData("", "grades.txt");
+        List<String[]> transcript = new ArrayList<>();
+        for (String[] unpsplitGrades : grades) {
+            for (String stringGrade : unpsplitGrades) {
+                String[] grade = stringGrade.split(",");
+                transcript.add(new String[]{grade[0], grade[1], grade[2], grade[3]});
+            }
+        }
+        FileUtils.writeStructuredData("", "transcriptGrades.txt", new String[]{"StudentId", "CourseId", "Grade", "Term"}, transcript);
+    }
+
     /**
      * Loads course records for the specified student from the grades file.
      * @param studentId The unique identifier of the student
      * @return A map of course IDs to CourseRecord objects
      */
     private Map<String, CourseRecord> loadCourseRecords(String studentId) {
+        gradesToTranscript();
         Map<String, CourseRecord> records = new HashMap<>();
         List<String[]> data = FileUtils.readStructuredData("", "transcriptGrades.txt");
 
@@ -121,23 +123,12 @@ public class Transcript {
         return records;
     }
 
-    /**
-     * Saves the generated transcript to a file in the transcripts directory.
-     */
-    public void saveTranscript() {
-        String fileName = String.format("transcripts/%s_%s.txt",
-                student.getId(),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")));
-        List<String[]> transcriptData = new ArrayList<>();
-        transcriptData.add(new String[]{"Content", generateTranscript()});
-        FileUtils.writeStructuredData("registrar", fileName,
-                new String[]{"Type", "Content"}, transcriptData);
-    }
 
     /**
      * Calculates academic statistics including GPA and credit totals.
      */
-    private void calculateStats() {
+    @Override
+    public void calculateStats() {
         double totalPoints = 0;
         creditsCompleted = 0;
         creditsInProgress = 0;
@@ -164,6 +155,7 @@ public class Transcript {
      * Generates a formatted transcript string containing all academic information.
      * @return A formatted string representing the complete transcript
      */
+    @Override
     public String generateTranscript() {
         if (!generateTranscript) {
             return "Error: Transcript generation failed.";
