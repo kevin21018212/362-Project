@@ -17,12 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static helpers.Display.displayMessage;
+import static helpers.Display.displayStudentMenu;
 
 public class Student extends User {
     private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition"};
+    private static final String[] STUDENT_CLUBS = {"Soccer", "Baseball", "Poker", "Pickleball", "Tennis", "Finance", "Investing", "Hacking"};
     private String major;
     private String scholarshipAmount;
     private String tuitionAmount;
+
+    private String studentClub1;
+    private String studentClub2;
 
     private final int IN_STATE_TUITION_PER_CLASS = 800;
     private final int OUT_OF_STATE_TUITION_PER_CLASS = 1500;
@@ -31,11 +36,13 @@ public class Student extends User {
     private final int TECHNOLOGY_FEE = 300;
     private final int COST_PER_BOOK = 50;
 
-    public Student(String id, String name, String email, String major, String scholarshipAmount, String tuitionAmount) {
+    public Student(String id, String name, String email, String major, String scholarshipAmount, String tuitionAmount, String studentClub1, String studentClub2) {
         super(id, name, email);
         this.major = major;
         this.scholarshipAmount = scholarshipAmount;
         this.tuitionAmount = tuitionAmount;
+        this.studentClub1 = studentClub1;
+        this.studentClub2 = studentClub2;
     }
 
     public String getMajor() { return major; }
@@ -281,6 +288,7 @@ public class Student extends User {
         displayMessage("1 View current University Tuition and Fees");
         displayMessage("2 View current scholarship amount.");
         displayMessage("3 Apply/Reapply for Tuition and Scholarships");
+        displayMessage("4 Return to Student Menu");
         String choice = Utils.getInput("Select an option: ");
         switch (choice) {
             case "1":
@@ -299,6 +307,9 @@ public class Student extends User {
                 break;
             case "3":
                 viewUniversityBill();
+                break;
+            case "4":
+                displayStudentMenu();
                 break;
             default:
                 displayMessage("\nIncorrect Input, Please try again");
@@ -462,6 +473,38 @@ public class Student extends User {
         }
 
         return classCount;
+    }
+
+    public void displayStudentExtracurricularMenu(){
+        displayMessage("\nStudent Extracurricular Menu: ");
+        displayMessage("1 View My Extracurricular Activities");
+        displayMessage("2 Browse Available Extracurricular Activities");
+        displayMessage("3 Join A New Extracurricular Activity");
+        displayMessage("4 Drop an Extracurricular Activity");
+        displayMessage("5 Return to Student Menu");
+        String id = Utils.getInput("\nPlease select an option (Ex: 3): ");
+
+        switch (id) {
+            case "1":
+                //viewEnrolledExtracurriculars();
+                break;
+            case "2":
+                //browseExtracurricularActivities();
+                break;
+            case "3":
+                //joinExtracurricularActivity();
+                break;
+            case "4":
+                //dropExtracurricularActivity();
+                break;
+            case "5":
+                displayStudentMenu();
+                break;
+
+            default:
+                displayMessage("Something went wrong... returning to student menu.");
+                displayStudentMenu();
+        }
     }
 
     public void submitAssignment() {

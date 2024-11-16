@@ -13,15 +13,11 @@ public class Display {
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID to login. Please visit the Registrar menu to create an account: ");
         Student student = DataAccess.findStudentById(id);
-//        if (id.equalsIgnoreCase("new")) {
-//            displayMessage("LOL");
-//        } else {
-//            student = Student.findStudentById(id);
+
             if (student == null) {
                 displayMessage("Student not found.");
                 return;
             }
-//        }
 
         while (true) {
             displayMessage("\nStudent Menu:");
@@ -33,7 +29,8 @@ public class Display {
             displayMessage("6 Apply for Graduation");
             displayMessage("7 Drop a class");
             displayMessage("8 View University Bill");
-            displayMessage("9 Logout\n");
+            displayMessage("9 View Extracurricular Activities");
+            displayMessage("10 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -68,9 +65,12 @@ public class Display {
                 case "8":
                     assert student != null;
                     student.viewUniversityBillingOptions();
-                    //student.viewUniversityBill();
                     break;
                 case "9":
+                    assert student != null;
+                    student.displayStudentExtracurricularMenu();
+                    break;
+                case "10":
                    return;
                 default:
                     displayMessage("Bad Baka");
