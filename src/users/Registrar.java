@@ -159,11 +159,6 @@ public class Registrar extends User implements RegistrarInterface {
     }
 
     @Override
-    public void processWithdrawal(String studentId) {
-
-    }
-
-    @Override
     public void swapCourseSection(String studentId, String courseId, String sectionId) {
 
     }
