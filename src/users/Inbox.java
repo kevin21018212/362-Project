@@ -1,35 +1,77 @@
 package users;
 
-import Interfaces.InboxInterface;
+import java.util.Stack;
 
 import java.util.List;
 
-public class Inbox implements InboxInterface {
-    public class Message{
+public class Inbox  {
+    public static class Message {
+        private final String messageId;
+        private final String senderId;
+        private final String message;
+        private boolean isRead;
 
+        public Message(String messageId, String senderId, String message) {
+            this.messageId = messageId;
+            this.senderId = senderId;
+            this.message = message;
+            this.isRead = false;
+        }
+
+        public String getMessageId() {
+            return messageId;
+        }
+
+        public String getSenderId() {
+            return senderId;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public boolean isRead() {
+            return isRead;
+        }
+
+        public void setRead(boolean read) {
+            isRead = read;
+        }
     }
 
-    @Override
-    public List<Message> getMessages() {
-        return null;
+    private String ownerId;
+    private Stack<Message> messages;
+    private int size;
+    private int unreadCount;
+
+    public Inbox(String userId) {
+        this.ownerId = userId;
+        this.messages = new Stack<>();
+        this.size = 0;
+        this.unreadCount = 0;
     }
 
-    @Override
-    public Message viewMessage(String messageId) {
-        return null;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    @Override
-    public boolean markAsRead(String messageId) {
-        return false;
+    public Stack<Message> getMessages() {
+        return messages;
     }
 
-    @Override
-    public void deleteMessage(String messageId) {
-
+    public int getSize() {
+        return size;
     }
 
+    public int getUnreadCount() {
+        return unreadCount;
+    }
 
-
-
+    public void addMessage(Message message) {
+        messages.push(message);
+        size++;
+        if (!message.isRead()) {
+            unreadCount++;
+        }
+    }
 }
