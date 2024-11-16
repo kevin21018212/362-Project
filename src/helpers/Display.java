@@ -38,7 +38,7 @@ public class Display {
 
             switch (choice) {
                 case "1":
-                    //display all courses
+                    student.viewCourses();
                     break;
                 case "2":
                     assert student != null;
@@ -71,8 +71,7 @@ public class Display {
                     //student.viewUniversityBill();
                     break;
                 case "9":
-                    System.out.println("Logged Out");
-                    break;
+                   return;
                 default:
                     displayMessage("Bad Baka");
             }
@@ -94,14 +93,14 @@ public class Display {
 
         while (true) {
             displayMessage("\nInstructor Menu:");
-            displayMessage("1 Create Assignment");
+            displayMessage("1 View Courses");
             displayMessage("2 Grade Assignments");
             displayMessage("3 Logout");
             String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
                 case "1":
-                    //create assigment
+                    instructor.viewCourses();
                     break;
                 case "2":
                     instructor.gradeAssignments();
