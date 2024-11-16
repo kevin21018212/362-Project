@@ -9,6 +9,9 @@ import main.Course;
 import main.Enrollment;
 import main.Submission;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,4 +145,43 @@ public class Instructor extends User {
     private boolean isLate(String dueDate, String submittedDate) {
         return submittedDate.compareTo(dueDate) > 0;
     }
+
+    public void viewCourses() {
+        String coursesFile = "src/data/courses.txt"; // Path to the courses file
+        boolean hasCourses = false;
+
+        Display.displayMessage("Courses You Teach:");
+
+        try (BufferedReader coursesReader = new BufferedReader(new FileReader(coursesFile))) {
+            String courseLine;
+            while ((courseLine = coursesReader.readLine()) != null) {
+                // Parse course data
+                String[] courseData = courseLine.split("::");
+                if (courseData.length >= 5) {
+                    String courseId = courseData[0].trim();
+                    String courseName = courseData[1].trim();
+                    String courseInstructorId = courseData[2].trim();
+                    String courseDescription = courseData[1].trim(); // Assuming course name as description for now
+                    String prerequisites = courseData[3].trim();
+
+                    // Check if this instructor teaches the course
+                    if (courseInstructorId.equals(this.id)) {
+                        Display.displayMessage(courseId + ": " + courseName);
+                        Display.displayMessage("   Description: " + courseDescription);
+                        Display.displayMessage("   Prerequisites: " + (prerequisites.isEmpty() ? "None" : prerequisites));
+                        hasCourses = true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Display.displayMessage("Error reading courses file.");
+            e.printStackTrace();
+        }
+
+        // If no courses are found for the instructor
+        if (!hasCourses) {
+            Display.displayMessage("You are not assigned to any courses.");
+        }
+    }
+
 }

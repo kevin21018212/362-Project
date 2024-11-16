@@ -8,6 +8,11 @@ import main.Course;
 import main.Enrollment;
 import main.Submission;
 import helpers.FileUtils;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -592,5 +597,64 @@ public class Student extends User {
         // Implement logic to mark graduation application status
         displayMessage("Graduation application status has been updated in the system.");
     }
+    public void viewCourses() {
+        String enrollmentsFile = "src/data/enrollments.txt"; // Path to enrollments file
+        String coursesFile = "src/data/courses.txt"; // Path to courses file
+        boolean hasCourses = false;
+
+        Display.displayMessage("Your Enrolled Courses:");
+
+        try (BufferedReader enrollmentReader = new BufferedReader(new FileReader(enrollmentsFile))) {
+            String enrollmentLine;
+            while ((enrollmentLine = enrollmentReader.readLine()) != null) {
+                // Parse enrollment data
+                String[] enrollmentData = enrollmentLine.split("::");
+                if (enrollmentData.length >= 2) {
+                    String studentIdFromFile = enrollmentData[0].trim();
+                    String courseId = enrollmentData[1].replace("##", "").trim();
+
+                    // Check if the entry is for the current student
+                    if (studentIdFromFile.equals(this.id)) {
+                        try (BufferedReader coursesReader = new BufferedReader(new FileReader(coursesFile))) {
+                            String courseLine;
+                            boolean courseFound = false;
+
+                            while ((courseLine = coursesReader.readLine()) != null) {
+                                // Parse course data
+                                String[] courseData = courseLine.split("::");
+                                if (courseData.length >= 5) {
+                                    String courseIdFromFile = courseData[0].trim();
+                                    String courseName = courseData[1].trim();
+                                    String prerequisites = courseData[3].trim();
+
+                                    if (courseIdFromFile.equals(courseId)) {
+                                        Display.displayMessage(courseId + ": " + courseName);
+                                        Display.displayMessage("   Prerequisites: " + (prerequisites.isEmpty() ? "None" : prerequisites));
+                                        courseFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!courseFound) {
+                                Display.displayMessage(courseId + ": Course details not found in courses.txt.");
+                            }
+                        }
+                        hasCourses = true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Display.displayMessage("Error reading enrollments or courses file.");
+            e.printStackTrace();
+        }
+
+        // If no courses are found for the student
+        if (!hasCourses) {
+            Display.displayMessage("You are not enrolled in any courses.");
+        }
+    }
+
+
 
 }
