@@ -77,7 +77,7 @@ public class InboxController implements InboxInterface {
         String messageID = RegistrarInterface.generateStudentId();
         boolean duplicateIDs = true;
         List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", this.ownerID + ".txt");
-        while (duplicateIDs) {
+        while (duplicateIDs && messages.size() > 0) {
             for (String[] stringMessage : messages) {
                 if (stringMessage[0].equals(messageID)) {
                     messageID = RegistrarInterface.generateStudentId();
