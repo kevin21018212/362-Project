@@ -233,14 +233,5 @@ public class InboxController implements InboxInterface {
             }
         }
         return inbox;
-
-//        List<String[]> inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
-//
-//        for (String[] inbox : inboxes) {
-//            if (inbox[0].equals(ownerId)) {
-//
-//            }
-//        }
-//        return null;
     }
 }
