@@ -5,15 +5,18 @@ import java.util.Stack;
 import java.util.List;
 
 public class Inbox  {
+
     public static class Message {
         private final String messageId;
         private final String senderId;
+        private final String subject;
         private final String message;
         private boolean isRead;
 
-        public Message(String messageId, String senderId, String message) {
+        public Message(String messageId, String senderId, String subject, String message) {
             this.messageId = messageId;
             this.senderId = senderId;
+            this.subject = subject;
             this.message = message;
             this.isRead = false;
         }
@@ -24,6 +27,10 @@ public class Inbox  {
 
         public String getSenderId() {
             return senderId;
+        }
+
+        public String getSubject() {
+            return subject;
         }
 
         public String getMessage() {
@@ -43,6 +50,7 @@ public class Inbox  {
     private Stack<Message> messages;
     private int size;
     private int unreadCount;
+
 
     public Inbox(String userId) {
         this.ownerId = userId;
@@ -73,5 +81,17 @@ public class Inbox  {
         if (!message.isRead()) {
             unreadCount++;
         }
+    }
+
+    public void setSize(int i) {
+        this.size = i;
+    }
+
+    public void setUnreadCount(int i) {
+        this.unreadCount = i;
+    }
+
+    public void setMessages(Stack<Message> messages) {
+        this.messages = messages;
     }
 }
