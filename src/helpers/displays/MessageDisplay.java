@@ -127,6 +127,7 @@ public class MessageDisplay {
     }
 
     private void viewDrafts() {
+        inboxController.viewDrafts();
 //        Stack<Inbox.Message> drafts = inboxController.getDrafts();
 //        if (drafts.isEmpty()) {
 //            System.out.println("No drafts found");

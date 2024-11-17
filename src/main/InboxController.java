@@ -106,13 +106,15 @@ public class InboxController implements InboxInterface {
         }
 
         System.out.println("\nDrafts:");
+        int i = 1;
         for (String[] draft : drafts) {
-            System.out.println("Draft ID: " + draft[0]);
+            System.out.println(i + ": Draft ID: " + draft[0]);
             System.out.println("Recipient: " + draft[1]);
             System.out.println("Subject: " + draft[2]);
             System.out.println("Content: " + draft[3]);
             System.out.println("---------------");
         }
+
     }
 
     @Override
@@ -215,6 +217,39 @@ public class InboxController implements InboxInterface {
             return true;
         } else {
             System.out.println("Failed to send draft");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteDraft(String messageId) {
+        List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
+        List<String[]> remainingDrafts = new ArrayList<>();
+        boolean draftFound = false;
+
+        // Filter out the draft to be deleted
+        for (String[] draft : drafts) {
+            if (draft[0].equals(messageId)) {
+                draftFound = true;
+                continue;
+            }
+            remainingDrafts.add(draft);
+        }
+
+        if (!draftFound) {
+            System.out.println("Draft not found");
+            return false;
+        }
+
+        // Update drafts file without the deleted draft
+        try {
+            FileUtils.writeStructuredData("inbox/drafts", ownerID + ".txt",
+                    new String[]{"messageId::recipientId::subject::content##"},
+                    remainingDrafts);
+            System.out.println("Draft deleted successfully");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error deleting draft: " + e.getMessage());
             return false;
         }
     }

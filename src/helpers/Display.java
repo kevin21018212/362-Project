@@ -75,7 +75,7 @@ public class Display {
                     break;
                 case "69":
                     assert student != null;
-                    MessageDisplay messageDisplay = new MessageDisplay(student.id, student.name);
+                    MessageDisplay messageDisplay = new MessageDisplay(student.getId(), student.getName());
                     messageDisplay.displayMessageMenu();
                     break;
                 case "9":
@@ -115,7 +115,7 @@ public class Display {
                     instructor.gradeAssignments();
                     break;
                 case "69":
-                    MessageDisplay messageDisplay = new MessageDisplay(instructor.id, instructor.name);
+                    MessageDisplay messageDisplay = new MessageDisplay(instructor.getId(), instructor.getName());
                     messageDisplay.displayMessageMenu();
                     break;
                 case "3":

@@ -13,6 +13,9 @@ public interface InboxInterface {
     void editDraft(String messageId);
     boolean sendDraft(String messageId);
     boolean saveDraft(String body);
+
+    boolean deleteDraft(String messageId);
+
     Inbox findInbox(String ownerId);
 }
 
