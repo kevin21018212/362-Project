@@ -3,7 +3,10 @@ package main;
 import Interfaces.InboxInterface;
 import Interfaces.RegistrarInterface;
 import helpers.FileUtils;
+import helpers.Utils;
 import users.Inbox;
+
+import java.util.ArrayList;
 import java.util.Stack;
 
 import java.util.List;
@@ -96,22 +99,124 @@ public class InboxController implements InboxInterface {
 
     @Override
     public void viewDrafts() {
+        List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
+        if (drafts.isEmpty()) {
+            System.out.println("No drafts found");
+            return;
+        }
 
+        System.out.println("\nDrafts:");
+        for (String[] draft : drafts) {
+            System.out.println("Draft ID: " + draft[0]);
+            System.out.println("Recipient: " + draft[1]);
+            System.out.println("Subject: " + draft[2]);
+            System.out.println("Content: " + draft[3]);
+            System.out.println("---------------");
+        }
     }
 
     @Override
     public void editDraft(String messageId) {
+        List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
+        List<String[]> updatedDrafts = new ArrayList<>();
+        boolean draftFound = false;
 
-    }
+        for (String[] draft : drafts) {
+            if (draft[0].equals(messageId)) {
+                draftFound = true;
+                System.out.println("Current draft details:");
+                System.out.println("Recipient: " + draft[1]);
+                System.out.println("Subject: " + draft[2]);
+                System.out.println("Content: " + draft[3]);
 
-    @Override
-    public boolean sendDraft(String messageId) {
-        return false;
+                // Get updated information
+                String newRecipient = Utils.getInput("Enter new recipient (press Enter to keep current): ");
+                String newSubject = Utils.getInput("Enter new subject (press Enter to keep current): ");
+                String newContent = Utils.getInput("Enter new content (press Enter to keep current): ");
+
+                // Update only if new value provided
+                String[] updatedDraft = new String[4];
+                updatedDraft[0] = messageId;
+                updatedDraft[1] = newRecipient.isEmpty() ? draft[1] : newRecipient;
+                updatedDraft[2] = newSubject.isEmpty() ? draft[2] : newSubject;
+                updatedDraft[3] = newContent.isEmpty() ? draft[3] : newContent;
+
+                updatedDrafts.add(updatedDraft);
+            } else {
+                updatedDrafts.add(draft);
+            }
+        }
+
+        if (!draftFound) {
+            System.out.println("Draft not found");
+            return;
+        }
+
+        // Save updated drafts
+        FileUtils.writeStructuredData("inbox/drafts", ownerID + ".txt",
+                new String[]{"messageId::recipientId::subject::content##"},
+                updatedDrafts);
+        System.out.println("Draft updated successfully");
     }
 
     @Override
     public boolean saveDraft(String body) {
-        return false;
+        String messageId = RegistrarInterface.generateStudentId();
+        String recipientId = Utils.getInput("Enter recipient ID: ");
+        String subject = Utils.getInput("Enter subject: ");
+
+        List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
+
+        // Create new draft
+        String[] newDraft = new String[]{
+                messageId,
+                recipientId,
+                subject,
+                body
+        };
+        drafts.add(newDraft);
+
+        // Save to drafts folder
+        try {
+            FileUtils.writeStructuredData("inbox/drafts", ownerID + ".txt",
+                    new String[]{"messageId::recipientId::subject::content##"},
+                    drafts);
+            System.out.println("Draft saved successfully");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error saving draft: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean sendDraft(String messageId) {
+        List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
+        List<String[]> remainingDrafts = new ArrayList<>();
+        boolean sent = false;
+
+        for (String[] draft : drafts) {
+            if (draft[0].equals(messageId)) {
+                // Send the draft as a message
+                if (sendMessage(draft[1], draft[2], draft[3])) {
+                    sent = true;
+                    continue; // Don't add to remaining drafts
+                }
+            }
+            remainingDrafts.add(draft);
+        }
+
+        if (sent) {
+            // Update drafts file without the sent draft
+            FileUtils.writeStructuredData("inbox/drafts", ownerID + ".txt",
+                    new String[]{"messageId::recipientId::subject::content##"},
+                    remainingDrafts);
+            System.out.println("Draft sent successfully");
+            return true;
+        } else {
+            System.out.println("Failed to send draft");
+            return false;
+        }
     }
 
     @Override

@@ -53,15 +53,15 @@ public class MessageDisplay {
             return;
         }
 
-        int i = 1;
+        int i = messageCopy.size();
         while (!messageCopy.isEmpty()) {
             Inbox.Message message = messageCopy.pop();
             System.out.println(i + ". Subject: " + message.getSubject());
             System.out.println("   Read: " + message.isRead());
-            i++;
+            i--;
         }
 
-        String input = Utils.getInput("Enter message ID to view (or 0 to exit): ");
+        String input = Utils.getInput("Enter message number to view (or 0 to exit): ");
         if (input.equals("0")) return;
 
         try {

@@ -117,9 +117,12 @@ public class Inbox  {
 
     public List<String[]> messagesToStringArray(){
         List<String[]> messageList = new ArrayList<>();
-        for (int i = this.messages.size() - 1; i >= 0; i--) {
-            messageList.add(messages.get(i).toStringArray());
+//        for (int i = this.messages.size() - 1; i >= 0; i--) {
+        for (Message message : this.messages) {
+//            messageList.add(messages.get(i).toStringArray());
+            messageList.add(message.toStringArray());
         }
+
         return messageList;
     }
 }
