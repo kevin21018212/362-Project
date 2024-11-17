@@ -10,7 +10,6 @@ import main.Submission;
 import helpers.FileUtils;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -766,30 +765,129 @@ public class Student extends User {
     }
 
     public void viewGrades() {
-        // Load the student's enrollments
-        List<Enrollment> enrollments = Enrollment.loadEnrollments();
+        String enrollmentsFile = "src/data/enrollments.txt"; // Path to enrollments file
+        String assignmentsFile = "src/data/courses/assignments.txt"; // Path to assignments file
+        String submissionsFile = "src/data/courses/submissions.txt"; // Path to submissions file
         boolean hasGrades = false;
 
+        Display.displayMessage("Your Grades:");
 
-        System.out.println("Grades for " + this.getName() + ":");
-        for (Enrollment enrollment : enrollments) {
-            // Check if the enrollment belongs to the current student
-            if (enrollment.getStudentId().equals(this.id)) {
-                Course course = Course.findCourseById(enrollment.getCourseId());
-                if (course != null) {
-                    // Retrieve and display the grade for each course
-                    double grade = enrollment.getGrade();
-                    System.out.println("Course: " + course.getName() + " - Grade: " + (grade >= 0 ? grade : "Not graded yet"));
-                    hasGrades = true;
+        try (BufferedReader enrollmentReader = new BufferedReader(new FileReader(enrollmentsFile))) {
+            String enrollmentLine;
+            while ((enrollmentLine = enrollmentReader.readLine()) != null) {
+                // Parse enrollment data
+                String[] enrollmentData = enrollmentLine.split("::");
+                if (enrollmentData.length >= 2) {
+                    String studentIdFromFile = enrollmentData[0].trim();
+                    String courseId = enrollmentData[1].replace("##", "").trim();
+
+                    // Check if the entry is for the current student
+                    if (studentIdFromFile.equals(this.id)) {
+                        // Process the assignments for the current course
+                        List<String> grades = new ArrayList<>();
+                        List<String> assignmentIds = new ArrayList<>();
+                        double totalGrade = 0;
+                        int numAssignments = 0;
+
+                        try (BufferedReader assignmentsReader = new BufferedReader(new FileReader(assignmentsFile))) {
+                            String assignmentLine;
+                            while ((assignmentLine = assignmentsReader.readLine()) != null) {
+                                // Parse assignment data
+                                String[] assignmentData = assignmentLine.split("::");
+                                if (assignmentData.length >= 3) {
+                                    String assignmentId = assignmentData[0].trim();
+                                    String courseIdFromAssignment = assignmentData[1].trim();
+
+                                    // Check if this assignment belongs to the current course
+                                    if (courseId.equals(courseIdFromAssignment)) {
+                                        // Look for the student's submission for this assignment
+                                        try (BufferedReader submissionsReader = new BufferedReader(new FileReader(submissionsFile))) {
+                                            String submissionLine;
+                                            while ((submissionLine = submissionsReader.readLine()) != null) {
+                                                String[] submissionData = submissionLine.split("::");
+
+                                                // Check if the submission is from the current student and matches the assignment
+                                                if (submissionData.length >= 4 && submissionData[2].equals(this.id) && submissionData[1].equals(assignmentId)) {
+                                                    String gradeStr = submissionData[3];
+
+                                                    // If the grade is numeric, add it to the total and increment assignment count
+                                                    try {
+                                                        double grade = Double.parseDouble(gradeStr);
+                                                        grades.add(gradeStr);
+                                                        assignmentIds.add(assignmentId);
+
+                                                        totalGrade += grade;  // Add grade to total
+                                                        numAssignments++;     // Increment the assignment counter
+                                                    } catch (NumberFormatException e) {
+                                                        // Skip invalid grades
+                                                        Display.displayMessage("Invalid grade for submission " + submissionData[0]);
+                                                    }
+                                                }
+                                            }
+                                        } catch (IOException e) {
+                                            Display.displayMessage("Error reading submissions file.");
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (IOException e) {
+                            Display.displayMessage("Error reading assignments file.");
+                            e.printStackTrace();
+                        }
+
+                        // Calculate the average grade for the course if any assignments were submitted
+                        if (numAssignments > 0) {
+                            double averageGrade = totalGrade / numAssignments;
+                            String letterGrade = getLetterGrade(averageGrade);
+
+                            // Display the grades for this course
+                            Display.displayMessage("\nGrades for Course " + courseId + ":");
+                            for (int i = 0; i < grades.size(); i++) {
+                                Display.displayMessage("Assignment ID: " + assignmentIds.get(i) + " - Grade: " + grades.get(i));
+                            }
+
+                            // Display the average grade for the course as a letter grade
+                            Display.displayMessage("\nAverage Grade for Course " + courseId + ": " + averageGrade + " (" + letterGrade + ")");
+                            hasGrades = true;
+                        } else {
+                            Display.displayMessage("No grades found for course " + courseId + ".");
+                        }
+                    }
                 }
             }
+        } catch (IOException e) {
+            Display.displayMessage("Error reading enrollments file.");
+            e.printStackTrace();
         }
 
-
+        // If no grades are found for the student
         if (!hasGrades) {
-            System.out.println("No grades available.");
+            Display.displayMessage("You have not received any grades for your enrolled courses.");
         }
     }
+
+    /**
+     * Converts a numeric grade to a letter grade.
+     *
+     * @param grade Numeric grade (e.g., 85.0)
+     * @return Corresponding letter grade (e.g., "A")
+     */
+    private String getLetterGrade(double grade) {
+        if (grade >= 90) {
+            return "A";
+        } else if (grade >= 80) {
+            return "B";
+        } else if (grade >= 70) {
+            return "C";
+        } else if (grade >= 60) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+
+
 
     public void applyForGraduation() {
         // Sample requirements for graduation
