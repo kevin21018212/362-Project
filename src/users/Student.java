@@ -541,10 +541,12 @@ public class Student extends User {
         if(!studentClub2.equalsIgnoreCase("n/a")){
             System.out.println(getStudentClub2());
         }
+
+        displayStudentExtracurricularMenu();
     }
 
     public void browseExtracurricularActivities(){
-
+        displayAvailableExtracurriculars();
     }
 
     /**
