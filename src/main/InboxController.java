@@ -1,6 +1,7 @@
 package main;
 
 import Interfaces.InboxInterface;
+import Interfaces.RegistrarInterface;
 import helpers.FileUtils;
 import users.Inbox;
 import java.util.Stack;
@@ -10,22 +11,21 @@ import java.util.List;
 public class InboxController implements InboxInterface {
     private Inbox inbox;
     private String ownerID;
+    private String ownerName;
     private static final String[] INBOX_DETAILS_HEADERS = {
-            "OwnerID::InboxID::size::unreadCount##"
+            "OwnerID::OwnerName::size::unreadCount##"
     };
     private static final String[] MESSAGE_HEADERS = {
             "messageId::senderId::senderName::subject::message##"
     };
 
-    public InboxController(String ownerID) {
+    public InboxController(String ownerID, String ownerName) {
         this.ownerID = ownerID;
+        this.ownerName = ownerName;
         this.inbox = findInbox(ownerID);
-    }
-
-    @Override
-    public void setInbox() {
-
-
+        if (this.inbox == null) {
+            this.inbox = new Inbox(ownerID);
+        }
     }
 
     public void addMessagesToInbox() {
@@ -68,10 +68,30 @@ public class InboxController implements InboxInterface {
     }
 
     @Override
-    public boolean sendMessage(String recipient, String subject, String body) {
-        String inboxID = findInbox(recipient);
+    public boolean sendMessage(String recipientID, String subject, String body) {
+        Inbox recipiantInbox = findInbox(recipientID);
+        if (recipiantInbox == null) {
+            System.out.println("Recipient not found");
+            return false;
+        }
+        String messageID = RegistrarInterface.generateStudentId();
+        boolean duplicateIDs = true;
+        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", this.ownerID + ".txt");
+        while (duplicateIDs) {
+            for (String[] stringMessage : messages) {
+                if (stringMessage[0].equals(messageID)) {
+                    messageID = RegistrarInterface.generateStudentId();
+                    break;
+                }
+                duplicateIDs = false;
+            }
+        }
 
-
+        Inbox.Message message = new Inbox.Message(messageID, recipientID, this.ownerName, subject, body);
+        recipiantInbox.addMessage(message);
+        FileUtils.writeStructuredData("inbox/inboxes", recipientID + ".txt", MESSAGE_HEADERS, inbox.messagesToStringArray());
+        System.out.println("Message sent");
+        return true;
     }
 
     @Override
@@ -107,13 +127,10 @@ public class InboxController implements InboxInterface {
                 break;
             }
         }
-        if (inbox == null) {
-            inbox = new Inbox(this.ownerID);
-        }
         return inbox;
 
 //        List<String[]> inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
-//        
+//
 //        for (String[] inbox : inboxes) {
 //            if (inbox[0].equals(ownerId)) {
 //

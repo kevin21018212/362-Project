@@ -1,5 +1,6 @@
 package users;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import java.util.List;
@@ -50,9 +51,14 @@ public class Inbox  {
         public void setRead(boolean read) {
             isRead = read;
         }
+
+        public String[] toStringArray(){
+            return new String[]{messageId, senderId, senderName, subject, message};
+        }
     }
 
-    private String ownerId;
+    private final String ownerId;
+    private String ownerName;
     private Stack<Message> messages;
     private int size;
     private int unreadCount;
@@ -99,5 +105,21 @@ public class Inbox  {
 
     public void setMessages(Stack<Message> messages) {
         this.messages = messages;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public List<String[]> messagesToStringArray(){
+        List<String[]> messageList = new ArrayList<>();
+        for (Message message : messages) {
+            messageList.add(message.toStringArray());
+        }
+        return messageList;
     }
 }

@@ -9,8 +9,8 @@ import java.util.Stack;
 import static helpers.Utils.getInput;
 
 public class MessageDisplay {
-    public static void displayMessageMenu(String userID) {
-        InboxController inboxController = new InboxController(userID);
+    public static void displayMessageMenu(String userID, String userName) {
+        InboxController inboxController = new InboxController(userID, userName);
 
         System.out.println("\nMessage Menu:");
         System.out.println("1: View Messages");
