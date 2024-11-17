@@ -7,6 +7,7 @@ import users.Registrar;
 import users.Student;
 import main.Enrollment;
 
+import static helpers.displays.MessageDisplay.displayMessageMenu;
 
 
 public class Display {
@@ -33,6 +34,7 @@ public class Display {
             displayMessage("6 Apply for Graduation");
             displayMessage("7 Drop a class");
             displayMessage("8 View University Bill");
+            displayMessage("69 View Messages");
             displayMessage("9 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
@@ -70,6 +72,10 @@ public class Display {
                     student.viewUniversityBillingOptions();
                     //student.viewUniversityBill();
                     break;
+                case "69":
+                    assert student != null;
+                    displayMessageMenu(student.id, student.name);
+                    break;
                 case "9":
                    return;
                 default:
@@ -95,6 +101,7 @@ public class Display {
             displayMessage("\nInstructor Menu:");
             displayMessage("1 View Courses");
             displayMessage("2 Grade Assignments");
+            displayMessage("69 View Messages");
             displayMessage("3 Logout");
             String choice = Utils.getInput("Select an option: \n");
 
@@ -104,6 +111,9 @@ public class Display {
                     break;
                 case "2":
                     instructor.gradeAssignments();
+                    break;
+                case "69":
+                    displayMessageMenu(instructor.id, instructor.name);
                     break;
                 case "3":
                     return;
@@ -155,6 +165,7 @@ public class Display {
         String address = Utils.getInput("Enter address: ");
         String programOfStudy = Utils.getInput("Enter program of study: ");
         String academicTerm = Utils.getInput("Enter academic term (e.g., FALL2024): ");
+
 
         registrar.enrollNewStudent(fullName, dateOfBirth, contactInfo,
                 address, programOfStudy, academicTerm);
