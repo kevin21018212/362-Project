@@ -9,13 +9,15 @@ public class Inbox  {
     public static class Message {
         private final String messageId;
         private final String senderId;
+        private String senderName;
         private final String subject;
         private final String message;
         private boolean isRead;
 
-        public Message(String messageId, String senderId, String subject, String message) {
+        public Message(String messageId, String senderId, String senderName, String subject, String message) {
             this.messageId = messageId;
             this.senderId = senderId;
+            this.senderName = senderName;
             this.subject = subject;
             this.message = message;
             this.isRead = false;
@@ -27,6 +29,10 @@ public class Inbox  {
 
         public String getSenderId() {
             return senderId;
+        }
+
+        public String getSenderName() {
+            return senderName;
         }
 
         public String getSubject() {

@@ -47,8 +47,23 @@ public class MessageDisplay {
             System.out.println("Read: " + message.isRead());
             i += 1;
         }
-        String in = getInput("Enter message ID to view: ");
-        if 
+        int in = Integer.parseInt(getInput("Enter message ID to view: "));
+        Inbox.Message message = messages.get(in - 1);
+        
+        String choice = getInput("1: Mark as unread\n2: Delete\n3: Exit");
+        switch (choice) {
+            case "1":
+                message.setRead(false);
+                break;
+            case "2":
+                inboxController.deleteMessage(message.getMessageId());
+                break;
+            case "3":
+                return;
+            default:
+                System.out.println("Bad Baka");
+        }
+
     }
 
 

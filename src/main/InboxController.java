@@ -13,9 +13,12 @@ public class InboxController implements InboxInterface {
     private static final String[] INBOX_DETAILS_HEADERS = {
             "OwnerID::InboxID::size::unreadCount##"
     };
+    private static final String[] MESSAGE_HEADERS = {
+            "messageId::senderId::senderName::subject::message##"
+    };
 
-    public InboxController(String owenerID) {
-        this.ownerID = ownerID;
+    public InboxController(String ownerID) {
+        this.ownerID = this.ownerID;
 
     }
 
@@ -33,14 +36,14 @@ public class InboxController implements InboxInterface {
             }
         }
         if (inbox == null) {
-            inbox = new Inbox(ownerID);
+            this.inbox = new Inbox(ownerID);
         }
     }
 
     public void addMessagesToInbox() {
         List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", ownerID + ".txt");
         for (String[] stringMessage : messages) {
-            Inbox.Message message = new Inbox.Message(stringMessage[0], stringMessage[1], stringMessage[2], stringMessage[3]);
+            Inbox.Message message = new Inbox.Message(stringMessage[0], stringMessage[1], stringMessage[2], stringMessage[3], stringMessage[4]);
             this.inbox.addMessage(message);
         }
     }
@@ -53,17 +56,26 @@ public class InboxController implements InboxInterface {
     }
 
     @Override
-    public Inbox.Message viewMessage(String messageId) {
-        return null;
+    public void viewMessage(Inbox.Message message) {
+        message.setRead(true);
+        System.out.println("Sender: " + message.getSenderName());
+        System.out.println("Subject: " + message.getSubject());
+        System.out.println("Message: " + message.getMessage());
     }
 
+
     @Override
-    public boolean markAsRead(String messageId) {
+    public boolean  deleteMessage(String messageId) {
+        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", ownerID + ".txt");
+        for (String[] stringMessage : messages) {
+            if (stringMessage[0].equals(messageId)) {
+                messages.remove(stringMessage);
+                FileUtils.writeStructuredData("inbox/inboxes", ownerID + ".txt", MESSAGE_HEADERS, messages);
+                System.out.println("Message successfully deleted");
+                return true;
+            }
+        }
+        System.out.println("Message not found");
         return false;
-    }
-
-    @Override
-    public void deleteMessage(String messageId) {
-
     }
 }
