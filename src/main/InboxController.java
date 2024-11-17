@@ -19,25 +19,13 @@ public class InboxController implements InboxInterface {
 
     public InboxController(String ownerID) {
         this.ownerID = ownerID;
-        setInbox();
+        this.inbox = findInbox(ownerID);
     }
 
     @Override
     public void setInbox() {
-        List<String[]>inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
-        Inbox inbox = null;
-        for (String[] inboxString : inboxes) {
-            if (inboxString[0].equals(this.ownerID)) {
-                this.inbox = new Inbox(this.ownerID);
-                this.inbox.setSize(Integer.parseInt(inboxString[2]));
-                this.inbox.setUnreadCount(Integer.parseInt(inboxString[3]));
-                addMessagesToInbox();
-                break;
-            }
-        }
-        if (inbox == null) {
-            this.inbox = new Inbox(this.ownerID);
-        }
+
+
     }
 
     public void addMessagesToInbox() {
@@ -81,6 +69,8 @@ public class InboxController implements InboxInterface {
 
     @Override
     public boolean sendMessage(String recipient, String subject, String body) {
+        String inboxID = findInbox(recipient);
+
 
     }
 
@@ -105,7 +95,30 @@ public class InboxController implements InboxInterface {
     }
 
     @Override
-    public boolean findInbox(String ownerId) {
-        return false;
+    public Inbox findInbox(String ownerId) {
+        List<String[]>inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
+        Inbox inbox = null;
+        for (String[] inboxString : inboxes) {
+            if (inboxString[0].equals(ownerID)) {
+                inbox = new Inbox(ownerID);
+                inbox.setSize(Integer.parseInt(inboxString[2]));
+                inbox.setUnreadCount(Integer.parseInt(inboxString[3]));
+                addMessagesToInbox();
+                break;
+            }
+        }
+        if (inbox == null) {
+            inbox = new Inbox(this.ownerID);
+        }
+        return inbox;
+
+//        List<String[]> inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
+//        
+//        for (String[] inbox : inboxes) {
+//            if (inbox[0].equals(ownerId)) {
+//
+//            }
+//        }
+//        return null;
     }
 }
