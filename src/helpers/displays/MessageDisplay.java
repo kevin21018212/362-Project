@@ -25,10 +25,10 @@ public class MessageDisplay {
                 viewMessages(inboxController);
                 break;
             case "2":
-                // InboxController.composeMessage();
+                composeMessage();
                 break;
             case "3":
-                // InboxController.viewDrafts();
+                 viewDrafts();
                 break;
             case "4":
                 return;
@@ -49,7 +49,7 @@ public class MessageDisplay {
         }
         int in = Integer.parseInt(getInput("Enter message ID to view: "));
         Inbox.Message message = messages.get(in - 1);
-        
+        inboxController.viewMessage(message);
         String choice = getInput("1: Mark as unread\n2: Delete\n3: Exit");
         switch (choice) {
             case "1":
@@ -69,11 +69,11 @@ public class MessageDisplay {
 
 
     public static void composeMessage() {
-        String recipient = getInput("Enter recipient: ");
+        String recipient = getInput("Enter recipient ID: ");
         String subject = getInput("Enter subject: ");
         String body = getInput("Enter message: ");
 
-        // InboxController.sendMessage(recipient, subject, body);
+         InboxController.sendMessage(recipient, subject, body);
     }
 
     public static  void viewDrafts() {

@@ -18,8 +18,8 @@ public class InboxController implements InboxInterface {
     };
 
     public InboxController(String ownerID) {
-        this.ownerID = this.ownerID;
-
+        this.ownerID = ownerID;
+        setInbox();
     }
 
     @Override
@@ -27,8 +27,8 @@ public class InboxController implements InboxInterface {
         List<String[]>inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
         Inbox inbox = null;
         for (String[] inboxString : inboxes) {
-            if (inboxString[0].equals(ownerID)) {
-                this.inbox = new Inbox(ownerID);
+            if (inboxString[0].equals(this.ownerID)) {
+                this.inbox = new Inbox(this.ownerID);
                 this.inbox.setSize(Integer.parseInt(inboxString[2]));
                 this.inbox.setUnreadCount(Integer.parseInt(inboxString[3]));
                 addMessagesToInbox();
@@ -36,7 +36,7 @@ public class InboxController implements InboxInterface {
             }
         }
         if (inbox == null) {
-            this.inbox = new Inbox(ownerID);
+            this.inbox = new Inbox(this.ownerID);
         }
     }
 
@@ -76,6 +76,36 @@ public class InboxController implements InboxInterface {
             }
         }
         System.out.println("Message not found");
+        return false;
+    }
+
+    @Override
+    public boolean sendMessage(String recipient, String subject, String body) {
+
+    }
+
+    @Override
+    public void viewDrafts() {
+
+    }
+
+    @Override
+    public void editDraft(String messageId) {
+
+    }
+
+    @Override
+    public boolean sendDraft(String messageId) {
+        return false;
+    }
+
+    @Override
+    public boolean saveDraft(String body) {
+        return false;
+    }
+
+    @Override
+    public boolean findInbox(String ownerId) {
         return false;
     }
 }
