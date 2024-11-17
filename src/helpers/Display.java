@@ -1,5 +1,6 @@
 package helpers;
 
+import helpers.displays.MessageDisplay;
 import main.Course;
 import users.DataAccess;
 import users.Instructor;
@@ -7,7 +8,7 @@ import users.Registrar;
 import users.Student;
 import main.Enrollment;
 
-import static helpers.displays.MessageDisplay.displayMessageMenu;
+
 
 
 public class Display {
@@ -74,7 +75,8 @@ public class Display {
                     break;
                 case "69":
                     assert student != null;
-                    displayMessageMenu(student.id, student.name);
+                    MessageDisplay messageDisplay = new MessageDisplay(student.id, student.name);
+                    messageDisplay.displayMessageMenu();
                     break;
                 case "9":
                    return;
@@ -113,7 +115,8 @@ public class Display {
                     instructor.gradeAssignments();
                     break;
                 case "69":
-                    displayMessageMenu(instructor.id, instructor.name);
+                    MessageDisplay messageDisplay = new MessageDisplay(instructor.id, instructor.name);
+                    messageDisplay.displayMessageMenu();
                     break;
                 case "3":
                     return;
