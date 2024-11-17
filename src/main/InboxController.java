@@ -28,11 +28,11 @@ public class InboxController implements InboxInterface {
         }
     }
 
-    public void addMessagesToInbox() {
-        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", ownerID + ".txt");
+    public void addMessagesToInbox(Inbox inbox) {
+        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", inbox.getOwnerId() + ".txt");
         for (String[] stringMessage : messages) {
             Inbox.Message message = new Inbox.Message(stringMessage[0], stringMessage[1], stringMessage[2], stringMessage[3], stringMessage[4]);
-            this.inbox.addMessage(message);
+            inbox.addMessage(message);
         }
     }
 
@@ -76,7 +76,7 @@ public class InboxController implements InboxInterface {
         }
         String messageID = RegistrarInterface.generateStudentId();
         boolean duplicateIDs = true;
-        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", this.ownerID + ".txt");
+        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", recipientID + ".txt");
         while (duplicateIDs && messages.size() > 0) {
             for (String[] stringMessage : messages) {
                 if (stringMessage[0].equals(messageID)) {
@@ -89,7 +89,7 @@ public class InboxController implements InboxInterface {
 
         Inbox.Message message = new Inbox.Message(messageID, recipientID, this.ownerName, subject, body);
         recipiantInbox.addMessage(message);
-        FileUtils.writeStructuredData("inbox/inboxes", recipientID + ".txt", MESSAGE_HEADERS, inbox.messagesToStringArray());
+        FileUtils.writeStructuredData("inbox/inboxes", recipientID + ".txt", MESSAGE_HEADERS, recipiantInbox.messagesToStringArray());
         System.out.println("Message sent");
         return true;
     }
@@ -115,7 +115,7 @@ public class InboxController implements InboxInterface {
     }
 
     @Override
-    public Inbox findInbox(String ownerId) {
+    public Inbox findInbox(String ownerID) {
         List<String[]>inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
         Inbox inbox = null;
         for (String[] inboxString : inboxes) {
@@ -123,7 +123,7 @@ public class InboxController implements InboxInterface {
                 inbox = new Inbox(ownerID);
                 inbox.setSize(Integer.parseInt(inboxString[2]));
                 inbox.setUnreadCount(Integer.parseInt(inboxString[3]));
-                addMessagesToInbox();
+                addMessagesToInbox(inbox);
                 break;
             }
         }

@@ -88,10 +88,10 @@ public class Inbox  {
     }
 
     public void addMessage(Message message) {
-        messages.push(message);
-        size++;
+        this.messages.push(message);
+        this.size++;
         if (!message.isRead()) {
-            unreadCount++;
+            this.unreadCount++;
         }
     }
 
@@ -117,8 +117,8 @@ public class Inbox  {
 
     public List<String[]> messagesToStringArray(){
         List<String[]> messageList = new ArrayList<>();
-        for (Message message : messages) {
-            messageList.add(message.toStringArray());
+        for (int i = this.messages.size() - 1; i >= 0; i--) {
+            messageList.add(messages.get(i).toStringArray());
         }
         return messageList;
     }
