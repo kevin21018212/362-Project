@@ -179,7 +179,7 @@ public class InboxController implements InboxInterface {
         // Save to drafts folder
         try {
             FileUtils.writeStructuredData("inbox/drafts", ownerID + ".txt",
-                    new String[]{"messageId::recipientId::subject::content##"},
+                    MESSAGE_HEADERS,
                     drafts);
             System.out.println("Draft saved successfully");
             return true;
