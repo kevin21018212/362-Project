@@ -1,3 +1,4 @@
+
 package users;
 
 import helpers.Display;
@@ -8,14 +9,17 @@ import main.Assignment;
 import main.Course;
 import main.Enrollment;
 import main.Submission;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
+import static main.Course.allCourses;
 
 public class Instructor extends User {
+
 
     public Instructor(String id, String name, String email) {
         super(id, name, email);
@@ -24,6 +28,76 @@ public class Instructor extends User {
     public static Instructor findInstructorById(String id) {
         return DataAccess.findInstructorById(id);
     }
+
+
+    public void createCourse() {
+        Scanner scanner = new Scanner(System.in);
+        Course.displayAllCourses();
+        //Check if courseId already exists
+        Display.displayMessage("Enter Course ID:");
+        String courseId = scanner.nextLine().trim();
+        if (Course.findCourseById(courseId) != null) {
+            Display.displayMessage("Course ID already exists. Please choose a different ID.");
+            return;
+        }
+
+
+        Display.displayMessage("Enter Course Name:");
+        String courseName = scanner.nextLine().trim();
+
+
+        //Check each prereq by id
+        Display.displayMessage("Enter prerequisite courses (comma-separated IDs):");
+        String prerequisite = scanner.nextLine().trim();
+        List<String> prerequisites = parsePrerequisites(prerequisite);
+        for (String prereq : prerequisites) {
+            if (Course.findCourseById(prereq) == null) {
+                Display.displayMessage("Prerequisite course with ID " + prereq + " does not exist.");
+                return;
+            }
+        }
+
+
+        // Step 5: Enter Class Capacity and validate it
+        Display.displayMessage("Enter class capacity:");
+        int classSize;
+        try {
+            classSize = Integer.parseInt(scanner.nextLine().trim());
+            if (classSize <= 0) {
+                Display.displayMessage("Invalid class capacity. Please enter a positive number.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            Display.displayMessage("Invalid input for class capacity. Please enter a number.");
+            return;
+        }
+
+        //Create new Course object
+        Course newCourse = new Course(courseId, courseName,super.id, prerequisites, 0, classSize);
+        allCourses.add(newCourse);
+        Display.displayMessage("Course created successfully with ID: " + newCourse.getId());
+
+        //Make a list of assignments
+        List<Assignment> assignments = Assignment.createAssignments(courseId);
+
+
+        if (Course.createCourseDirectoryAndFiles(courseId, assignments)) {
+            Display.displayMessage("Course and assignments created successfully.");
+            Course.appendCourseToFile(newCourse);
+        } else {
+            Display.displayMessage("Failed to create course directory or files. Please try again.");
+        }
+    }
+
+    // parse prerequisites from a comma-separated string
+    private List<String> parsePrerequisites(String prereqsInput) {
+        List<String> prerequisites = new ArrayList<>();
+        for (String prereq : prereqsInput.split(",")) {
+            prerequisites.add(prereq.trim());
+        }
+        return prerequisites;
+    }
+
 
     public void gradeAssignments() {
         // Display all available courses before prompting for a course ID
@@ -52,6 +126,7 @@ public class Instructor extends User {
             }
 
             Assignment selectedAssignment = assignments.get(assignmentChoice);
+
             checkMissingSubmissions(courseId, selectedAssignment);
             gradeSelectedAssignment(courseId, selectedAssignment);
         } else {
@@ -62,6 +137,7 @@ public class Instructor extends User {
 
     private void gradeSelectedAssignment(String courseId, Assignment assignment) {
         List<Submission> submissions = Submission.loadSubmissions(courseId, assignment.getId());
+
         if (submissions.isEmpty()) {
             Display.displayMessage("No submissions found for this assignment.");
             return;
@@ -86,38 +162,17 @@ public class Instructor extends User {
             }
             updatedSubmissions.add(submissionData);
         }
-        System.out.println(updatedSubmissions);
-        // In gradeSelectedAssignment method
-//        String fileName = assignment.getId()+"_graded_submissions.txt";
+
+        // Define headers for the file
+        String[] headers = {"Submission ID", "Assignment ID", "Student ID", "Grade", "Submitted Date"};
+        String directory = "courses/" + courseId + "/";
         String fileName = "submissions.txt";
-        List<String[]> updatedSubmissionData = new ArrayList<>();
 
-        for (String[] submission : updatedSubmissions) {
-            String[] data = {
-                    submission[0] + "::" +
-                    submission[1] + "::" +
-                    submission[2] + "::" +
-                    submission[3] + "::" +
-                    submission[4]
-            };
-            updatedSubmissionData.add(data);
-        }
-//        for (Submission submission : submissions) {
-//            String[] data = {
-//                    submission.getId() + "::" +
-//                    submission.getAssignmentId() + "::" +
-//                    submission.getStudentId() + "::" +
-//                    submission.getGrade() + "::" +
-//                    submission.getSubmittedDate()
-//            };
-//            updatedSubmissionData.add(data);
-//        }
-
-        FileUtils.writeStructuredData("courses/"+courseId, fileName,
-                new String[]{"SubmissionID::AssignmentID::StudentID::Grade::SubmittedDate##"},
-                updatedSubmissionData);
+        // Write the updated submission data to the file using writeStructuredData
+        FileUtils.writeStructuredData(directory, fileName, headers, updatedSubmissions);
         Display.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
+
 
     private void checkMissingSubmissions(String courseId, Assignment assignment) {
         List<Enrollment> enrollments = Enrollment.loadEnrollments();
@@ -183,5 +238,4 @@ public class Instructor extends User {
             Display.displayMessage("You are not assigned to any courses.");
         }
     }
-
 }

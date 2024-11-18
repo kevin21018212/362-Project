@@ -96,6 +96,7 @@ public class Display {
             displayMessage("1 View Courses");
             displayMessage("2 Grade Assignments");
             displayMessage("3 Logout");
+            displayMessage("4 Create Course");  // New option to create a course
             String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
@@ -107,10 +108,14 @@ public class Display {
                     break;
                 case "3":
                     return;
+                case "4":  // New case to create a course
+                    instructor.createCourse();
+                    break;
                 default:
                     displayMessage("Bad Baka");
             }
         }
+
     }
 
     public static void displayRegistrarMenu() {

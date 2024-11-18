@@ -2,6 +2,9 @@ package main;
 
 import helpers.Display;
 import helpers.FileUtils;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +15,7 @@ public class Course {
     private List<String> prerequisites;
     private int studentsEnrolled;
     private int classSize;
-    private static List<Course> allCourses = new ArrayList<>();
+    public static List<Course> allCourses = new ArrayList<>();
 
     public Course(String id, String name, String instructorId, List<String> prerequisites, int studentsEnrolled, int classSize) {
         this.id = id;
@@ -114,5 +117,28 @@ public class Course {
     public String toString() {
         return id + "::" + name + "::" + instructorId + "::" +
                 prerequisites.toString() + "::" + studentsEnrolled + "::" + classSize;
+    }
+
+    //Create a dir under courses with courseID and make a list of assignments in assignments.txt and a empty submissions file
+    public static boolean createCourseDirectoryAndFiles(String courseId, List<Assignment> assignments) {
+        FileUtils.initializeCourseFiles(courseId, assignments);
+        return true;
+    }
+
+    //Just adds a new course to the course file
+    public static void appendCourseToFile(Course course) {
+        String courseData = String.format("%s::%s::%s::%s::[%d,%d]##",
+                course.getId(),
+                course.getName(),
+                course.getInstructorId(),
+                course.getPrerequisites().toString(),
+                course.getStudentsEnrolled(),
+                course.getClassSize());
+
+        try (FileWriter writer = new FileWriter("src/data/courses.txt", true)) {
+            writer.write(courseData + System.lineSeparator());
+        } catch (IOException e) {
+            System.err.println("Error appending course to file: " + e.getMessage());
+        }
     }
 }

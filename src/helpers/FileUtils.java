@@ -1,5 +1,7 @@
 package helpers;
 
+import main.Assignment;
+
 import java.io.*;
 import java.util.*;
 
@@ -157,4 +159,52 @@ public class FileUtils {
         }
         return data;
     }
+
+    /**
+     * Creates a directory structure for a course and initializes course files.
+     *
+     * @param courseId The ID of the course (used for folder name)
+     * @param initialAssignments List of assignments to be written in /{courseId}/assignments.txt
+     *
+     */
+
+    public static void initializeCourseFiles(String courseId, List<Assignment> initialAssignments) {
+        String courseDirPath = BASE_PATH + "courses/" + courseId;
+        File courseDir = new File(courseDirPath);
+
+        try {
+            // Create course directory if it does not exist
+            if (!courseDir.exists()) {
+                courseDir.mkdirs();
+            }
+
+            // Create assignments.txt and populate it with assignments
+            File assignmentsFile = new File(courseDir, "assignments.txt");
+            if (assignmentsFile.createNewFile() && initialAssignments != null && !initialAssignments.isEmpty()) {
+                String[] headers = {"AssignmentID", "AssignmentName", "DueDate"};
+
+                // Convert to a string for max's function
+                List<String[]> assignmentData = new ArrayList<>();
+                for (Assignment assignment : initialAssignments) {
+                    assignmentData.add(new String[]{assignment.getId(), assignment.getTitle(), assignment.getDueDate()});
+                }
+
+                writeStructuredData("courses/" + courseId, "assignments.txt", headers, assignmentData);
+
+            } else if (initialAssignments == null || initialAssignments.isEmpty()) {
+                writeStructuredData("courses/" + courseId, "assignments.txt", new String[]{"AssignmentID", "AssignmentName", "DueDate"}, new ArrayList<>());
+            }
+
+            // Create empty submissions.txt f
+            File submissionsFile = new File(courseDir, "submissions.txt");
+            if (submissionsFile.createNewFile()) {
+                writeStructuredData("courses/" + courseId, "submissions.txt", new String[]{"SubmissionID", "AssignmentID", "StudentID", "Grade", "SubmittedDate"}, new ArrayList<>());
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error initializing course files for " + courseId + ": " + e.getMessage());
+        }
+    }
+
+
 }
