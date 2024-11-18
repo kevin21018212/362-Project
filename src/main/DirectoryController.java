@@ -54,6 +54,13 @@ public class DirectoryController implements DirectoryInterface {
 
     @Override
     public EndOfWordData search(String word, int type) {
+        if (type == ID_DIRECTORY) {
+            return idDirecotry.search(word);
+        } else if (type == NAME_DIRECTORY) {
+            return nameDirectory.search(word);
+        } else if (type == EMAIL_DIRECTORY) {
+            return emailDirectory.search(word);
+        }
         return null;
     }
 
