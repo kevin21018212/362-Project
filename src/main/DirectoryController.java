@@ -23,14 +23,30 @@ public class DirectoryController implements DirectoryInterface {
         this.departmentDirectory = new HashMap<>();
         List<String[]> students = FileUtils.readStructuredData("", "students.txt");
         List<String[]> instructors = FileUtils.readStructuredData("", "instructors.txt");
-        List<String[]> departments = FileUtils.readStructuredData("", "departments.txt");
-
+        for (String[] student : students) {
+            insert(ID_DIRECTORY, student[0], student[1], student[2], student[3], "Stud");
+            insert(NAME_DIRECTORY, student[0], student[1], student[2], student[3], "Stud");
+            insert(EMAIL_DIRECTORY, student[0], student[1], student[2], student[3], "Stud");
+        }
+        for (String[] instructor : instructors) {
+            insert(ID_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3], instructor[4]);
+            insert(NAME_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3], instructor[4]);
+            insert(EMAIL_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3], instructor[4]);
+        }
 
     }
 
     @Override
-    public boolean insert(String word, String name, String id, String email, String dept) {
-        return false;
+    public boolean insert(int type, String id, String name, String email, String dept) {
+        Directory.EndOfWordData data = new Directory.EndOfWordData(name, id, email, dept);
+        if (type == ID_DIRECTORY) {
+            idDirecotry.insert(id, data);
+        } else if (type == NAME_DIRECTORY) {
+            nameDirectory.insert(name, data);
+        } else if (type == EMAIL_DIRECTORY) {
+            emailDirectory.insert(email, data);
+        }
+        return true;
     }
 
     @Override
@@ -41,5 +57,10 @@ public class DirectoryController implements DirectoryInterface {
     @Override
     public ArrayList<String> departmentSearch(String dept) {
         return null;
+    }
+
+    @Override
+    public void populateDepartmentDirectory() {
+
     }
 }
