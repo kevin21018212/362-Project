@@ -10,7 +10,6 @@ import main.Enrollment;
 
 
 
-
 public class Display {
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID to login. Please visit the Registrar menu to create an account: ");
@@ -35,8 +34,9 @@ public class Display {
             displayMessage("6 Apply for Graduation");
             displayMessage("7 Drop a class");
             displayMessage("8 View University Bill");
-            displayMessage("69 View Messages");
-            displayMessage("9 Logout\n");
+            displayMessage("9 View Extracurricular Activities");
+            displayMessage("10 View Messages");
+            displayMessage("11 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -71,7 +71,6 @@ public class Display {
                 case "8":
                     assert student != null;
                     student.viewUniversityBillingOptions();
-                    //student.viewUniversityBill();
                     break;
                 case "69":
                     assert student != null;
@@ -79,6 +78,10 @@ public class Display {
                     messageDisplay.displayMessageMenu();
                     break;
                 case "9":
+                    assert student != null;
+                    student.displayStudentExtracurricularMenu();
+                    break;
+                case "10":
                    return;
                 default:
                     displayMessage("Bad Baka");
@@ -103,8 +106,9 @@ public class Display {
             displayMessage("\nInstructor Menu:");
             displayMessage("1 View Courses");
             displayMessage("2 Grade Assignments");
-            displayMessage("69 View Messages");
-            displayMessage("3 Logout");
+            displayMessage("3 View Messages");
+            displayMessage("5 Logout");
+            displayMessage("4 Create Course");  // New option to create a course
             String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
@@ -120,6 +124,9 @@ public class Display {
                     break;
                 case "3":
                     return;
+                case "4":  // New case to create a course
+                    instructor.createCourse();
+                    break;
                 default:
                     displayMessage("Bad Baka");
             }
@@ -168,7 +175,6 @@ public class Display {
         String address = Utils.getInput("Enter address: ");
         String programOfStudy = Utils.getInput("Enter program of study: ");
         String academicTerm = Utils.getInput("Enter academic term (e.g., FALL2024): ");
-
 
         registrar.enrollNewStudent(fullName, dateOfBirth, contactInfo,
                 address, programOfStudy, academicTerm);

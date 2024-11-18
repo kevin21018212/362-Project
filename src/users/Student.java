@@ -10,19 +10,23 @@ import main.Submission;
 import helpers.FileUtils;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static helpers.Display.displayMessage;
+import static helpers.Display.displayStudentMenu;
 
 public class Student extends User {
     private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition"};
+    private static final String[] STUDENT_CLUBS = {"Soccer", "Baseball", "Poker", "Pickleball", "Tennis", "Finance", "Investing", "Hacking"};
     private String major;
     private String scholarshipAmount;
     private String tuitionAmount;
+
+    private String studentClub1;
+    private String studentClub2;
 
     private final int IN_STATE_TUITION_PER_CLASS = 800;
     private final int OUT_OF_STATE_TUITION_PER_CLASS = 1500;
@@ -31,15 +35,33 @@ public class Student extends User {
     private final int TECHNOLOGY_FEE = 300;
     private final int COST_PER_BOOK = 50;
 
-    public Student(String id, String name, String email, String major, String scholarshipAmount, String tuitionAmount) {
+    public Student(String id, String name, String email, String major, String scholarshipAmount, String tuitionAmount, String studentClub1, String studentClub2) {
         super(id, name, email);
         this.major = major;
         this.scholarshipAmount = scholarshipAmount;
         this.tuitionAmount = tuitionAmount;
+        this.studentClub1 = studentClub1;
+        this.studentClub2 = studentClub2;
     }
 
     public String getMajor() { return major; }
     public void setMajor(String major) { this.major = major; }
+
+    public String getStudentClub1(){
+        return studentClub1;
+    }
+
+    public String getStudentClub2(){
+        return studentClub2;
+    }
+
+    public void setStudentClub1(String club){
+        this.studentClub1 = club;
+    }
+
+    public void setStudentClub2(String club){
+        this.studentClub2 = club;
+    }
 
     public int getScholarshipAmount() {
         List<String[]> data = FileUtils.readStructuredData("", "students.txt");
@@ -281,6 +303,7 @@ public class Student extends User {
         displayMessage("1 View current University Tuition and Fees");
         displayMessage("2 View current scholarship amount.");
         displayMessage("3 Apply/Reapply for Tuition and Scholarships");
+        displayMessage("4 Return to Student Menu");
         String choice = Utils.getInput("Select an option: ");
         switch (choice) {
             case "1":
@@ -299,6 +322,9 @@ public class Student extends User {
                 break;
             case "3":
                 viewUniversityBill();
+                break;
+            case "4":
+                displayStudentMenu();
                 break;
             default:
                 displayMessage("\nIncorrect Input, Please try again");
@@ -464,6 +490,212 @@ public class Student extends User {
         return classCount;
     }
 
+    public void displayStudentExtracurricularMenu(){
+        displayMessage("\nStudent Extracurricular Menu: ");
+        displayMessage("1 View My Extracurricular Activities");
+        displayMessage("2 Browse Available Extracurricular Activities");
+        displayMessage("3 Join A New Extracurricular Activity");
+        displayMessage("4 Drop an Extracurricular Activity");
+        displayMessage("5 Return to Student Menu");
+        String id = Utils.getInput("\nPlease select an option (Ex: 3): ");
+
+        switch (id) {
+            case "1":
+                viewEnrolledExtracurriculars();
+                break;
+            case "2":
+                browseExtracurricularActivities();
+                break;
+            case "3":
+                joinExtracurricularActivity();
+                break;
+            case "4":
+                dropExtracurricularActivity();
+                break;
+            case "5":
+                displayStudentMenu();
+                break;
+
+            default:
+                displayMessage("Something went wrong... returning to student menu.");
+                displayStudentMenu();
+        }
+    }
+
+    /**
+     * Displays the enrolled extracurricular activities of the logged-in student.
+     */
+    public void viewEnrolledExtracurriculars(){
+
+        if(studentClub2.equalsIgnoreCase("n/a") && studentClub1.equalsIgnoreCase("n/a")){
+            System.out.println("You are not enrolled in any clubs.");
+        } else {
+            System.out.println("Your currently enrolled in: ");
+        }
+
+        if(!studentClub1.equalsIgnoreCase("n/a")){
+            System.out.println(getStudentClub1());
+        }
+
+        if(!studentClub2.equalsIgnoreCase("n/a")){
+            System.out.println(getStudentClub2());
+        }
+
+        displayStudentExtracurricularMenu();
+    }
+
+    public void browseExtracurricularActivities(){
+        displayAvailableExtracurriculars();
+    }
+
+    /**
+     * Process of the logged-in student joining a club.
+     * 1. Checks if student has open club slot
+     * 2. Displays options of clubs to join (STUDENT_CLUBS)
+     * 3. Validates entered club name to check if matches available options
+     * 4. Updates either studentClub1 or studentClub2 depending on which slot is open
+     */
+    public void joinExtracurricularActivity(){
+        if (!checkStudentExtracurricularAvailability()) {
+            System.out.println("You are already enrolled in the maximum number of clubs. Please drop a club to join another.");
+            displayStudentExtracurricularMenu();
+            return;
+        }
+
+        System.out.println("Here are the available clubs to join: ");
+        displayAvailableExtracurriculars();
+        String clubChoice = Utils.getInput("\nPlease enter the name of the club you wish to join: ");
+
+        // Validate if the input matches one of the available clubs
+        boolean isValidClub = false;
+        for (String club : STUDENT_CLUBS) {
+            if (club.equalsIgnoreCase(clubChoice)) {
+                isValidClub = true;
+                break;
+            }
+        }
+
+        if (!isValidClub) {
+            System.out.println("Invalid club choice. Please select a valid club from the list.");
+            joinExtracurricularActivity(); // Restart the process
+        }
+
+        // If valid, update the appropriate club slot using the helper function
+        List<String[]> data = FileUtils.readStructuredData("", "students.txt");
+
+        for (String[] row : data) {
+            if (row[0].equals(this.id)) { // Locate the student's record by ID
+                if ("n/a".equalsIgnoreCase(row[6])) {
+                    String result = updateStudentClubs(this.id, "studentClub1", clubChoice);
+                    setStudentClub1(clubChoice);
+                    System.out.println(result);
+                    break;
+                } else if ("n/a".equalsIgnoreCase(row[7])) {
+                    String result = updateStudentClubs(this.id, "studentClub2", clubChoice);
+                    setStudentClub2(clubChoice);
+                    System.out.println(result);
+                    break;
+                }
+            }
+        }
+
+        displayStudentExtracurricularMenu();
+
+    }
+
+    /**
+     * Checks if a student is able to join another club (aka has at least one open club slot)
+     * Returns true if a student has an available club slot
+     */
+    public boolean checkStudentExtracurricularAvailability() {
+        List<String[]> data = FileUtils.readStructuredData("", "students.txt");
+
+        for (String[] row : data) {
+            if (row[0].equals(this.id)) {
+                // Check if either club slot is "n/a"
+                return "n/a".equalsIgnoreCase(row[6]) || "n/a".equalsIgnoreCase(row[7]);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Displays available clubs to join.
+     */
+    public void displayAvailableExtracurriculars() {
+        for (int i = 0; i < STUDENT_CLUBS.length; i++) {
+            System.out.println((i + 1) + ". " + STUDENT_CLUBS[i]);
+        }
+    }
+
+    /**
+     * Walks user through process of dropping a club the logged-in student is enrolled in.
+     */
+    public void dropExtracurricularActivity() {
+        viewEnrolledExtracurriculars();
+        String clubChoice = Utils.getInput("\nPlease enter the name of the club you wish to drop: ");
+
+        if (clubChoice.equalsIgnoreCase(studentClub1)) {
+            String result = updateStudentClubs(this.id, "studentClub1", "n/a");
+            setStudentClub1("n/a");
+            displayMessage(result);
+            displayStudentExtracurricularMenu();
+        } else if (clubChoice.equalsIgnoreCase(studentClub2)) {
+            String result = updateStudentClubs(this.id, "studentClub2", "n/a");
+            setStudentClub2("n/a");
+            displayMessage(result);
+            displayStudentExtracurricularMenu();
+        } else {
+            System.out.println("That does not match your current clubs. Please check your spelling.");
+            String retryChoice = Utils.getInput("\nEnter 1 to cancel or 2 to try again: ");
+            switch (retryChoice) {
+                case "1":
+                    displayStudentExtracurricularMenu();
+                    break;
+                case "2":
+                    dropExtracurricularActivity();
+                    break;
+                default:
+                    displayMessage("Something went wrong... returning to student menu.");
+                    displayStudentMenu();
+            }
+        }
+    }
+
+    /**
+     * Updates the logged-in student's "clubToUpdate" with the specified string value of "newClubValue"
+     * Will update to "n/a" if the student is dropping that club.
+     *
+     * @param studentId
+     * @param clubToUpdate
+     * @param newClubValue
+     * @return String of either confirmation message or error message.
+     */
+    public String updateStudentClubs(String studentId, String clubToUpdate, String newClubValue) {
+        List<String[]> data = FileUtils.readStructuredData("", "students.txt");
+        List<String[]> updatedData = new ArrayList<>();
+        boolean updated = false;
+
+        for (String[] row : data) {
+            if (row[0].equals(studentId)) {
+                if ("studentClub1".equalsIgnoreCase(clubToUpdate)) {
+                    row[6] = newClubValue;
+                    updated = true;
+                } else if ("studentClub2".equalsIgnoreCase(clubToUpdate)) {
+                    row[7] = newClubValue;
+                    updated = true;
+                }
+                updatedData.add(row);
+            } else {
+                updatedData.add(row);
+            }
+        }
+
+        FileUtils.writeStructuredData("", "students.txt", STUDENT_HEADERS, updatedData);
+        return updated ? "Club successfully updated." : "Failed to update the club. Please check your input.";
+    }
+
     public void submitAssignment() {
         // Display all enrolled courses for the student
         Enrollment.displayAllEnrolledCourses(this.id);
@@ -533,30 +765,129 @@ public class Student extends User {
     }
 
     public void viewGrades() {
-        // Load the student's enrollments
-        List<Enrollment> enrollments = Enrollment.loadEnrollments();
+        String enrollmentsFile = "src/data/enrollments.txt"; // Path to enrollments file
+        String assignmentsFile = "src/data/courses/assignments.txt"; // Path to assignments file
+        String submissionsFile = "src/data/courses/submissions.txt"; // Path to submissions file
         boolean hasGrades = false;
 
+        Display.displayMessage("Your Grades:");
 
-        System.out.println("Grades for " + this.getName() + ":");
-        for (Enrollment enrollment : enrollments) {
-            // Check if the enrollment belongs to the current student
-            if (enrollment.getStudentId().equals(this.id)) {
-                Course course = Course.findCourseById(enrollment.getCourseId());
-                if (course != null) {
-                    // Retrieve and display the grade for each course
-                    double grade = enrollment.getGrade();
-                    System.out.println("Course: " + course.getName() + " - Grade: " + (grade >= 0 ? grade : "Not graded yet"));
-                    hasGrades = true;
+        try (BufferedReader enrollmentReader = new BufferedReader(new FileReader(enrollmentsFile))) {
+            String enrollmentLine;
+            while ((enrollmentLine = enrollmentReader.readLine()) != null) {
+                // Parse enrollment data
+                String[] enrollmentData = enrollmentLine.split("::");
+                if (enrollmentData.length >= 2) {
+                    String studentIdFromFile = enrollmentData[0].trim();
+                    String courseId = enrollmentData[1].replace("##", "").trim();
+
+                    // Check if the entry is for the current student
+                    if (studentIdFromFile.equals(this.id)) {
+                        // Process the assignments for the current course
+                        List<String> grades = new ArrayList<>();
+                        List<String> assignmentIds = new ArrayList<>();
+                        double totalGrade = 0;
+                        int numAssignments = 0;
+
+                        try (BufferedReader assignmentsReader = new BufferedReader(new FileReader(assignmentsFile))) {
+                            String assignmentLine;
+                            while ((assignmentLine = assignmentsReader.readLine()) != null) {
+                                // Parse assignment data
+                                String[] assignmentData = assignmentLine.split("::");
+                                if (assignmentData.length >= 3) {
+                                    String assignmentId = assignmentData[0].trim();
+                                    String courseIdFromAssignment = assignmentData[1].trim();
+
+                                    // Check if this assignment belongs to the current course
+                                    if (courseId.equals(courseIdFromAssignment)) {
+                                        // Look for the student's submission for this assignment
+                                        try (BufferedReader submissionsReader = new BufferedReader(new FileReader(submissionsFile))) {
+                                            String submissionLine;
+                                            while ((submissionLine = submissionsReader.readLine()) != null) {
+                                                String[] submissionData = submissionLine.split("::");
+
+                                                // Check if the submission is from the current student and matches the assignment
+                                                if (submissionData.length >= 4 && submissionData[2].equals(this.id) && submissionData[1].equals(assignmentId)) {
+                                                    String gradeStr = submissionData[3];
+
+                                                    // If the grade is numeric, add it to the total and increment assignment count
+                                                    try {
+                                                        double grade = Double.parseDouble(gradeStr);
+                                                        grades.add(gradeStr);
+                                                        assignmentIds.add(assignmentId);
+
+                                                        totalGrade += grade;  // Add grade to total
+                                                        numAssignments++;     // Increment the assignment counter
+                                                    } catch (NumberFormatException e) {
+                                                        // Skip invalid grades
+                                                        Display.displayMessage("Invalid grade for submission " + submissionData[0]);
+                                                    }
+                                                }
+                                            }
+                                        } catch (IOException e) {
+                                            Display.displayMessage("Error reading submissions file.");
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (IOException e) {
+                            Display.displayMessage("Error reading assignments file.");
+                            e.printStackTrace();
+                        }
+
+                        // Calculate the average grade for the course if any assignments were submitted
+                        if (numAssignments > 0) {
+                            double averageGrade = totalGrade / numAssignments;
+                            String letterGrade = getLetterGrade(averageGrade);
+
+                            // Display the grades for this course
+                            Display.displayMessage("\nGrades for Course " + courseId + ":");
+                            for (int i = 0; i < grades.size(); i++) {
+                                Display.displayMessage("Assignment ID: " + assignmentIds.get(i) + " - Grade: " + grades.get(i));
+                            }
+
+                            // Display the average grade for the course as a letter grade
+                            Display.displayMessage("\nAverage Grade for Course " + courseId + ": " + averageGrade + " (" + letterGrade + ")");
+                            hasGrades = true;
+                        } else {
+                            Display.displayMessage("No grades found for course " + courseId + ".");
+                        }
+                    }
                 }
             }
+        } catch (IOException e) {
+            Display.displayMessage("Error reading enrollments file.");
+            e.printStackTrace();
         }
 
-
+        // If no grades are found for the student
         if (!hasGrades) {
-            System.out.println("No grades available.");
+            Display.displayMessage("You have not received any grades for your enrolled courses.");
         }
     }
+
+    /**
+     * Converts a numeric grade to a letter grade.
+     *
+     * @param grade Numeric grade (e.g., 85.0)
+     * @return Corresponding letter grade (e.g., "A")
+     */
+    private String getLetterGrade(double grade) {
+        if (grade >= 90) {
+            return "A";
+        } else if (grade >= 80) {
+            return "B";
+        } else if (grade >= 70) {
+            return "C";
+        } else if (grade >= 60) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+
+
 
     public void applyForGraduation() {
         // Sample requirements for graduation
