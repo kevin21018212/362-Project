@@ -106,15 +106,16 @@ public class InboxController implements InboxInterface {
         }
 
         System.out.println("Select a draft or press 0 to exit");
-        String input = Utils.getInput("Enter draft ID: ");
+        String input = Utils.getInput("Select draft: ");
 
+        int draftIndex = 0;
 
         if (input.equals("0")) return;
         try {
-            int draftIndex = Integer.parseInt(input);
-            if (draftIndex <= 0 || draftIndex > drafts.size()) {
+            draftIndex = Integer.parseInt(input)-1;
+            if (!(draftIndex <= 0 || draftIndex > drafts.size())) {
                 System.out.println("Invalid draft ID");
-                editDraft(drafts.get(draftIndex - 1)[0]);
+                return;
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid input");
@@ -125,13 +126,13 @@ public class InboxController implements InboxInterface {
             case "0":
                 return;
             case "1":
-                editDraft(drafts.get(Integer.parseInt(input))[0]);
+                editDraft(drafts.get(draftIndex)[0]);
                 break;
             case "2":
-                sendDraft(drafts.get(Integer.parseInt(input))[0]);
+                sendDraft(drafts.get(draftIndex)[0]);
                 break;
             case "3":
-                deleteDraft(drafts.get(Integer.parseInt(input))[0]);
+                deleteDraft(drafts.get(draftIndex)[0]);
                 break;
             default:
                 System.out.println("Invalid draft Option");
@@ -221,6 +222,7 @@ public class InboxController implements InboxInterface {
                 // Send the draft as a message
                 if (sendMessage(draft[1], draft[2], draft[3])) {
                     sent = true;
+                    sendMessage(draft[1], draft[2], draft[3]);
                     continue; // Don't add to remaining drafts
                 }
             }

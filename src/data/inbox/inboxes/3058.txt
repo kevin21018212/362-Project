@@ -4,3 +4,4 @@ messageId::senderId::senderName::subject::message####
 5068::3058::Max may::yo2::hello2##
 5067::3058::Max may::yo1::hello1##
 6765::3058::Max may::yo50::hello bro##
+0993::3058::Max may::draft::daft##
