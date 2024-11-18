@@ -190,19 +190,25 @@ public class Student extends User {
         Course course = Course.findCourseById(courseId);
 
         if (course == null) {
-            displayMessage("Course not found");
+            Display.displayMessage("Course not found");
             return;
         }
 
         // Validate enrollment
         if (course.isFull()) {
-            displayMessage("Course is full");
+            Display.displayMessage("Course is full");
             return;
         }
 
         if (!Enrollment.checkPrerequisites(this.getId(), course)) {
-            displayMessage("Prerequisites not met");
+            Display.displayMessage("Prerequisites not met");
             return;
+        }
+        for (Enrollment enrollment : Enrollment.loadEnrollments()) {
+            if (enrollment.getStudentId().equals(this.id) && enrollment.getCourseId().equals(courseId)) {
+                Display.displayMessage("You are already enrolled in this course.");
+                return;
+            }
         }
 
         // Create and save enrollment
@@ -213,8 +219,9 @@ public class Student extends User {
         course.incrementEnrollment();
         course.updateEnrollmentCount();
 
-        displayMessage("Successfully enrolled in " + course.getName());
+        Display.displayMessage("Successfully enrolled in " + course.getName());
     }
+
 
     /**
      * Initial display options for changing major, viewing major/department
@@ -745,8 +752,9 @@ public class Student extends User {
             };
 
             // Read existing submissions
-            String fileName = "courses/submissions.txt";
-            List<String[]> existingSubmissions = FileUtils.readStructuredData("", fileName);
+            String directory = "courses/" + courseId + "/";
+            String fileName = "submissions.txt";
+            List<String[]> existingSubmissions = FileUtils.readStructuredData(directory, fileName);
 
             // Add new submission
             existingSubmissions.add(submissionData);
