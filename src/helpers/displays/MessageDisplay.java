@@ -34,7 +34,7 @@ public class MessageDisplay {
                     composeMessage();
                     break;
                 case "3":
-                    viewDrafts();
+                    inboxController.viewDrafts();
                     break;
                 case "4":
                     return;
@@ -126,51 +126,4 @@ public class MessageDisplay {
         }
     }
 
-    private void viewDrafts() {
-        inboxController.viewDrafts();
-//        Stack<Inbox.Message> drafts = inboxController.getDrafts();
-//        if (drafts.isEmpty()) {
-//            System.out.println("No drafts found");
-//            return;
-//        }
-//
-//        int i = 1;
-//        for (Inbox.Message draft : drafts) {
-//            System.out.println(i + ". Subject: " + draft.getSubject());
-//            i++;
-//        }
-//
-//        String input = Utils.getInput("Enter draft ID to edit (or 0 to exit): ");
-//        if (input.equals("0")) return;
-//
-//        try {
-//            int draftIndex = Integer.parseInt(input);
-//            if (draftIndex > 0 && draftIndex <= drafts.size()) {
-//                editDraft(drafts.get(draftIndex - 1));
-//            } else {
-//                System.out.println("Invalid draft ID");
-//            }
-//        } catch (NumberFormatException e) {
-//            System.out.println("Invalid input");
-//        }
-    }
-
-    private void editDraft(Inbox.Message draft) {
-//        System.out.println("\nCurrent draft:");
-//        System.out.println("Recipient: " + draft.getRecipientId());
-//        System.out.println("Subject: " + draft.getSubject());
-//        System.out.println("Body: " + draft.getBody());
-//
-//        String recipient = Utils.getInput("Enter new recipient (or press Enter to keep current): ");
-//        String subject = Utils.getInput("Enter new subject (or press Enter to keep current): ");
-//        String body = Utils.getInput("Enter new body (or press Enter to keep current): ");
-//
-//        // Update only if new values provided
-//        if (!recipient.isEmpty()) draft.setRecipientId(recipient);
-//        if (!subject.isEmpty()) draft.setSubject(subject);
-//        if (!body.isEmpty()) draft.setBody(body);
-//
-//        inboxController.updateDraft(draft);
-//        System.out.println("Draft updated successfully");
-    }
 }
