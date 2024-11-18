@@ -24,14 +24,16 @@ public class DirectoryController implements DirectoryInterface {
         List<String[]> students = FileUtils.readStructuredData("", "students.txt");
         List<String[]> instructors = FileUtils.readStructuredData("", "instructors.txt");
         for (String[] student : students) {
-            insert(ID_DIRECTORY, student[0], student[1], student[2], student[3], "Stud");
-            insert(NAME_DIRECTORY, student[0], student[1], student[2], student[3], "Stud");
-            insert(EMAIL_DIRECTORY, student[0], student[1], student[2], student[3], "Stud");
+            insert(ID_DIRECTORY, student[0], student[1], student[2], "Stud");
+            insert(NAME_DIRECTORY, student[0], student[1], student[2], "Stud");
+            insert(EMAIL_DIRECTORY, student[0], student[1], student[2], "Stud");
         }
         for (String[] instructor : instructors) {
-            insert(ID_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3], instructor[4]);
-            insert(NAME_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3], instructor[4]);
-            insert(EMAIL_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3], instructor[4]);
+            insert(ID_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
+            insert(NAME_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
+            insert(EMAIL_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
+            this.departmentDirectory.put(instructor[3], new ArrayList<>());
+            this.departmentDirectory.get(instructor[3]).add(new Directory.EndOfWordData(instructor[1], instructor[0], instructor[2], instructor[3]));
         }
 
     }
@@ -42,9 +44,9 @@ public class DirectoryController implements DirectoryInterface {
         if (type == ID_DIRECTORY) {
             idDirecotry.insert(id, data);
         } else if (type == NAME_DIRECTORY) {
-            nameDirectory.insert(name, data);
+            nameDirectory.insert(name.toLowerCase(), data);
         } else if (type == EMAIL_DIRECTORY) {
-            emailDirectory.insert(email, data);
+            emailDirectory.insert(email.toLowerCase(), data);
         }
         return true;
     }
@@ -55,7 +57,14 @@ public class DirectoryController implements DirectoryInterface {
     }
 
     @Override
-    public ArrayList<String> departmentSearch(String dept) {
+    public ArrayList<String[]> departmentSearch(String dept) {
+        if (this.departmentDirectory.containsKey(dept)) {
+            ArrayList<String[]> result = new ArrayList<>();
+            for (Directory.EndOfWordData data : this.departmentDirectory.get(dept)) {
+                result.add(new String[]{data.getId(), data.getName(), data.getEmail()});
+            }
+            return result;
+        }
         return null;
     }
 
