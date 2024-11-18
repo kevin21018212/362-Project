@@ -1,7 +1,11 @@
 package Interfaces;
 
+import main.Enrollment;
+import main.Transcript;
+import java.util.List;
+import java.util.Map;
+
 public interface TranscriptInterface {
-    boolean generateTranscript(String studentId);
-    float calculateGPA(String studentId);
-//    List<Course> getCompletedCourses(String studentId); //
+    String generateTranscript();
+    void calculateStats();
 }

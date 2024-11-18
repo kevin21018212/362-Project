@@ -1,0 +1,3 @@
+messageId::recipientId::subject::content####
+7354::3058::draft1::this is a draft##
+2997::3058::draft2::this is a draft##

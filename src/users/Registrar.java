@@ -68,7 +68,7 @@ public class Registrar extends User implements RegistrarInterface {
             return;
         }
 
-        String studentId = generateStudentId();
+        String studentId = RegistrarInterface.generateStudentId();
         if (DataAccess.findStudentById(studentId) != null) {
             Display.displayMessage("Error: Student ID already exists.");
             return;
@@ -151,10 +151,11 @@ public class Registrar extends User implements RegistrarInterface {
      *
      * @return A 4-digit random student ID
      */
+//    @Override
+//    public
+
     @Override
-    public String generateStudentId() {
-        long timestamp = System.currentTimeMillis();
-        Random random = new Random(timestamp);
-        return String.format("%04d", random.nextInt(9999));
+    public void swapCourseSection(String studentId, String courseId, String sectionId) {
+
     }
 }

@@ -1,5 +1,6 @@
 package helpers;
 
+import helpers.displays.MessageDisplay;
 import main.Course;
 import users.DataAccess;
 import users.Instructor;
@@ -13,11 +14,15 @@ public class Display {
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID to login. Please visit the Registrar menu to create an account: ");
         Student student = DataAccess.findStudentById(id);
-
+//        if (id.equalsIgnoreCase("new")) {
+//            displayMessage("LOL");
+//        } else {
+//            student = Student.findStudentById(id);
             if (student == null) {
                 displayMessage("Student not found.");
                 return;
             }
+//        }
 
         while (true) {
             displayMessage("\nStudent Menu:");
@@ -30,7 +35,8 @@ public class Display {
             displayMessage("7 Drop a class");
             displayMessage("8 View University Bill");
             displayMessage("9 View Extracurricular Activities");
-            displayMessage("10 Logout\n");
+            displayMessage("10 View Messages");
+            displayMessage("11 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -66,11 +72,16 @@ public class Display {
                     assert student != null;
                     student.viewUniversityBillingOptions();
                     break;
+                case "10":
+                    assert student != null;
+                    MessageDisplay messageDisplay = new MessageDisplay(student.getId(), student.getName());
+                    messageDisplay.displayMessageMenu();
+                    break;
                 case "9":
                     assert student != null;
                     student.displayStudentExtracurricularMenu();
                     break;
-                case "10":
+                case "11":
                    return;
                 default:
                     displayMessage("Bad Baka");
@@ -95,7 +106,8 @@ public class Display {
             displayMessage("\nInstructor Menu:");
             displayMessage("1 View Courses");
             displayMessage("2 Grade Assignments");
-            displayMessage("3 Logout");
+            displayMessage("3 View Messages");
+            displayMessage("5 Logout");
             displayMessage("4 Create Course");  // New option to create a course
             String choice = Utils.getInput("Select an option: \n");
 
@@ -107,6 +119,10 @@ public class Display {
                     instructor.gradeAssignments();
                     break;
                 case "3":
+                    MessageDisplay messageDisplay = new MessageDisplay(instructor.getId(), instructor.getName());
+                    messageDisplay.displayMessageMenu();
+                    break;
+                case "5":
                     return;
                 case "4":  // New case to create a course
                     instructor.createCourse();
@@ -115,7 +131,6 @@ public class Display {
                     displayMessage("Bad Baka");
             }
         }
-
     }
 
     public static void displayRegistrarMenu() {

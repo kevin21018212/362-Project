@@ -1,0 +1,29 @@
+Type::Content####
+Type::Content####
+Content::OFFICIAL TRANSCRIPT
+Generated: 2024-11-16 15:04:46
+
+STUDENT INFORMATION
+==================
+ID: 6969
+Name: Max may
+Email: maxmay@m
+
+COURSE HISTORY
+=============
+
+Term: FALL2024
+CS101     3 credits  Grade: A
+MATH101   3 credits  Grade: A
+
+ACADEMIC SUMMARY
+================
+Cumulative GPA: 4.00
+Credits Completed: 6
+Credits In Progress: 0
+Total Credits: 6
+
+NOTES
+=====
+IP = In Progress
+####
