@@ -7,6 +7,7 @@ import users.Instructor;
 import users.Registrar;
 import users.Student;
 import main.Enrollment;
+import helpers.displays.DirectoryDisplay;
 
 
 
@@ -36,6 +37,7 @@ public class Display {
             displayMessage("8 View University Bill");
             displayMessage("9 View Extracurricular Activities");
             displayMessage("10 View Messages");
+            displayMessage("69 Directory Menu");
             displayMessage("11 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
@@ -80,6 +82,11 @@ public class Display {
                 case "9":
                     assert student != null;
                     student.displayStudentExtracurricularMenu();
+                    break;
+                case "69":
+                    assert student != null;
+                    DirectoryDisplay directoryDisplay = new DirectoryDisplay();
+                    directoryDisplay.displayDirectoryMenu();
                     break;
                 case "11":
                    return;
