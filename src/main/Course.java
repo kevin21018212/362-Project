@@ -12,7 +12,7 @@ public class Course {
     private List<String> prerequisites;
     private int studentsEnrolled;
     private int classSize;
-    private static List<Course> allCourses = new ArrayList<>();
+    public static List<Course> allCourses = new ArrayList<>();
 
     public Course(String id, String name, String instructorId, List<String> prerequisites, int studentsEnrolled, int classSize) {
         this.id = id;
@@ -115,4 +115,10 @@ public class Course {
         return id + "::" + name + "::" + instructorId + "::" +
                 prerequisites.toString() + "::" + studentsEnrolled + "::" + classSize;
     }
+
+    public static boolean createCourseDirectoryAndFiles(String courseId, List<Assignment> assignments) {
+        FileUtils.initializeCourseFiles(courseId, assignments);
+        return true;
+    }
+
 }

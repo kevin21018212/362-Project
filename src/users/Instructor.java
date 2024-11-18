@@ -1,22 +1,26 @@
 
-        package users;
+package users;
 
-        import helpers.Display;
-        import helpers.FileUtils;
-        import helpers.User;
-        import helpers.Utils;
-        import main.Assignment;
-        import main.Course;
-        import main.Enrollment;
-        import main.Submission;
+import helpers.Display;
+import helpers.FileUtils;
+import helpers.User;
+import helpers.Utils;
+import main.Assignment;
+import main.Course;
+import main.Enrollment;
+import main.Submission;
 
-        import java.io.BufferedReader;
-        import java.io.FileReader;
-        import java.io.IOException;
-        import java.util.ArrayList;
-        import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import static main.Course.allCourses;
 
 public class Instructor extends User {
+
 
     public Instructor(String id, String name, String email) {
         super(id, name, email);
@@ -25,6 +29,76 @@ public class Instructor extends User {
     public static Instructor findInstructorById(String id) {
         return DataAccess.findInstructorById(id);
     }
+
+
+    public void createCourse() {
+        Scanner scanner = new Scanner(System.in);
+        Course.displayAllCourses();
+        //check if courseId already exists
+        Display.displayMessage("Enter Course ID:");
+        String courseId = scanner.nextLine().trim();
+        if (Course.findCourseById(courseId) != null) {
+            Display.displayMessage("Course ID already exists. Please choose a different ID.");
+            return;
+        }
+
+
+        Display.displayMessage("Enter Course Name:");
+        String courseName = scanner.nextLine().trim();
+
+
+        // check each prereq by id
+        Display.displayMessage("Enter prerequisite courses (comma-separated IDs):");
+        String prerequisite = scanner.nextLine().trim();
+        List<String> prerequisites = parsePrerequisites(prerequisite);
+        for (String prereq : prerequisites) {
+            if (Course.findCourseById(prereq) == null) {
+                Display.displayMessage("Prerequisite course with ID " + prereq + " does not exist.");
+                return;
+            }
+        }
+
+
+        // Step 5: Enter Class Capacity and validate it
+        Display.displayMessage("Enter class capacity:");
+        int classSize;
+        try {
+            classSize = Integer.parseInt(scanner.nextLine().trim());
+            if (classSize <= 0) {
+                Display.displayMessage("Invalid class capacity. Please enter a positive number.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            Display.displayMessage("Invalid input for class capacity. Please enter a number.");
+            return;
+        }
+
+        // create new Course object
+        Course newCourse = new Course(courseId, courseName,super.id, prerequisites, 0, classSize);
+        allCourses.add(newCourse);
+        Display.displayMessage("Course created successfully with ID: " + newCourse.getId());
+
+        //make a list of assignments
+        List<Assignment> assignments = Assignment.createAssignments(courseId);
+
+
+        if (Course.createCourseDirectoryAndFiles(courseId, assignments)) {
+            Display.displayMessage("Course and assignments created successfully.");
+            newCourse.updateEnrollmentCount();
+        } else {
+            Display.displayMessage("Failed to create course directory or files. Please try again.");
+        }
+    }
+
+    // parse prerequisites from a comma-separated input string
+    private List<String> parsePrerequisites(String prereqsInput) {
+        List<String> prerequisites = new ArrayList<>();
+        for (String prereq : prereqsInput.split(",")) {
+            prerequisites.add(prereq.trim());
+        }
+        return prerequisites;
+    }
+
 
     public void gradeAssignments() {
         // Display all available courses before prompting for a course ID
@@ -92,18 +166,13 @@ public class Instructor extends User {
 
         // Define headers for the file
         String[] headers = {"Submission ID", "Assignment ID", "Student ID", "Grade", "Submitted Date"};
-        String directory = "courses/" + courseId+"/";
+        String directory = "courses/" + courseId + "/";
         String fileName = "submissions.txt";
 
         // Write the updated submission data to the file using writeStructuredData
         FileUtils.writeStructuredData(directory, fileName, headers, updatedSubmissions);
         Display.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
-
-
-
-
-
 
 
     private void checkMissingSubmissions(String courseId, Assignment assignment) {
