@@ -12,10 +12,11 @@ public interface InboxInterface {
     void viewDrafts();
     void editDraft(String messageId);
     boolean sendDraft(String messageId);
-    boolean saveDraft(String body);
+    boolean saveDraft(String recipientId, String subject, String body);
 
     boolean deleteDraft(String messageId);
 
     Inbox findInbox(String ownerId);
+    String genMessageID(String recipientID);
 }
 

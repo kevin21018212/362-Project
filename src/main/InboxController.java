@@ -77,18 +77,8 @@ public class InboxController implements InboxInterface {
             System.out.println("Recipient not found");
             return false;
         }
-        String messageID = RegistrarInterface.generateStudentId();
-        boolean duplicateIDs = true;
-        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", recipientID + ".txt");
-        while (duplicateIDs && messages.size() > 0) {
-            for (String[] stringMessage : messages) {
-                if (stringMessage[0].equals(messageID)) {
-                    messageID = RegistrarInterface.generateStudentId();
-                    break;
-                }
-                duplicateIDs = false;
-            }
-        }
+
+        String messageID = genMessageID(recipientID);
 
         Inbox.Message message = new Inbox.Message(messageID, recipientID, this.ownerName, subject, body);
         recipiantInbox.addMessage(message);
@@ -162,16 +152,13 @@ public class InboxController implements InboxInterface {
     }
 
     @Override
-    public boolean saveDraft(String body) {
-        String messageId = RegistrarInterface.generateStudentId();
-        String recipientId = Utils.getInput("Enter recipient ID: ");
-        String subject = Utils.getInput("Enter subject: ");
+    public boolean saveDraft(String recipientId, String subject, String body) {
 
         List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
 
         // Create new draft
         String[] newDraft = new String[]{
-                messageId,
+                genMessageID(recipientId),
                 recipientId,
                 subject,
                 body
@@ -269,4 +256,23 @@ public class InboxController implements InboxInterface {
         }
         return inbox;
     }
+
+    @Override
+    public String genMessageID(String recipientID) {
+        String messageID = RegistrarInterface.generateStudentId();
+        boolean duplicateIDs = true;
+        List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", recipientID + ".txt");
+        while (duplicateIDs && messages.size() > 0) {
+            for (String[] stringMessage : messages) {
+                if (stringMessage[0].equals(messageID)) {
+                    messageID = RegistrarInterface.generateStudentId();
+                    break;
+                }
+                duplicateIDs = false;
+            }
+        }
+        return messageID;
+    }
+
+
 }

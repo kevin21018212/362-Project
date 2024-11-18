@@ -115,7 +115,7 @@ public class MessageDisplay {
                 System.out.println("Message sent successfully");
                 break;
             case "2":
-//                inboxController.saveDraft(recipient, subject, body);
+                inboxController.saveDraft(recipient, subject, body);
                 System.out.println("Draft saved successfully");
                 break;
             case "3":
