@@ -101,8 +101,40 @@ public class InboxController implements InboxInterface {
             System.out.println(i + ": Draft ID: " + draft[0]);
             System.out.println("Recipient: " + draft[1]);
             System.out.println("Subject: " + draft[2]);
-            System.out.println("Content: " + draft[3]);
+            System.out.println("Message: " + draft[3]);
             System.out.println("---------------");
+        }
+
+        System.out.println("Select a draft or press 0 to exit");
+        String input = Utils.getInput("Enter draft ID: ");
+
+
+        if (input.equals("0")) return;
+        try {
+            int draftIndex = Integer.parseInt(input);
+            if (draftIndex <= 0 || draftIndex > drafts.size()) {
+                System.out.println("Invalid draft ID");
+                editDraft(drafts.get(draftIndex - 1)[0]);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input");
+        }
+        System.out.println("1: Edit draft\n2: Send draft\n3: Delete draft\n0: Cancel");
+        String draftOption = Utils.getInput("Select an option: ");
+        switch (draftOption) {
+            case "0":
+                return;
+            case "1":
+                editDraft(drafts.get(Integer.parseInt(input))[0]);
+                break;
+            case "2":
+                sendDraft(drafts.get(Integer.parseInt(input))[0]);
+                break;
+            case "3":
+                deleteDraft(drafts.get(Integer.parseInt(input))[0]);
+                break;
+            default:
+                System.out.println("Invalid draft Option");
         }
 
     }
