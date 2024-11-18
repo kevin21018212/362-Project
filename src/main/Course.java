@@ -119,11 +119,13 @@ public class Course {
                 prerequisites.toString() + "::" + studentsEnrolled + "::" + classSize;
     }
 
+    //Create a dir under courses with courseID and make a list of assignments in assignments.txt and a empty submissions file
     public static boolean createCourseDirectoryAndFiles(String courseId, List<Assignment> assignments) {
         FileUtils.initializeCourseFiles(courseId, assignments);
         return true;
     }
 
+    //Just adds a new course to the course file
     public static void appendCourseToFile(Course course) {
         String courseData = String.format("%s::%s::%s::%s::[%d,%d]##",
                 course.getId(),

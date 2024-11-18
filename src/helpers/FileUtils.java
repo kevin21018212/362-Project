@@ -161,13 +161,12 @@ public class FileUtils {
     }
 
     /**
-     * Creates a directory structure for a course and initializes required files.
+     * Creates a directory structure for a course and initializes course files.
      *
-     * @param courseId The ID of the course (used for folder name and file paths)
-     * @param initialAssignments List of assignments to be written in assignments.txt
-     *                           If empty, assignments.txt will still be created but without data.
+     * @param courseId The ID of the course (used for folder name)
+     * @param initialAssignments List of assignments to be written in /{courseId}/assignments.txt
+     *
      */
-
 
     public static void initializeCourseFiles(String courseId, List<Assignment> initialAssignments) {
         String courseDirPath = BASE_PATH + "courses/" + courseId;
@@ -179,12 +178,12 @@ public class FileUtils {
                 courseDir.mkdirs();
             }
 
-            // Create assignments.txt and populate it with initial assignments if provided
+            // Create assignments.txt and populate it with assignments
             File assignmentsFile = new File(courseDir, "assignments.txt");
             if (assignmentsFile.createNewFile() && initialAssignments != null && !initialAssignments.isEmpty()) {
                 String[] headers = {"AssignmentID", "AssignmentName", "DueDate"};
 
-                // Convert initialAssignments to a List<String[]> for writeStructuredData
+                // Convert to a string for max's function
                 List<String[]> assignmentData = new ArrayList<>();
                 for (Assignment assignment : initialAssignments) {
                     assignmentData.add(new String[]{assignment.getId(), assignment.getTitle(), assignment.getDueDate()});
@@ -196,7 +195,7 @@ public class FileUtils {
                 writeStructuredData("courses/" + courseId, "assignments.txt", new String[]{"AssignmentID", "AssignmentName", "DueDate"}, new ArrayList<>());
             }
 
-            // Create an empty submissions.txt file
+            // Create empty submissions.txt f
             File submissionsFile = new File(courseDir, "submissions.txt");
             if (submissionsFile.createNewFile()) {
                 writeStructuredData("courses/" + courseId, "submissions.txt", new String[]{"SubmissionID", "AssignmentID", "StudentID", "Grade", "SubmittedDate"}, new ArrayList<>());

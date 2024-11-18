@@ -9,7 +9,6 @@ import main.Assignment;
 import main.Course;
 import main.Enrollment;
 import main.Submission;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,7 +33,7 @@ public class Instructor extends User {
     public void createCourse() {
         Scanner scanner = new Scanner(System.in);
         Course.displayAllCourses();
-        //check if courseId already exists
+        //Check if courseId already exists
         Display.displayMessage("Enter Course ID:");
         String courseId = scanner.nextLine().trim();
         if (Course.findCourseById(courseId) != null) {
@@ -47,7 +46,7 @@ public class Instructor extends User {
         String courseName = scanner.nextLine().trim();
 
 
-        // check each prereq by id
+        //Check each prereq by id
         Display.displayMessage("Enter prerequisite courses (comma-separated IDs):");
         String prerequisite = scanner.nextLine().trim();
         List<String> prerequisites = parsePrerequisites(prerequisite);
@@ -73,12 +72,12 @@ public class Instructor extends User {
             return;
         }
 
-        // create new Course object
+        //Create new Course object
         Course newCourse = new Course(courseId, courseName,super.id, prerequisites, 0, classSize);
         allCourses.add(newCourse);
         Display.displayMessage("Course created successfully with ID: " + newCourse.getId());
 
-        //make a list of assignments
+        //Make a list of assignments
         List<Assignment> assignments = Assignment.createAssignments(courseId);
 
 
@@ -90,7 +89,7 @@ public class Instructor extends User {
         }
     }
 
-    // parse prerequisites from a comma-separated input string
+    // parse prerequisites from a comma-separated string
     private List<String> parsePrerequisites(String prereqsInput) {
         List<String> prerequisites = new ArrayList<>();
         for (String prereq : prereqsInput.split(",")) {
