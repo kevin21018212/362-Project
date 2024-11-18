@@ -3,7 +3,7 @@ package users;
 import java.util.HashMap;
 
 public class Directory {
-    private class EndOfWordData {
+    public class EndOfWordData {
         private final String id;
         private final String name;
         private final String email;
