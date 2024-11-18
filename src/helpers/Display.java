@@ -72,7 +72,7 @@ public class Display {
                     assert student != null;
                     student.viewUniversityBillingOptions();
                     break;
-                case "69":
+                case "10":
                     assert student != null;
                     MessageDisplay messageDisplay = new MessageDisplay(student.getId(), student.getName());
                     messageDisplay.displayMessageMenu();
@@ -81,7 +81,7 @@ public class Display {
                     assert student != null;
                     student.displayStudentExtracurricularMenu();
                     break;
-                case "10":
+                case "11":
                    return;
                 default:
                     displayMessage("Bad Baka");
@@ -118,11 +118,11 @@ public class Display {
                 case "2":
                     instructor.gradeAssignments();
                     break;
-                case "69":
+                case "3":
                     MessageDisplay messageDisplay = new MessageDisplay(instructor.getId(), instructor.getName());
                     messageDisplay.displayMessageMenu();
                     break;
-                case "3":
+                case "5":
                     return;
                 case "4":  // New case to create a course
                     instructor.createCourse();
