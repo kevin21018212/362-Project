@@ -103,6 +103,7 @@ public class InboxController implements InboxInterface {
             System.out.println("Subject: " + draft[2]);
             System.out.println("Message: " + draft[3]);
             System.out.println("---------------");
+            i ++;
         }
 
         System.out.println("Select a draft or press 0 to exit");
@@ -113,7 +114,7 @@ public class InboxController implements InboxInterface {
         if (input.equals("0")) return;
         try {
             draftIndex = Integer.parseInt(input)-1;
-            if (!(draftIndex <= 0 || draftIndex > drafts.size())) {
+            if (draftIndex < 0 || draftIndex > drafts.size()) {
                 System.out.println("Invalid draft ID");
                 return;
             }

@@ -5,3 +5,5 @@ messageId::senderId::senderName::subject::message####
 5067::3058::Max may::yo1::hello1##
 6765::3058::Max may::yo50::hello bro##
 0993::3058::Max may::draft::daft##
+7208::3058::Max may::message1::this is body##
+9739::3058::Max may::message2::this is body##
