@@ -752,8 +752,9 @@ public class Student extends User {
             };
 
             // Read existing submissions
-            String fileName = "courses/" + courseId + "/";
-            List<String[]> existingSubmissions = FileUtils.readStructuredData("", fileName);
+            String directory = "courses/" + courseId + "/";
+            String fileName = "submissions.txt";
+            List<String[]> existingSubmissions = FileUtils.readStructuredData(directory, fileName);
 
             // Add new submission
             existingSubmissions.add(submissionData);
