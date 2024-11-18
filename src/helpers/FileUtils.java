@@ -168,6 +168,7 @@ public class FileUtils {
      *                           If empty, assignments.txt will still be created but without data.
      */
 
+
     public static void initializeCourseFiles(String courseId, List<Assignment> initialAssignments) {
         String courseDirPath = BASE_PATH + "courses/" + courseId;
         File courseDir = new File(courseDirPath);

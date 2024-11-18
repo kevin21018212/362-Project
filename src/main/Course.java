@@ -2,6 +2,9 @@ package main;
 
 import helpers.Display;
 import helpers.FileUtils;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,4 +124,19 @@ public class Course {
         return true;
     }
 
+    public static void appendCourseToFile(Course course) {
+        String courseData = String.format("%s::%s::%s::%s::[%d,%d]##",
+                course.getId(),
+                course.getName(),
+                course.getInstructorId(),
+                course.getPrerequisites().toString(),
+                course.getStudentsEnrolled(),
+                course.getClassSize());
+
+        try (FileWriter writer = new FileWriter("src/data/courses.txt", true)) {
+            writer.write(courseData + System.lineSeparator());
+        } catch (IOException e) {
+            System.err.println("Error appending course to file: " + e.getMessage());
+        }
+    }
 }

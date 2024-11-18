@@ -84,7 +84,7 @@ public class Instructor extends User {
 
         if (Course.createCourseDirectoryAndFiles(courseId, assignments)) {
             Display.displayMessage("Course and assignments created successfully.");
-            newCourse.updateEnrollmentCount();
+            Course.appendCourseToFile(newCourse);
         } else {
             Display.displayMessage("Failed to create course directory or files. Please try again.");
         }
