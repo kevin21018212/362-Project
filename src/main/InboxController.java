@@ -274,5 +274,4 @@ public class InboxController implements InboxInterface {
         return messageID;
     }
 
-
 }
