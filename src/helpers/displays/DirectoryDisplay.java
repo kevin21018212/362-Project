@@ -74,10 +74,10 @@ public class DirectoryDisplay {
             if (imparitalData != null) {
                 System.out.println("Impartial search results:");
                 for (Directory.EndOfWordData d : imparitalData) {
-                    System.out.println("ID: " + d.getId());
-                    System.out.println("Name: " + d.getName());
-                    System.out.println("Email: " + d.getEmail());
-                    System.out.println("Department: " + d.getDept());
+                    System.out.println("\tID: " + d.getId());
+                    System.out.println("\tName: " + d.getName());
+                    System.out.println("\tEmail: " + d.getEmail());
+                    System.out.println("\tDepartment: " + d.getDept()+"\n");
                 }
             } else {
                 System.out.println("Email not found");
@@ -99,10 +99,10 @@ public class DirectoryDisplay {
             if (imparitalData != null) {
                 System.out.println("Impartial search results:");
                 for (Directory.EndOfWordData d : imparitalData) {
-                    System.out.println("ID: " + d.getId());
-                    System.out.println("Name: " + d.getName());
-                    System.out.println("Email: " + d.getEmail());
-                    System.out.println("Department: " + d.getDept());
+                    System.out.println("\tID: " + d.getId());
+                    System.out.println("\tName: " + d.getName());
+                    System.out.println("\tEmail: " + d.getEmail());
+                    System.out.println("\tDepartment: " + d.getDept()+"\n");
                 }
             } else {
                 System.out.println("Name not found");
