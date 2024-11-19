@@ -339,9 +339,10 @@ public class Student extends User {
                 break;
             case "4":
                 System.out.println("\nYour current Tuition/Fees total: $" + getTuitionAmount());
-                System.out.println("\nYour current Scholarships total: $" + getScholarshipAmount());
+                System.out.println("Your current Scholarships total: $" + getScholarshipAmount());
                 System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
-                //pay bill
+
+                payUniversityBillMenu();
                 break;
             case "5":
                 displayStudentMenu();
@@ -423,6 +424,104 @@ public class Student extends User {
         System.out.println("Tuition per class: $" + tuitionPerClass);
 
         return totalTuition;
+    }
+
+    public void payUniversityBill(){
+        System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
+        displayMessage("\nPlease Select a Payment Method: ");
+        displayMessage("1 Cash");
+        displayMessage("2 Check");
+        displayMessage("3 Credit/Debit Card");
+        displayMessage("4 Venmo/Paypal");
+        displayMessage("5 Go Back");
+
+        String paymentMethod = Utils.getInput("\nPlease select an option (Ex: 3): ");
+
+        switch (paymentMethod){
+            case "1":
+                    int confirmPayment = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+
+                    if(confirmPayment == getTotalUniversityBill()){
+                        System.out.println("Thank you!");
+                        System.out.println("Please deliver your cash to the Billing Center within 7 business days.");
+                    } else {
+                        System.out.println("That was not correct, please try again");
+                        payUniversityBill();
+                    }
+                    break;
+            case "2":
+                System.out.println("You have selected to pay with check.");
+                String rountingNumber = Utils.getInput("\nPlease enter your routing number: ");
+                String accountNumber = Utils.getInput("\nPlease enter your account number: ");
+                System.out.println("IF you would like to cancel, please enter 1 on the following prompt");
+                int confirmPaymentCheck = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+
+                if(confirmPaymentCheck == getTotalUniversityBill()){
+                    System.out.println("Thank you!");
+                    System.out.println("Your check has been confirmed");
+                } else if(confirmPaymentCheck == 1){
+                    System.out.println("You have cancelled your payment.");
+                    payUniversityBill();
+                }
+
+                break;
+            case "3":
+                System.out.println("You have selected to pay with Credit/Debit Card.");
+                String cardNumber = Utils.getInput("\nPlease enter your card number: ");
+                String cardDate = Utils.getInput("\nPlease enter your card date (Ex: 10/12/27): ");
+                String cardName = Utils.getInput("\nPlease enter the full name that appears on the card: ");
+                String CVV = Utils.getInput("\nPlease enter your CVV: ");
+                System.out.println("\nIf you would like to cancel, please enter 1 on the following prompt");
+                int confirmPaymentCard = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+
+                if(confirmPaymentCard == getTotalUniversityBill()){
+                    System.out.println("Thank you!");
+                    System.out.println("Your card payment has been confirmed");
+                } else if(confirmPaymentCard == 1){
+                    System.out.println("You have cancelled your payment.");
+                    payUniversityBill();
+                }
+                break;
+            case "4":
+                System.out.println("You have selected to pay with Venmo/Paypal.");
+                String username = Utils.getInput("\nPlease enter your username: ");
+                System.out.println("\nIf you would like to cancel, please enter 1 on the following prompt");
+                int confirmPaymentOnline = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+
+                if(confirmPaymentOnline == getTotalUniversityBill()){
+                    System.out.println("Thank you!");
+                    System.out.println("Your card payment has been confirmed");
+                } else if(confirmPaymentOnline == 1){
+                    System.out.println("You have cancelled your payment.");
+                    payUniversityBill();
+                }
+                break;
+            case "5":
+                payUniversityBillMenu();
+                break;
+            default:
+                viewUniversityBillingOptions();
+                break;
+        }
+    }
+
+    public void payUniversityBillMenu(){
+        displayMessage("\nPay University Bill Menu: ");
+        displayMessage("1 Pay Bill");
+        displayMessage("2 Cancel (Go Back)");
+
+        String payBillMenuChoice = Utils.getInput("\nPlease select an option (Ex: 3): ");
+
+        switch (payBillMenuChoice){
+            case "1":
+                payUniversityBill();
+                break;
+            case "2":
+                viewUniversityBillingOptions();
+                break;
+            default:
+                payUniversityBillMenu();
+        }
     }
 
     /**
