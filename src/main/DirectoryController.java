@@ -7,6 +7,7 @@ import helpers.FileUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class DirectoryController implements DirectoryInterface {
     public static int ID_DIRECTORY = 0;
@@ -33,7 +34,8 @@ public class DirectoryController implements DirectoryInterface {
             insert(ID_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
             insert(NAME_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
             insert(EMAIL_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
-            this.departmentDirectory.put(instructor[3], new ArrayList<>());
+            if (!this.departmentDirectory.containsKey(instructor[3]))
+                this.departmentDirectory.put(instructor[3], new ArrayList<>());
             this.departmentDirectory.get(instructor[3]).add(new Directory.EndOfWordData(instructor[1], instructor[0], instructor[2], instructor[3]));
         }
 
@@ -45,9 +47,9 @@ public class DirectoryController implements DirectoryInterface {
         if (type == ID_DIRECTORY) {
             idDirecotry.insert(id, data);
         } else if (type == NAME_DIRECTORY) {
-            nameDirectory.insert(name.toLowerCase(), data);
+            nameDirectory.insert(name.toUpperCase(), data);
         } else if (type == EMAIL_DIRECTORY) {
-            emailDirectory.insert(email.toLowerCase(), data);
+            emailDirectory.insert(email.toUpperCase(), data);
         }
         return true;
     }
@@ -57,9 +59,9 @@ public class DirectoryController implements DirectoryInterface {
         if (type == ID_DIRECTORY) {
             return idDirecotry.search(word);
         } else if (type == NAME_DIRECTORY) {
-            return nameDirectory.search(word);
+            return nameDirectory.search(word.toUpperCase());
         } else if (type == EMAIL_DIRECTORY) {
-            return emailDirectory.search(word);
+            return emailDirectory.search(word.toUpperCase());
         }
         return null;
     }
@@ -84,9 +86,9 @@ public class DirectoryController implements DirectoryInterface {
     @Override
     public ArrayList<EndOfWordData> searchImpartial(String word, int type) {
         if (type == NAME_DIRECTORY) {
-            return nameDirectory.searchPartial(word);
+            return nameDirectory.searchPartial(word.toUpperCase());
         } else if (type == EMAIL_DIRECTORY) {
-            return emailDirectory.searchPartial(word);
+            return emailDirectory.searchPartial(word.toUpperCase());
         }
         return null;
     }

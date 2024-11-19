@@ -53,10 +53,10 @@ public class DirectoryDisplay {
         }
         String dept = Utils.getInput("Enter Department: ");
         for (Directory.EndOfWordData data : directoryController.getDepartmentDirectory().get(dept)) {
-            System.out.println("ID: " + data.getId());
-            System.out.println("Name: " + data.getName());
-            System.out.println("Email: " + data.getEmail());
-            System.out.println("Department: " + data.getDept());
+            System.out.println("\tID: " + data.getId());
+            System.out.println("\tName: " + data.getName());
+            System.out.println("\tEmail: " + data.getEmail());
+            System.out.println("\tDepartment: " + data.getDept()+"\n");
         }
     }
 
@@ -70,6 +70,10 @@ public class DirectoryDisplay {
             System.out.println("Email: " + data.getEmail());
             System.out.println("Department: " + data.getDept());
         } else {
+            if (email.length() < 3) {
+                System.out.println("Email not found. Please enter at least 3 characters for partial search.");
+                return;
+            }
             ArrayList<Directory.EndOfWordData> imparitalData = directoryController.searchImpartial(email, DirectoryController.EMAIL_DIRECTORY);
             if (imparitalData != null) {
                 System.out.println("Impartial search results:");
@@ -95,6 +99,10 @@ public class DirectoryDisplay {
             System.out.println("Email: " + data.getEmail());
             System.out.println("Department: " + data.getDept());
         } else {
+            if (name.length() < 3) {
+                System.out.println("Name not found. Please enter at least 3 characters for partial search.");
+                return;
+            }
             ArrayList<Directory.EndOfWordData> imparitalData = directoryController.searchImpartial(name, DirectoryController.NAME_DIRECTORY);
             if (imparitalData != null) {
                 System.out.println("Impartial search results:");
