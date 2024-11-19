@@ -84,7 +84,8 @@ public class Student extends User {
     public void setTuitionAmount(String amount) { this.tuitionAmount = amount; }
 
     public int getTotalUniversityBill(){
-        return getTuitionAmount() - getScholarshipAmount();
+        int temp = getTuitionAmount() - getScholarshipAmount();
+        return Math.max(temp, 0);
     }
 
     public int getStudentID(){
@@ -186,7 +187,6 @@ public class Student extends User {
 
         return "Department not found";
     }
-
 
     /**
      * Enrolls a student in a course (broken rn?)
@@ -342,7 +342,12 @@ public class Student extends User {
                 System.out.println("Your current Scholarships total: $" + getScholarshipAmount());
                 System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
 
-                payUniversityBillMenu();
+                if(getTotalUniversityBill() == 0){
+                    System.out.println("\nYou owe nothing for tuition, so there is no bill to pay! Congrats!");
+                    break;
+                } else {
+                    payUniversityBillMenu();
+                }
                 break;
             case "5":
                 displayStudentMenu();
@@ -428,6 +433,7 @@ public class Student extends User {
 
     public void payUniversityBill(){
         System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
+
         displayMessage("\nPlease Select a Payment Method: ");
         displayMessage("1 Cash");
         displayMessage("2 Check");
@@ -439,11 +445,12 @@ public class Student extends User {
 
         switch (paymentMethod){
             case "1":
-                    int confirmPayment = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+                int confirmPayment = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                    if(confirmPayment == getTotalUniversityBill()){
+                    if(confirmPayment <= getTotalUniversityBill() && (confirmPayment >=0)){
                         System.out.println("Thank you!");
                         System.out.println("Please deliver your cash to the Billing Center within 7 business days.");
+                        handleUniversityBillPayment(confirmPayment);
                     } else {
                         System.out.println("That was not correct, please try again");
                         payUniversityBill();
@@ -454,11 +461,12 @@ public class Student extends User {
                 String rountingNumber = Utils.getInput("\nPlease enter your routing number: ");
                 String accountNumber = Utils.getInput("\nPlease enter your account number: ");
                 System.out.println("IF you would like to cancel, please enter 1 on the following prompt");
-                int confirmPaymentCheck = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+                int confirmPaymentCheck = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                if(confirmPaymentCheck == getTotalUniversityBill()){
+                if(confirmPaymentCheck <= getTotalUniversityBill() && (confirmPaymentCheck >=0)){
                     System.out.println("Thank you!");
                     System.out.println("Your check has been confirmed");
+                    handleUniversityBillPayment(confirmPaymentCheck);
                 } else if(confirmPaymentCheck == 1){
                     System.out.println("You have cancelled your payment.");
                     payUniversityBill();
@@ -472,11 +480,12 @@ public class Student extends User {
                 String cardName = Utils.getInput("\nPlease enter the full name that appears on the card: ");
                 String CVV = Utils.getInput("\nPlease enter your CVV: ");
                 System.out.println("\nIf you would like to cancel, please enter 1 on the following prompt");
-                int confirmPaymentCard = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+                int confirmPaymentCard = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                if(confirmPaymentCard == getTotalUniversityBill()){
+                if(confirmPaymentCard <= getTotalUniversityBill() && (confirmPaymentCard >=0)){
                     System.out.println("Thank you!");
                     System.out.println("Your card payment has been confirmed");
+                    handleUniversityBillPayment(confirmPaymentCard);
                 } else if(confirmPaymentCard == 1){
                     System.out.println("You have cancelled your payment.");
                     payUniversityBill();
@@ -486,10 +495,11 @@ public class Student extends User {
                 System.out.println("You have selected to pay with Venmo/Paypal.");
                 String username = Utils.getInput("\nPlease enter your username: ");
                 System.out.println("\nIf you would like to cancel, please enter 1 on the following prompt");
-                int confirmPaymentOnline = Integer.parseInt(Utils.getInput("\nPlease confirm your payment amount by typing in your total University Bill Balance:"));
+                int confirmPaymentOnline = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                if(confirmPaymentOnline == getTotalUniversityBill()){
+                if(confirmPaymentOnline <= getTotalUniversityBill() && (confirmPaymentOnline >=0)){
                     System.out.println("Thank you!");
+                    handleUniversityBillPayment(confirmPaymentOnline);
                     System.out.println("Your card payment has been confirmed");
                 } else if(confirmPaymentOnline == 1){
                     System.out.println("You have cancelled your payment.");
@@ -515,6 +525,7 @@ public class Student extends User {
         switch (payBillMenuChoice){
             case "1":
                 payUniversityBill();
+                //TODO - Edit tuition and scholarship values after payment
                 break;
             case "2":
                 viewUniversityBillingOptions();
@@ -522,6 +533,21 @@ public class Student extends User {
             default:
                 payUniversityBillMenu();
         }
+    }
+
+    public void handleUniversityBillPayment(int amount){
+        int newStudentTuition = getTuitionAmount() - amount - getScholarshipAmount();
+
+        System.out.println("Your new University Bill balance is: $" + newStudentTuition);
+
+        //Set tuition amount to be the remaining total (if any)
+        setTuitionAmount(Integer.toString(newStudentTuition));
+
+        //Set apply for scholarship to 0 since the payment used their scholarship
+        setScholarshipAmount("0");
+
+        //update tuition and scholarship amount in students.txt file
+        updateStudentRecordInFile();
     }
 
     /**
