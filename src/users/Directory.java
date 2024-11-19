@@ -1,5 +1,6 @@
 package users;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Directory {
@@ -71,6 +72,43 @@ public class Directory {
             return current.data;
         } else {
             return null;
+        }
+    }
+
+    public ArrayList<EndOfWordData> searchPartial(String word) {
+        if (word == null || word.length() <= 2) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<EndOfWordData> results = new ArrayList<>();
+        TrieNode current = root;
+
+        // Traverse to the node corresponding to the word
+        for (int i = 0; i < word.length(); i++) {
+            char index = word.charAt(i);
+            if (!current.children.containsKey(index)) {
+                return results;
+            }
+            current = current.children.get(index);
+        }
+
+        // If we reached here, collect all EndOfWordData from this point
+        collectAllEndOfWordData(current, results);
+        return results;
+    }
+
+    private void collectAllEndOfWordData(TrieNode node, ArrayList<EndOfWordData> results) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.isEndOfWord && node.data != null) {
+            results.add(node.data);
+        }
+
+        // Recursively collect from all children
+        for (TrieNode child : node.children.values()) {
+            collectAllEndOfWordData(child, results);
         }
     }
 }

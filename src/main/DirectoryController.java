@@ -81,6 +81,16 @@ public class DirectoryController implements DirectoryInterface {
 
     }
 
+    @Override
+    public ArrayList<EndOfWordData> searchImpartial(String word, int type) {
+        if (type == NAME_DIRECTORY) {
+            return nameDirectory.searchPartial(word);
+        } else if (type == EMAIL_DIRECTORY) {
+            return emailDirectory.searchPartial(word);
+        }
+        return null;
+    }
+
     public HashMap<String, ArrayList<EndOfWordData>> getDepartmentDirectory() {
         return departmentDirectory;
     }

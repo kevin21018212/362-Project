@@ -9,4 +9,5 @@ public interface DirectoryInterface {
     EndOfWordData search(String word, int type);
     ArrayList<String[]> departmentSearch(String dept);
     void populateDepartmentDirectory();
+    ArrayList<EndOfWordData> searchImpartial(String word, int type);
 }

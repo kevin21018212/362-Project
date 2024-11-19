@@ -4,6 +4,8 @@ import helpers.Utils;
 import main.DirectoryController;
 import users.Directory;
 
+import java.util.ArrayList;
+
 public class DirectoryDisplay {
     private DirectoryController directoryController;
 
@@ -68,11 +70,44 @@ public class DirectoryDisplay {
             System.out.println("Email: " + data.getEmail());
             System.out.println("Department: " + data.getDept());
         } else {
-            System.out.println("Email not found");
+            ArrayList<Directory.EndOfWordData> imparitalData = directoryController.searchImpartial(email, DirectoryController.EMAIL_DIRECTORY);
+            if (imparitalData != null) {
+                System.out.println("Impartial search results:");
+                for (Directory.EndOfWordData d : imparitalData) {
+                    System.out.println("ID: " + d.getId());
+                    System.out.println("Name: " + d.getName());
+                    System.out.println("Email: " + d.getEmail());
+                    System.out.println("Department: " + d.getDept());
+                }
+            } else {
+                System.out.println("Email not found");
+            }
         }
     }
 
     private void searchByName() {
+        System.out.println("Search by Name");
+        String name = Utils.getInput("Enter Name: ");
+        Directory.EndOfWordData data = directoryController.search(name, DirectoryController.NAME_DIRECTORY);
+        if (data != null) {
+            System.out.println("ID: " + data.getId());
+            System.out.println("Name: " + data.getName());
+            System.out.println("Email: " + data.getEmail());
+            System.out.println("Department: " + data.getDept());
+        } else {
+            ArrayList<Directory.EndOfWordData> imparitalData = directoryController.searchImpartial(name, DirectoryController.NAME_DIRECTORY);
+            if (imparitalData != null) {
+                System.out.println("Impartial search results:");
+                for (Directory.EndOfWordData d : imparitalData) {
+                    System.out.println("ID: " + d.getId());
+                    System.out.println("Name: " + d.getName());
+                    System.out.println("Email: " + d.getEmail());
+                    System.out.println("Department: " + d.getDept());
+                }
+            } else {
+                System.out.println("Name not found");
+            }
+        }
     }
 
     private void searchByID() {
