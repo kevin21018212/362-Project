@@ -83,6 +83,9 @@ public class Student extends User {
     public int getTuitionAmount(){return Integer.parseInt(tuitionAmount);}
     public void setTuitionAmount(String amount) { this.tuitionAmount = amount; }
 
+    public int getTotalUniversityBill(){
+        return getTuitionAmount() - getScholarshipAmount();
+    }
 
     public int getStudentID(){
         return Integer.parseInt(id);
@@ -311,9 +314,10 @@ public class Student extends User {
     public void viewUniversityBillingOptions(){
         System.out.println("\nPlease Select an option regarding your University Bill or Scholarships:");
         displayMessage("1 View current University Tuition and Fees");
-        displayMessage("2 View current scholarship amount.");
+        displayMessage("2 View current awarded Scholarship amount.");
         displayMessage("3 Apply/Reapply for Tuition and Scholarships");
-        displayMessage("4 Return to Student Menu");
+        displayMessage("4 View and Pay your University Bill");
+        displayMessage("5 Return to Student Menu");
         String choice = Utils.getInput("Select an option: ");
         switch (choice) {
             case "1":
@@ -334,6 +338,12 @@ public class Student extends User {
                 viewUniversityBill();
                 break;
             case "4":
+                System.out.println("\nYour current Tuition/Fees total: $" + getTuitionAmount());
+                System.out.println("\nYour current Scholarships total: $" + getScholarshipAmount());
+                System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
+                //pay bill
+                break;
+            case "5":
                 displayStudentMenu();
                 break;
             default:
