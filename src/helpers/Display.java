@@ -1,12 +1,14 @@
 package helpers;
 
 import helpers.displays.MessageDisplay;
+
 import main.Course;
 import users.DataAccess;
 import users.Instructor;
 import users.Registrar;
 import users.Student;
 import main.Enrollment;
+import main.StudentHousing;
 
 
 
@@ -36,7 +38,8 @@ public class Display {
             displayMessage("8 View University Bill");
             displayMessage("9 View Extracurricular Activities");
             displayMessage("10 View Messages");
-            displayMessage("11 Logout\n");
+            displayMessage("11 Apply for Student Housing");
+            displayMessage("12 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -82,6 +85,11 @@ public class Display {
                     student.displayStudentExtracurricularMenu();
                     break;
                 case "11":
+                	assert student != null;
+                	StudentHousing sh = new StudentHousing(student.id);
+                	sh.apply();
+                	break;
+                case "12":
                    return;
                 default:
                     displayMessage("Bad Baka");
