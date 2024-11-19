@@ -10,10 +10,13 @@ import main.Submission;
 import helpers.FileUtils;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static helpers.Display.displayMessage;
 import static helpers.Display.displayStudentMenu;
@@ -80,6 +83,9 @@ public class Student extends User {
     public int getTuitionAmount(){return Integer.parseInt(tuitionAmount);}
     public void setTuitionAmount(String amount) { this.tuitionAmount = amount; }
 
+    public int getTotalUniversityBill(){
+        return getTuitionAmount() - getScholarshipAmount();
+    }
 
     public int getStudentID(){
         return Integer.parseInt(id);
@@ -308,9 +314,10 @@ public class Student extends User {
     public void viewUniversityBillingOptions(){
         System.out.println("\nPlease Select an option regarding your University Bill or Scholarships:");
         displayMessage("1 View current University Tuition and Fees");
-        displayMessage("2 View current scholarship amount.");
+        displayMessage("2 View current awarded Scholarship amount.");
         displayMessage("3 Apply/Reapply for Tuition and Scholarships");
-        displayMessage("4 Return to Student Menu");
+        displayMessage("4 View and Pay your University Bill");
+        displayMessage("5 Return to Student Menu");
         String choice = Utils.getInput("Select an option: ");
         switch (choice) {
             case "1":
@@ -331,6 +338,12 @@ public class Student extends User {
                 viewUniversityBill();
                 break;
             case "4":
+                System.out.println("\nYour current Tuition/Fees total: $" + getTuitionAmount());
+                System.out.println("\nYour current Scholarships total: $" + getScholarshipAmount());
+                System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
+                //pay bill
+                break;
+            case "5":
                 displayStudentMenu();
                 break;
             default:
@@ -774,9 +787,8 @@ public class Student extends User {
 
     public void viewGrades() {
         String enrollmentsFile = "src/data/enrollments.txt"; // Path to enrollments file
-        String assignmentsFile = "src/data/courses/assignments.txt"; // Path to assignments file
-        String submissionsFile = "src/data/courses/submissions.txt"; // Path to submissions file
-        boolean hasGrades = false;
+        String coursesFolder = "src/data/courses";          // Path to main courses folder
+        boolean hasCourses = false;
 
         Display.displayMessage("Your Grades:");
 
@@ -791,87 +803,72 @@ public class Student extends User {
 
                     // Check if the entry is for the current student
                     if (studentIdFromFile.equals(this.id)) {
-                        // Process the assignments for the current course
-                        List<String> grades = new ArrayList<>();
-                        List<String> assignmentIds = new ArrayList<>();
+                        // Paths for course-specific files
+                        String courseFolder = coursesFolder + "/" + courseId;
+                        String submissionsFile = courseFolder + "/submissions.txt";
+
+                        // Initialize variables for course-grade calculation
                         double totalGrade = 0;
                         int numAssignments = 0;
 
-                        try (BufferedReader assignmentsReader = new BufferedReader(new FileReader(assignmentsFile))) {
-                            String assignmentLine;
-                            while ((assignmentLine = assignmentsReader.readLine()) != null) {
-                                // Parse assignment data
-                                String[] assignmentData = assignmentLine.split("::");
-                                if (assignmentData.length >= 3) {
-                                    String assignmentId = assignmentData[0].trim();
-                                    String courseIdFromAssignment = assignmentData[1].trim();
+                        // Store grades for individual assignments
+                        Map<String, String> assignmentGrades = new LinkedHashMap<>(); // AssignmentID -> Grade
 
-                                    // Check if this assignment belongs to the current course
-                                    if (courseId.equals(courseIdFromAssignment)) {
-                                        // Look for the student's submission for this assignment
-                                        try (BufferedReader submissionsReader = new BufferedReader(new FileReader(submissionsFile))) {
-                                            String submissionLine;
-                                            while ((submissionLine = submissionsReader.readLine()) != null) {
-                                                String[] submissionData = submissionLine.split("::");
+                        // Read submissions for the current course
+                        try (BufferedReader submissionsReader = new BufferedReader(new FileReader(submissionsFile))) {
+                            String submissionLine;
+                            while ((submissionLine = submissionsReader.readLine()) != null) {
+                                String[] submissionDetails = submissionLine.split("::");
+                                if (submissionDetails.length >= 5) {
+                                    String submissionStudentId = submissionDetails[2].trim();
+                                    String assignmentId = submissionDetails[1].trim();
+                                    String gradeStr = submissionDetails[3].trim();
 
-                                                // Check if the submission is from the current student and matches the assignment
-                                                if (submissionData.length >= 4 && submissionData[2].equals(this.id) && submissionData[1].equals(assignmentId)) {
-                                                    String gradeStr = submissionData[3];
+                                    // Filter submissions for the current student
+                                    if (submissionStudentId.equals(this.id)) {
+                                        try {
+                                            double grade = Double.parseDouble(gradeStr);
+                                            totalGrade += grade; // Add to total grade
+                                            numAssignments++;    // Increment assignment count
 
-                                                    // If the grade is numeric, add it to the total and increment assignment count
-                                                    try {
-                                                        double grade = Double.parseDouble(gradeStr);
-                                                        grades.add(gradeStr);
-                                                        assignmentIds.add(assignmentId);
-
-                                                        totalGrade += grade;  // Add grade to total
-                                                        numAssignments++;     // Increment the assignment counter
-                                                    } catch (NumberFormatException e) {
-                                                        // Skip invalid grades
-                                                        Display.displayMessage("Invalid grade for submission " + submissionData[0]);
-                                                    }
-                                                }
-                                            }
-                                        } catch (IOException e) {
-                                            Display.displayMessage("Error reading submissions file.");
-                                            e.printStackTrace();
+                                            assignmentGrades.put(assignmentId, gradeStr); // Store grade
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Invalid grade for submission: " + submissionDetails[0]);
                                         }
                                     }
                                 }
                             }
-                        } catch (IOException e) {
-                            Display.displayMessage("Error reading assignments file.");
-                            e.printStackTrace();
+                        } catch (FileNotFoundException e) {
+                            Display.displayMessage("No submissions found for course " + courseId + ".");
                         }
 
-                        // Calculate the average grade for the course if any assignments were submitted
-                        if (numAssignments > 0) {
-                            double averageGrade = totalGrade / numAssignments;
-                            String letterGrade = getLetterGrade(averageGrade);
-
-                            // Display the grades for this course
-                            Display.displayMessage("\nGrades for Course " + courseId + ":");
-                            for (int i = 0; i < grades.size(); i++) {
-                                Display.displayMessage("Assignment ID: " + assignmentIds.get(i) + " - Grade: " + grades.get(i));
+                        // Display individual assignment grades
+                        if (!assignmentGrades.isEmpty()) {
+                            Display.displayMessage("\nCourse: " + courseId);
+                            for (Map.Entry<String, String> entry : assignmentGrades.entrySet()) {
+                                Display.displayMessage("   Assignment " + entry.getKey() + " - Grade: " + entry.getValue());
                             }
 
-                            // Display the average grade for the course as a letter grade
-                            Display.displayMessage("\nAverage Grade for Course " + courseId + ": " + averageGrade + " (" + letterGrade + ")");
-                            hasGrades = true;
+                            // Calculate and display the course average
+                            double averageGrade = totalGrade / numAssignments;
+                            String letterGrade = getLetterGrade(averageGrade);
+                            Display.displayMessage("   Course Average: " + averageGrade + " (" + letterGrade + ")");
+                            hasCourses = true;
                         } else {
-                            Display.displayMessage("No grades found for course " + courseId + ".");
+                            Display.displayMessage("\nCourse: " + courseId);
+                            Display.displayMessage("   No grades found for this course.");
                         }
                     }
                 }
             }
         } catch (IOException e) {
-            Display.displayMessage("Error reading enrollments file.");
+            Display.displayMessage("Error reading enrollments or course files.");
             e.printStackTrace();
         }
 
-        // If no grades are found for the student
-        if (!hasGrades) {
-            Display.displayMessage("You have not received any grades for your enrolled courses.");
+        // If no courses are found for the student
+        if (!hasCourses) {
+            Display.displayMessage("You are not enrolled in any courses.");
         }
     }
 
@@ -894,7 +891,6 @@ public class Student extends User {
             return "F";
         }
     }
-
 
 
     public void applyForGraduation() {
