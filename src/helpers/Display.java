@@ -86,7 +86,7 @@ public class Display {
                     assert student != null;
                     student.displayStudentExtracurricularMenu();
                     break;
-                case "69":
+                case "12":
                     assert student != null;
                     DirectoryDisplay directoryDisplay = new DirectoryDisplay();
                     directoryDisplay.displayDirectoryMenu();
@@ -96,7 +96,7 @@ public class Display {
                 	StudentHousing sh = new StudentHousing(student.id);
                 	sh.apply();
                 	break;
-                case "12":
+                case "13":
                    return;
                 default:
                     displayMessage("Bad Baka");
@@ -124,6 +124,7 @@ public class Display {
             displayMessage("3 View Messages");
             displayMessage("5 Logout");
             displayMessage("4 Create Course");  // New option to create a course
+            displayMessage("6 Directory");
             String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
@@ -141,6 +142,10 @@ public class Display {
                     return;
                 case "4":  // New case to create a course
                     instructor.createCourse();
+                    break;
+                case "6":
+                    DirectoryDisplay directoryDisplay = new DirectoryDisplay();
+                    directoryDisplay.displayDirectoryMenu();
                     break;
                 default:
                     displayMessage("Bad Baka");
