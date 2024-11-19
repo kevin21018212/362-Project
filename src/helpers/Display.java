@@ -77,8 +77,8 @@ public class Display {
                     break;
                 case "10":
                     assert student != null;
-                    //MessageDisplay messageDisplay = new MessageDisplay(student.getId(), student.getName());
-                    //messageDisplay.displayMessageMenu();
+                    MessageDisplay messageDisplay = new MessageDisplay(student.getId(), student.getName());
+                    messageDisplay.displayMessageMenu();
                     break;
                 case "9":
                     assert student != null;
