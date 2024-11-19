@@ -9,15 +9,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Controller class for managing different types of directories (ID, Name, Email, Department).
+ * Implements the DirectoryInterface for directory operations.
+ */
 public class DirectoryController implements DirectoryInterface {
+    /** Constant for ID directory type */
     public static int ID_DIRECTORY = 0;
+    /** Constant for Name directory type */
     public static int NAME_DIRECTORY = 1;
+    /** Constant for Email directory type */
     public static int EMAIL_DIRECTORY = 2;
+
     private Directory idDirecotry;
     private Directory nameDirectory;
     private Directory emailDirectory;
     private HashMap<String, ArrayList<Directory.EndOfWordData>> departmentDirectory;
 
+    /**
+     * Constructor initializes directories and loads data from files.
+     * Creates separate directories for IDs, names, and emails.
+     * Loads both student and instructor data from respective files.
+     */
     public DirectoryController() {
         this.idDirecotry = new Directory();
         this.nameDirectory = new Directory();
@@ -25,11 +38,15 @@ public class DirectoryController implements DirectoryInterface {
         this.departmentDirectory = new HashMap<>();
         List<String[]> students = FileUtils.readStructuredData("", "students.txt");
         List<String[]> instructors = FileUtils.readStructuredData("", "instructors.txt");
+
+        // Insert student data
         for (String[] student : students) {
             insert(ID_DIRECTORY, student[0], student[1], student[2], "Stud");
             insert(NAME_DIRECTORY, student[0], student[1], student[2], "Stud");
             insert(EMAIL_DIRECTORY, student[0], student[1], student[2], "Stud");
         }
+
+        // Insert instructor data
         for (String[] instructor : instructors) {
             insert(ID_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
             insert(NAME_DIRECTORY, instructor[0], instructor[1], instructor[2], instructor[3]);
@@ -38,9 +55,17 @@ public class DirectoryController implements DirectoryInterface {
                 this.departmentDirectory.put(instructor[3], new ArrayList<>());
             this.departmentDirectory.get(instructor[3]).add(new Directory.EndOfWordData(instructor[1], instructor[0], instructor[2], instructor[3]));
         }
-
     }
 
+    /**
+     * Inserts a new entry into the specified directory type.
+     * @param type The type of directory (ID, NAME, or EMAIL)
+     * @param id The ID of the person
+     * @param name The name of the person
+     * @param email The email of the person
+     * @param dept The department of the person
+     * @return true if insertion is successful
+     */
     @Override
     public boolean insert(int type, String id, String name, String email, String dept) {
         Directory.EndOfWordData data = new Directory.EndOfWordData(name, id, email, dept);
@@ -54,6 +79,12 @@ public class DirectoryController implements DirectoryInterface {
         return true;
     }
 
+    /**
+     * Searches for an exact match in the specified directory type.
+     * @param word The search term
+     * @param type The type of directory to search in
+     * @return EndOfWordData object if found, null otherwise
+     */
     @Override
     public EndOfWordData search(String word, int type) {
         if (type == ID_DIRECTORY) {
@@ -66,23 +97,12 @@ public class DirectoryController implements DirectoryInterface {
         return null;
     }
 
-    @Override
-    public ArrayList<String[]> departmentSearch(String dept) {
-        if (this.departmentDirectory.containsKey(dept)) {
-            ArrayList<String[]> result = new ArrayList<>();
-            for (Directory.EndOfWordData data : this.departmentDirectory.get(dept)) {
-                result.add(new String[]{data.getId(), data.getName(), data.getEmail()});
-            }
-            return result;
-        }
-        return null;
-    }
-
-    @Override
-    public void populateDepartmentDirectory() {
-
-    }
-
+    /**
+     * Performs a partial search in the specified directory type.
+     * @param word The partial search term
+     * @param type The type of directory to search in
+     * @return ArrayList of EndOfWordData objects matching the partial search
+     */
     @Override
     public ArrayList<EndOfWordData> searchImpartial(String word, int type) {
         if (type == NAME_DIRECTORY) {
@@ -93,6 +113,11 @@ public class DirectoryController implements DirectoryInterface {
         return null;
     }
 
+    /**
+     * Gets the department directory.
+     * @return HashMap containing department-wise directory data
+     */
+    @Override
     public HashMap<String, ArrayList<EndOfWordData>> getDepartmentDirectory() {
         return departmentDirectory;
     }
