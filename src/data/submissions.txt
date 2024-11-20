@@ -1,5 +1,0 @@
-SubmissionId::AssignmentId::StudentId::Grade::SubmittedDate##
-sub_003::A101::1234::C::2024-11-20##
-sub_005::A101::5678::78::2024-11-12##
-sub_006::A102::5678::82::2024-11-19##
-sub_1731898399511::A102::1234::Not Graded::2024-11-17##

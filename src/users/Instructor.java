@@ -86,14 +86,6 @@ public class Instructor extends User {
     }
 
 
-    // parse prerequisites from a comma-separated string
-    private List<String> parsePrerequisites(String prereqsInput) {
-        List<String> prerequisites = new ArrayList<>();
-        for (String prereq : prereqsInput.split(",")) {
-            prerequisites.add(prereq.trim());
-        }
-        return prerequisites;
-    }
 
 
     public void gradeAssignments() {

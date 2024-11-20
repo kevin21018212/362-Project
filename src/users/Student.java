@@ -3,10 +3,7 @@ package users;
 import helpers.Display;
 import helpers.User;
 import helpers.Utils;
-import main.Assignment;
-import main.Course;
-import main.Enrollment;
-import main.Submission;
+import main.*;
 import helpers.FileUtils;
 
 import java.io.BufferedReader;
@@ -123,43 +120,8 @@ public class Student extends User {
     }
 
 
-    public List<String> getMajors(String department) {
-        List<String[]> data = FileUtils.readStructuredData("", "majors.txt");
-        List<String> majors = new ArrayList<>();
 
-        for (String[] row : data) {
-            if (row.length > 0 && row[0].trim().equalsIgnoreCase(department)) {
-                if (row.length > 1) {
-                    String majorsStr = row[1].trim();
-                    // Remove brackets and split by comma
-                    majorsStr = majorsStr.replaceAll("[\\[\\]]", ""); // Remove [ and ]
-                    String[] majorArray = majorsStr.split(",");
 
-                    // Add each major to the list, trimming whitespace
-                    for (String major : majorArray) {
-                        majors.add(major.trim());
-                    }
-                }
-                break;
-            }
-        }
-        return majors;
-    }
-
-    /**
-     * @return a List of the available departments
-     */
-    public List<String> getAllDepartments() {
-        List<String[]> data = FileUtils.readStructuredData("", "departments.txt");
-        List<String> departmentNames = new ArrayList<>();
-
-        for (String[] row : data) {
-            if (row.length > 0) {
-                departmentNames.add(row[0].trim());
-            }
-        }
-        return departmentNames;
-    }
 
     /**
      * @return A simple string of the department the student's major is a part of
@@ -298,7 +260,7 @@ public class Student extends User {
      * @param department
      */
     public void displayMajors(String department) {
-        List<String> majors = getMajors(department);
+        List<String> majors = Major.getMajors(department);
         System.out.println("Majors in " + department + " Department:");
         majors.forEach(System.out::println);
     }
@@ -308,7 +270,7 @@ public class Student extends User {
      */
     public void displayDepartmentNames() {
         System.out.println("\nDepartments Available:");
-        getAllDepartments().forEach(Display::displayMessage);
+        Major.getAllDepartments().forEach(Display::displayMessage);
     }
 
     public void viewUniversityBillingOptions(){
@@ -842,6 +804,7 @@ public class Student extends User {
     }
 
     public void submitAssignment() {
+        Course.loadCourses();
         // Display all enrolled courses for the student
         Enrollment.displayAllEnrolledCourses(this.id);
 
@@ -898,7 +861,7 @@ public class Student extends User {
             existingSubmissions.add(submissionData);
 
             // Write back to file with headers
-            FileUtils.writeStructuredData("", fileName,
+            FileUtils.writeStructuredData(directory, fileName,
                     new String[]{"SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"},
                     existingSubmissions);
 
