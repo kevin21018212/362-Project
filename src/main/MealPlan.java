@@ -79,8 +79,7 @@ public class MealPlan {
 
     public String getPlanDetails() {
         return "Meal Plan: " + planName +
-               " Meals per Week: " + mealsPerWeek +
-               " Student ID: " + studentID;
+               " Meals per Week: " + mealsPerWeek;
     }
 }
 
