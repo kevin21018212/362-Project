@@ -992,21 +992,22 @@ public class Student extends User {
         }
 
         //4: remaining courses -> required - enrolled courses
-        Set<String> completedCourses = new HashSet<>(enrolledCourses);
-        Set<String> remainingCourses = new HashSet<>(requiredCourses);
-        remainingCourses.removeAll(completedCourses);
-
+        Set<String> remainingCourses = calculateRemainingCourses(requiredCourses, enrolledCourses);
         //5. Display academic progress report
+        displayAcademicProgressReport(enrolledCourses,remainingCourses);
+    }
+
+    private void displayAcademicProgressReport(List<String> enrolledCourses, Set<String> remainingCourses) {
         displayMessage("\n--- Academic Progress Report ---");
         displayMessage("Student Name: " + this.name);
         displayMessage("Student ID: " + this.id);
         displayMessage("Major: " + this.major);
 
         displayMessage("\nCompleted Courses:");
-        if (completedCourses.isEmpty()) {
+        if (enrolledCourses.isEmpty()) {
             displayMessage("   None");
         } else {
-            for (String courseId : completedCourses) {
+            for (String courseId : enrolledCourses) {
                 Course course = Course.findCourseById(courseId);
                 String courseName = (course != null) ? course.getName() : "Course Not Found";
                 displayMessage("   " + courseId + ": " + courseName);
@@ -1023,6 +1024,14 @@ public class Student extends User {
                 displayMessage("   " + courseId + ": " + courseName);
             }
         }
+    }
+
+
+    private Set<String> calculateRemainingCourses(List<String> requiredCourses, List<String> enrolledCourses) {
+        Set<String> completedCourses = new HashSet<>(enrolledCourses);
+        Set<String> remainingCourses = new HashSet<>(requiredCourses);
+        remainingCourses.removeAll(completedCourses);
+        return remainingCourses;
     }
 
     public void applyForGraduation() {
