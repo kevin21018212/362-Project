@@ -79,6 +79,18 @@ public class Enrollment {
         }
     }
 
+    public static List<String> getEnrolledCourses(String studentId) {
+        List<String> enrolledCourses = new ArrayList<>();
+        List<Enrollment> enrollments = Enrollment.loadEnrollments();
+
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment.getStudentId().equals(studentId)) {
+                enrolledCourses.add(enrollment.getCourseId());
+            }
+        }
+        return enrolledCourses;
+    }
+
     public static boolean checkPrerequisites(String studentId, Course course) {
         List<String> prerequisites = course.getPrerequisites();
 

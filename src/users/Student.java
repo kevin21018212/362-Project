@@ -10,10 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static helpers.Display.displayMessage;
 import static helpers.Display.displayStudentMenu;
@@ -970,7 +967,63 @@ public class Student extends User {
             return "F";
         }
     }
+    public void trackAcademicProgress() {
+        // Step 1: Retrieve the student's major
+        if (this.major == null || this.major.isEmpty()) {
+            displayMessage("Major information is incomplete or missing. Please contact the registrar.");
+            return; // Alternate Flow: Major Not Found
+        }
 
+        Major majorHelper = new Major();
+
+        Course.allCourses = Course.loadCourses();
+        // Step 2: Fetch the list of courses the student has enrolled in
+        List<String> enrolledCourses = Enrollment.getEnrolledCourses(this.id);
+        if (enrolledCourses.isEmpty()) {
+            displayMessage("No enrollment data available. Please ensure your courses are properly recorded.");
+            return; // Alternate Flow: Enrollment Data Missing
+        }
+
+        // Step 3: Retrieve the major-specific requirements from majorCourses.txt
+        List<String> requiredCourses = majorHelper.getCoursesByMajor(this.major);
+        if (requiredCourses.isEmpty()) {
+            displayMessage("Degree requirements are incomplete. Please contact your academic advisor.");
+            return; // Alternate Flow: Incomplete Major Requirements
+        }
+
+        // Step 4: Compare enrolled courses against the major’s requirements
+        Set<String> completedCourses = new HashSet<>(enrolledCourses);
+        Set<String> remainingCourses = new HashSet<>(requiredCourses);
+        remainingCourses.removeAll(completedCourses);
+
+        // Step 5: Display the academic progress report
+        displayMessage("\n--- Academic Progress Report ---");
+        displayMessage("Student Name: " + this.name);
+        displayMessage("Student ID: " + this.id);
+        displayMessage("Major: " + this.major);
+
+        displayMessage("\nCompleted Courses:");
+        if (completedCourses.isEmpty()) {
+            displayMessage("   None");
+        } else {
+            for (String courseId : completedCourses) {
+                Course course = Course.findCourseById(courseId);
+                String courseName = (course != null) ? course.getName() : "Course Not Found";
+                displayMessage("   " + courseId + ": " + courseName);
+            }
+        }
+
+        displayMessage("\nRemaining Courses:");
+        if (remainingCourses.isEmpty()) {
+            displayMessage("   All major requirements have been completed. Congratulations!");
+        } else {
+            for (String courseId : remainingCourses) {
+                Course course = Course.findCourseById(courseId);
+                String courseName = (course != null) ? course.getName() : "Course Not Found";
+                displayMessage("   " + courseId + ": " + courseName);
+            }
+        }
+    }
 
     public void applyForGraduation() {
         // Sample requirements for graduation
@@ -1006,6 +1059,7 @@ public class Student extends User {
         // Placeholder - Implement logic to calculate GPA based on course grades
         return 3.0; // Example return value for eligibility
     }
+
 
     public void markGraduationApplication() {
         // Implement logic to mark graduation application status

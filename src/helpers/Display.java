@@ -58,8 +58,9 @@ public class Display {
             displayMessage("\nAcademic Records:");
             displayMessage("1 View or Change Major");
             displayMessage("2 View Grades");
-            displayMessage("3 Apply for Graduation");
-            displayMessage("4 Back to Main Menu");
+            displayMessage("3 View Academic Progress");
+            displayMessage("4 Apply for Graduation");
+            displayMessage("5 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -70,9 +71,12 @@ public class Display {
                     student.viewGrades();
                     break;
                 case "3":
-                    student.applyForGraduation();
+                    student.trackAcademicProgress();
                     break;
                 case "4":
+                    student.applyForGraduation();
+                    break;
+                case "5":
                     return; // Back to main menu
                 default:
                     displayMessage("Invalid option");

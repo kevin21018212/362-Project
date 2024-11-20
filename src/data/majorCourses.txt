@@ -1,3 +1,4 @@
 Mathematics::[Calculus I, Calculus II, Linear Algebra, Abstract Algebra]##
 Computer Science::[Intro to Programming, Data Structures, Algorithms, Operating Systems]##
 Biology::[General Biology, Genetics, Microbiology, Ecology]##
+ComputerScience::[CS101, CS201, CS301, MATH101, MATH201]##
