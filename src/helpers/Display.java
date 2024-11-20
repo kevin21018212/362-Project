@@ -10,6 +10,7 @@ import users.Student;
 import main.Enrollment;
 import helpers.displays.DirectoryDisplay;
 import main.StudentHousing;
+import main.MealPlan;
 
 
 
@@ -121,7 +122,8 @@ public class Display {
             displayMessage("\nFinancial Services:");
             displayMessage("1 View University Bill");
             displayMessage("2 Apply for Student Housing");
-            displayMessage("3 Back to Main Menu");
+            displayMessage("3 Register for Meal Plan");
+            displayMessage("4 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -133,7 +135,10 @@ public class Display {
                     sh.apply();
                     break;
                 case "3":
-                    return; // Go back to the main menu
+                    MealPlan.chooseMealPlan(student.id);
+                    break;
+                case "4":
+                    return;
                 default:
                     displayMessage("Invalid option");
             }

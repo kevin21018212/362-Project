@@ -1,4 +1,3 @@
-1234::Friley Hall::SINGLE::None##
 6969::Maple Hall::DOUBLE::Service animal allowed##
 7828::Willow Hall::SUITE::Wheelchair accessible room##
-6969::Friley Hall::SINGLE::Wheelchair accessible room##
+1234::Linden Hall::SINGLE::Religious Accommodations##
