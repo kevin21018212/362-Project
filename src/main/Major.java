@@ -40,11 +40,11 @@ public class Major {
             if (row.length > 0 && row[0].trim().equalsIgnoreCase(department)) {
                 if (row.length > 1) {
                     String majorsStr = row[1].trim();
-                    // Remove brackets and split by commas
+                    // remove brackets and split by commas
                     majorsStr = majorsStr.replaceAll("[\\[\\]]", "");
                     String[] majorArray = majorsStr.split(",");
 
-                    // Add each major to the list, trimming whitespace
+                    // sdd each major to the list,
                     for (String major : majorArray) {
                         majors.add(major.trim());
                     }
@@ -80,11 +80,11 @@ public class Major {
                 String departmentName = row[0].trim();
                 String majorsList = row[1].trim();
 
-                // Remove the square brackets and split by commas
+                // remove brackets and split by commas
                 majorsList = majorsList.replaceAll("[\\[\\]]", "");
                 String[] majors = majorsList.split(",");
 
-                // Check if the specified major is in the majors array
+                // check if the major is in array
                 for (String m : majors) {
                     if (m.trim().equalsIgnoreCase(major)) {
                         return departmentName;
@@ -109,11 +109,11 @@ public class Major {
             if (row.length > 0 && row[0].trim().equalsIgnoreCase(major)) {
                 if (row.length > 1) {
                     String coursesStr = row[1].trim();
-                    // Remove brackets and split by commas
+                    // remove brackets and split by commas
                     coursesStr = coursesStr.replaceAll("[\\[\\]]", "");
                     String[] courseArray = coursesStr.split(",");
 
-                    // Add each course to the list, trimming whitespace
+                    // add each course to the list,
                     for (String course : courseArray) {
                         courses.add(course.trim());
                     }

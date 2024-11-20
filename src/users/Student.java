@@ -968,7 +968,7 @@ public class Student extends User {
         }
     }
     public void trackAcademicProgress() {
-        // Step 1: Retrieve the student's major
+        //1. retrieve student major
         if (this.major == null || this.major.isEmpty()) {
             displayMessage("Major information is incomplete or missing. Please contact the registrar.");
             return; // Alternate Flow: Major Not Found
@@ -977,26 +977,26 @@ public class Student extends User {
         Major majorHelper = new Major();
 
         Course.allCourses = Course.loadCourses();
-        // Step 2: Fetch the list of courses the student has enrolled in
+        // 2. fetch the list of student enrolled courses
         List<String> enrolledCourses = Enrollment.getEnrolledCourses(this.id);
         if (enrolledCourses.isEmpty()) {
             displayMessage("No enrollment data available. Please ensure your courses are properly recorded.");
             return; // Alternate Flow: Enrollment Data Missing
         }
 
-        // Step 3: Retrieve the major-specific requirements from majorCourses.txt
+        // 3. get all the required courses from the major
         List<String> requiredCourses = majorHelper.getCoursesByMajor(this.major);
         if (requiredCourses.isEmpty()) {
             displayMessage("Degree requirements are incomplete. Please contact your academic advisor.");
             return; // Alternate Flow: Incomplete Major Requirements
         }
 
-        // Step 4: Compare enrolled courses against the major’s requirements
+        //4: remaining courses -> required - enrolled courses
         Set<String> completedCourses = new HashSet<>(enrolledCourses);
         Set<String> remainingCourses = new HashSet<>(requiredCourses);
         remainingCourses.removeAll(completedCourses);
 
-        // Step 5: Display the academic progress report
+        //5. Display academic progress report
         displayMessage("\n--- Academic Progress Report ---");
         displayMessage("Student Name: " + this.name);
         displayMessage("Student ID: " + this.id);

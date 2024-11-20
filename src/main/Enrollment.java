@@ -22,7 +22,6 @@ public class Enrollment {
 
     public String getStudentId() { return studentId; }
     public String getCourseId() { return courseId; }
-
     @Override
     public String toString() {
         return studentId + "::" + courseId;
@@ -76,7 +75,6 @@ public class Enrollment {
             }
         }
     }
-
 
     public static List<String> getEnrolledCourses(String studentId) {
         List<String> enrolledCourses = new ArrayList<>();
