@@ -57,15 +57,13 @@ public class Enrollment {
     }
 
     public static void displayAllEnrolledCourses(String studentId) {
-        List<Enrollment> enrollments = loadEnrollments();
+        List<String> enrolledCourseIds = getEnrolledCourses(studentId);
         List<Course> enrolledCourses = new ArrayList<>();
 
-        for (Enrollment enrollment : enrollments) {
-            if (enrollment.getStudentId().equals(studentId)) {
-                Course course = Course.findCourseById(enrollment.getCourseId());
-                if (course != null) {
-                    enrolledCourses.add(course);
-                }
+        for (String courseId : enrolledCourseIds) {
+            Course course = Course.findCourseById(courseId);
+            if (course != null) {
+                enrolledCourses.add(course);
             }
         }
 
@@ -78,6 +76,7 @@ public class Enrollment {
             }
         }
     }
+
 
     public static List<String> getEnrolledCourses(String studentId) {
         List<String> enrolledCourses = new ArrayList<>();
