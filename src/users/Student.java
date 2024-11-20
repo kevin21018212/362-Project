@@ -195,6 +195,8 @@ public class Student extends User {
      * Initial display options for changing major, viewing major/department
      */
     public void changeMajorDisplay() {
+        Major majorHelper = new Major();
+
         System.out.println("1. View Major");
         System.out.println("2. Change Major");
         System.out.println("3. View Department");
@@ -206,10 +208,11 @@ public class Student extends User {
                 displayMessage("Your current Major is: " + getMajor());
                 break;
             case "2":
-                handleMajorChange();
+                handleMajorChange(majorHelper);
                 break;
             case "3":
-                displayMessage("Your current Department is: " + getStudentDepartment());
+                String department = majorHelper.getDepartmentByMajor(this.major);
+                displayMessage("Your current Department is: " + department);
                 break;
             case "4":
                 Display.displayStudentMenu();
@@ -223,7 +226,7 @@ public class Student extends User {
      * Handles the logic and user walkthrough of changing the logged-in student's major.
      * Also updates the students.txt file with any changes to their major
      */
-    private void handleMajorChange() {
+    private void handleMajorChange(Major majorHelper) {
         displayMessage("Your current Major is: " + getMajor());
         System.out.println("1. Type 1 to change your major.");
         System.out.println("2. Press 2 for No, go back.");
@@ -233,19 +236,22 @@ public class Student extends User {
             boolean selectingMajor = true;
             while (selectingMajor) {
                 System.out.println("Changing your major...");
-                displayDepartmentNames();
+                List<String> departments = majorHelper.getAllDepartments();
+                System.out.println("\nDepartments Available:");
+                departments.forEach(Display::displayMessage);
+
                 String departmentName = Utils.getInput("\nSelect a department or type 'back' to cancel:");
 
                 if (departmentName.equalsIgnoreCase("back")) {
                     break;
                 }
 
-                displayMajors(departmentName);
+                majorHelper.displayMajors(departmentName);
                 String selectedMajor = Utils.getInput("\nSelect a major or type 'back' for departments:");
 
-                if (selectedMajor.equals("1")) {
-                    selectingMajor = false;
-                } else if (!selectedMajor.equalsIgnoreCase("back")) {
+                if (selectedMajor.equalsIgnoreCase("back")) {
+                    continue;
+                } else {
                     setMajor(selectedMajor);
                     updateStudentRecordInFile();
                     displayMessage("Your new Major is: " + getMajor());
@@ -255,23 +261,8 @@ public class Student extends User {
         }
     }
 
-    /**
-     * Displays a list of all the available majors for the specified majors
-     * @param department
-     */
-    public void displayMajors(String department) {
-        List<String> majors = Major.getMajors(department);
-        System.out.println("Majors in " + department + " Department:");
-        majors.forEach(System.out::println);
-    }
 
-    /**
-     * Displays a list of all the available departments
-     */
-    public void displayDepartmentNames() {
-        System.out.println("\nDepartments Available:");
-        Major.getAllDepartments().forEach(Display::displayMessage);
-    }
+
 
     public void viewUniversityBillingOptions(){
         System.out.println("\nPlease Select an option regarding your University Bill or Scholarships:");
