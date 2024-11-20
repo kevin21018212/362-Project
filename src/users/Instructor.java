@@ -33,7 +33,7 @@ public class Instructor extends User {
     public void createCourse() {
         Scanner scanner = new Scanner(System.in);
         Course.displayAllCourses();
-        //Check if courseId already exists
+        // Check if courseId already exists
         Display.displayMessage("Enter Course ID:");
         String courseId = scanner.nextLine().trim();
         if (Course.findCourseById(courseId) != null) {
@@ -41,15 +41,13 @@ public class Instructor extends User {
             return;
         }
 
-
         Display.displayMessage("Enter Course Name:");
         String courseName = scanner.nextLine().trim();
 
-
-        //Check each prereq by id
+        // Check each prereq by id
         Display.displayMessage("Enter prerequisite courses (comma-separated IDs):");
         String prerequisite = scanner.nextLine().trim();
-        List<String> prerequisites = parsePrerequisites(prerequisite);
+        List<String> prerequisites = Course.parsePrerequisites(prerequisite);
         for (String prereq : prerequisites) {
             if (Course.findCourseById(prereq) == null) {
                 Display.displayMessage("Prerequisite course with ID " + prereq + " does not exist.");
@@ -57,8 +55,7 @@ public class Instructor extends User {
             }
         }
 
-
-        // Step 5: Enter Class Capacity and validate it
+        // Enter Class Capacity and validate it
         Display.displayMessage("Enter class capacity:");
         int classSize;
         try {
@@ -72,14 +69,13 @@ public class Instructor extends User {
             return;
         }
 
-        //Create new Course object
-        Course newCourse = new Course(courseId, courseName,super.id, prerequisites, 0, classSize);
+        // Create new Course object
+        Course newCourse = new Course(courseId, courseName, super.id, prerequisites, 0, classSize);
         allCourses.add(newCourse);
         Display.displayMessage("Course created successfully with ID: " + newCourse.getId());
 
-        //Make a list of assignments
+        // Make a list of assignments
         List<Assignment> assignments = Assignment.createAssignments(courseId);
-
 
         if (Course.createCourseDirectoryAndFiles(courseId, assignments)) {
             Display.displayMessage("Course and assignments created successfully.");
@@ -88,6 +84,7 @@ public class Instructor extends User {
             Display.displayMessage("Failed to create course directory or files. Please try again.");
         }
     }
+
 
     // parse prerequisites from a comma-separated string
     private List<String> parsePrerequisites(String prereqsInput) {
