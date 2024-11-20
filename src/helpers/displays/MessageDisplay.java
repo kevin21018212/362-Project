@@ -125,5 +125,4 @@ public class MessageDisplay {
                 System.out.println("Invalid option");
         }
     }
-
 }

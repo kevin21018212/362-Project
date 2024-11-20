@@ -1,6 +1,6 @@
 Geoffrey Hall::100::100##
-Friley Hall::200::51##
+Friley Hall::200::52##
 Maple Hall::150::36##
-Willow Hall::120::41##
+Willow Hall::120::42##
 Larch Hall::180::60##
 Linden Hall::140::21##
