@@ -993,7 +993,7 @@ public class Student extends User {
 
         //4: remaining courses -> required - enrolled courses
         Set<String> remainingCourses = calculateRemainingCourses(requiredCourses, enrolledCourses);
-        //5. Display academic progress report
+        //5. display academic progress report
         displayAcademicProgressReport(enrolledCourses,remainingCourses);
     }
 
