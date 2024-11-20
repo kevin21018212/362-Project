@@ -9,6 +9,7 @@ import users.Registrar;
 import users.Student;
 import main.Enrollment;
 import main.StudentHousing;
+import main.MealPlan;
 
 
 
@@ -39,7 +40,8 @@ public class Display {
             displayMessage("9 View Extracurricular Activities");
             displayMessage("10 View Messages");
             displayMessage("11 Apply for Student Housing");
-            displayMessage("12 Logout\n");
+            displayMessage("12 Register for Meal Plan");
+            displayMessage("14 Logout\n");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -90,6 +92,10 @@ public class Display {
                 	sh.apply();
                 	break;
                 case "12":
+                	assert student != null;
+                	MealPlan.chooseMealPlan(student.id);
+                	break;
+                case "14":
                    return;
                 default:
                     displayMessage("Bad Baka");

@@ -12,17 +12,13 @@ public class Dorm {
     private String dormName;
     private int capacity;
     private int occupiedRooms;
-    private List<String> amenities;
     private List<String> roomAssignments;
     private static final String DORM_FILE_PATH = "src/data/dorm.txt";
     
     
-    // Constructor
-    public Dorm(String dormName, int capacity, List<String> amenities) {
+    public Dorm(String dormName, int capacity) {
         this.dormName = dormName;
         this.capacity = capacity;
-      
-        this.amenities = amenities != null ? amenities : new ArrayList<>();
         this.roomAssignments = new ArrayList<>();
     }
     
@@ -46,7 +42,7 @@ public class Dorm {
                 int capacity = Integer.parseInt(parts[1]);
                 int occupiedRooms = Integer.parseInt(parts[2]);
 
-                Dorm dorm = new Dorm(dormName, capacity, new ArrayList<>());
+                Dorm dorm = new Dorm(dormName, capacity);
                 dorm.occupiedRooms = occupiedRooms; // Set occupied rooms
 
                 dorms.add(dorm);
@@ -87,10 +83,6 @@ public class Dorm {
         return capacity - occupiedRooms;
     }
 
-    public List<String> listAmenities() {
-        return amenities;
-    }
-
     public List<String> getRoomAssignments() {
         return roomAssignments;
     }
@@ -103,8 +95,7 @@ public class Dorm {
     public String toString() {
         return dormName +
                 ", Capacity: " + capacity +
-                ", Occupied Rooms: " + occupiedRooms +
-                ", Amenities: " + amenities;
+                ", Occupied Rooms: " + occupiedRooms;
     }
     private void updateDormFile() {
         try {
