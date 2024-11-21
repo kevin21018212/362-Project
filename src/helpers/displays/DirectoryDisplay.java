@@ -75,7 +75,7 @@ public class DirectoryDisplay {
                 return;
             }
             ArrayList<Directory.EndOfWordData> imparitalData = directoryController.searchImpartial(email, DirectoryController.EMAIL_DIRECTORY);
-            if (imparitalData != null) {
+            if (imparitalData != null && imparitalData.size() > 0) {
                 System.out.println("Impartial search results:");
                 for (Directory.EndOfWordData d : imparitalData) {
                     System.out.println("\tID: " + d.getId());
@@ -104,7 +104,7 @@ public class DirectoryDisplay {
                 return;
             }
             ArrayList<Directory.EndOfWordData> imparitalData = directoryController.searchImpartial(name, DirectoryController.NAME_DIRECTORY);
-            if (imparitalData != null) {
+            if (imparitalData != null && imparitalData.size() > 0) {
                 System.out.println("Impartial search results:");
                 for (Directory.EndOfWordData d : imparitalData) {
                     System.out.println("\tID: " + d.getId());
