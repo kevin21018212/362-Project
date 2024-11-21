@@ -11,6 +11,10 @@ import java.util.Stack;
 
 import java.util.List;
 
+/**
+ * Controller class for managing user inboxes and message handling.
+ * Implements InboxInterface for standardized inbox operations.
+ */
 public class InboxController implements InboxInterface {
     private Inbox inbox;
     private String ownerID;
@@ -22,6 +26,11 @@ public class InboxController implements InboxInterface {
             "messageId::senderId::senderName::subject::message##"
     };
 
+    /**
+     * Constructs a new InboxController for a specific user.
+     * @param ownerID The ID of the inbox owner
+     * @param ownerName The name of the inbox owner
+     */
     public InboxController(String ownerID, String ownerName) {
         this.ownerID = ownerID;
         this.ownerName = ownerName;
@@ -31,6 +40,10 @@ public class InboxController implements InboxInterface {
         }
     }
 
+    /**
+     * Adds messages from file storage to an inbox.
+     * @param inbox The inbox to populate with messages
+     */
     public void addMessagesToInbox(Inbox inbox) {
         List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", inbox.getOwnerId() + ".txt");
         for (String[] stringMessage : messages) {
@@ -39,13 +52,19 @@ public class InboxController implements InboxInterface {
         }
     }
 
-
-
+    /**
+     * Retrieves all messages in the inbox.
+     * @return Stack of messages in the inbox
+     */
     @Override
     public Stack<Inbox.Message> getAllMessages() {
         return inbox.getMessages();
     }
 
+    /**
+     * Displays a message and marks it as read.
+     * @param message The message to view
+     */
     @Override
     public void viewMessage(Inbox.Message message) {
         message.setRead(true);
@@ -54,7 +73,11 @@ public class InboxController implements InboxInterface {
         System.out.println("Message: " + message.getMessage());
     }
 
-
+    /**
+     * Deletes a message from the inbox.
+     * @param messageId ID of the message to delete
+     * @return true if deletion was successful, false otherwise
+     */
     @Override
     public boolean  deleteMessage(String messageId) {
         List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", ownerID + ".txt");
@@ -70,6 +93,13 @@ public class InboxController implements InboxInterface {
         return false;
     }
 
+    /**
+     * Sends a message to a recipient.
+     * @param recipientID ID of the recipient
+     * @param subject Message subject
+     * @param body Message content
+     * @return true if message was sent successfully, false otherwise
+     */
     @Override
     public boolean sendMessage(String recipientID, String subject, String body) {
         Inbox recipiantInbox = findInbox(recipientID);
@@ -87,6 +117,9 @@ public class InboxController implements InboxInterface {
         return true;
     }
 
+    /**
+     * Displays all drafts and handles draft operations.
+     */
     @Override
     public void viewDrafts() {
         List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
@@ -141,6 +174,10 @@ public class InboxController implements InboxInterface {
 
     }
 
+    /**
+     * Edits an existing draft message.
+     * @param messageId ID of the draft to edit
+     */
     @Override
     public void editDraft(String messageId) {
         List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
@@ -185,6 +222,13 @@ public class InboxController implements InboxInterface {
         System.out.println("Draft updated successfully");
     }
 
+    /**
+     * Saves a new draft message.
+     * @param recipientId ID of the intended recipient
+     * @param subject Draft subject
+     * @param body Draft content
+     * @return true if draft was saved successfully, false otherwise
+     */
     @Override
     public boolean saveDraft(String recipientId, String subject, String body) {
 
@@ -212,6 +256,11 @@ public class InboxController implements InboxInterface {
         }
     }
 
+    /**
+     * Sends an existing draft message.
+     * @param messageId ID of the draft to send
+     * @return true if draft was sent successfully, false otherwise
+     */
     @Override
     public boolean sendDraft(String messageId) {
         List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
@@ -243,6 +292,11 @@ public class InboxController implements InboxInterface {
         }
     }
 
+    /**
+     * Deletes a draft message.
+     * @param messageId ID of the draft to delete
+     * @return true if draft was deleted successfully, false otherwise
+     */
     @Override
     public boolean deleteDraft(String messageId) {
         List<String[]> drafts = FileUtils.readStructuredData("inbox/drafts", ownerID + ".txt");
@@ -276,6 +330,11 @@ public class InboxController implements InboxInterface {
         }
     }
 
+    /**
+     * Finds an inbox by owner ID.
+     * @param ownerID ID of the inbox owner
+     * @return Inbox object if found, null otherwise
+     */
     @Override
     public Inbox findInbox(String ownerID) {
         List<String[]>inboxes = FileUtils.readStructuredData("inbox", "inboxList.txt");
@@ -292,6 +351,11 @@ public class InboxController implements InboxInterface {
         return inbox;
     }
 
+    /**
+     * Generates a unique message ID for a new message.
+     * @param recipientID ID of the message recipient
+     * @return Generated unique message ID
+     */
     @Override
     public String genMessageID(String recipientID) {
         String messageID = RegistrarInterface.generateStudentId();
@@ -308,5 +372,4 @@ public class InboxController implements InboxInterface {
         }
         return messageID;
     }
-
 }
