@@ -1,7 +1,8 @@
-ID::Name::Email::Major::Scholarships::Tuition##
+StudentID::DateOfBirth::Address::ProgramOfStudy::AcademicTerm##
 6969::Max may::maxmay@m::Biology::3000::600::n/a::n/a##
 3058::Freak Bob::ski@mask.com::Biology::0::0::n/a::n/a##
 1234::max12::email::ComputerScience::500::5050::n/a::n/a##
 7828::freak::jajkfjafj::COMS::0::0::n/a::n/a##
 6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::600::400::n/a::Investing##
 0990::max may::maxmmm@ia.edi::COMS::0::0::n/a::n/a##
+0941::new stu::1111::COMS::0::0::n/a::n/a##

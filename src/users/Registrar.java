@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class Registrar extends User implements RegistrarInterface {
     /** Headers for the students.txt file */
-    private static final String[] STUDENT_HEADERS = {"ID::Name::Email::Major##"};
+    private static final String[] STUDENT_HEADERS = {"StudentID::DateOfBirth::Address::ProgramOfStudy::AcademicTerm"};
 
     public void displayAllStudents(){
         List<String[]> students = FileUtils.readStructuredData("", "students.txt");
@@ -83,7 +83,7 @@ public class Registrar extends User implements RegistrarInterface {
 
         // Create student record in students.txt
         String[] studentData = {
-                studentId + "::" + fullName + "::" + contactInfo + "::" + programOfStudy + "##"
+                studentId + "::" + fullName + "::" + contactInfo + "::" + programOfStudy + "::0::0::n/a::n/a"
         };
         List<String[]> existingStudents = FileUtils.readStructuredData("", "students.txt");
         existingStudents.add(studentData);
@@ -92,7 +92,7 @@ public class Registrar extends User implements RegistrarInterface {
         // Create detailed record in student_details.txt
         String[] detailsData = {
                 studentId + "::" + dateOfBirth + "::" + address + "::" +
-                        programOfStudy + "::" + academicTerm + "::0::0::n/a::n/a"
+                        programOfStudy + "::" + academicTerm + "##"
         };
         List<String[]> existingDetails = FileUtils.readStructuredData("registrar", "student_details.txt");
         existingDetails.add(detailsData);
