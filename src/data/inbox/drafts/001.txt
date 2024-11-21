@@ -1,0 +1,2 @@
+messageId::senderId::senderName::subject::message####
+5648::6037::Exam::You have an exam tooday##

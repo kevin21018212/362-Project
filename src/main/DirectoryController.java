@@ -41,9 +41,12 @@ public class DirectoryController implements DirectoryInterface {
 
         // Insert student data
         for (String[] student : students) {
-            insert(ID_DIRECTORY, student[0], student[1], student[2], "Stud");
-            insert(NAME_DIRECTORY, student[0], student[1], student[2], "Stud");
-            insert(EMAIL_DIRECTORY, student[0], student[1], student[2], "Stud");
+            insert(ID_DIRECTORY, student[0], student[1], student[2], "STUD");
+            insert(NAME_DIRECTORY, student[0], student[1], student[2], "STUD");
+            insert(EMAIL_DIRECTORY, student[0], student[1], student[2], "STUD");
+            if (!this.departmentDirectory.containsKey("STUD"))
+                this.departmentDirectory.put("STUD", new ArrayList<>());
+            this.departmentDirectory.get("STUD").add(new Directory.EndOfWordData(student[1], student[0], student[2], "STUD"));
         }
 
         // Insert instructor data
