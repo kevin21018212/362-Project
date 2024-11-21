@@ -47,9 +47,9 @@ public class Registrar extends User implements RegistrarInterface {
 
     public void addStudentInbox(String studentId, String name){
         List<String[]> inboxes = FileUtils.readStructuredData("inboxes", "inboxList.txt");
-        String[] inboxData = {studentId+"::"+name+"::"+"0"+"0"};
+        String[] inboxData = {studentId+"::"+name+"::"+"0::0"};
         inboxes.add(inboxData);
-        FileUtils.writeStructuredData("inboxes", "inboxList.txt", new String[]{"OwnerID::OwnerName::size::unreadCount##"}, inboxes);
+        FileUtils.writeStructuredData("inbox", "inboxList.txt", new String[]{"OwnerID::OwnerName::size::unreadCount"}, inboxes);
     }
 
     /**
