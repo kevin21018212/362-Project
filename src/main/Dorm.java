@@ -21,7 +21,6 @@ public class Dorm {
         this.capacity = capacity;
         this.roomAssignments = new ArrayList<>();
     }
-    
 
     public static List<Dorm> loadDormsFromFile(String filePath) {
         List<Dorm> dorms = new ArrayList<>();
@@ -120,5 +119,4 @@ public class Dorm {
             System.err.println("Error updating dorm file: " + e.getMessage());
         }
     }
-
 }

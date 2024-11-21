@@ -1,4 +1,3 @@
-
 package users;
 
 import helpers.Display;
@@ -19,8 +18,6 @@ import java.util.Scanner;
 import static main.Course.allCourses;
 
 public class Instructor extends User {
-
-
     public Instructor(String id, String name, String email) {
         super(id, name, email);
     }
@@ -28,7 +25,6 @@ public class Instructor extends User {
     public static Instructor findInstructorById(String id) {
         return DataAccess.findInstructorById(id);
     }
-
 
     public void createCourse() {
         Scanner scanner = new Scanner(System.in);
@@ -84,9 +80,6 @@ public class Instructor extends User {
             Display.displayMessage("Failed to create course directory or files. Please try again.");
         }
     }
-
-
-
 
     public void gradeAssignments() {
         // Display all available courses before prompting for a course ID
@@ -151,7 +144,6 @@ public class Instructor extends User {
             }
             updatedSubmissions.add(submissionData);
         }
-
         // Define headers for the file
         String[] headers = {"Submission ID", "Assignment ID", "Student ID", "Grade", "Submitted Date"};
         String directory = "courses/" + courseId + "/";
@@ -161,7 +153,6 @@ public class Instructor extends User {
         FileUtils.writeStructuredData(directory, fileName, headers, updatedSubmissions);
         Display.displayMessage("Grading completed for assignment ID: " + assignment.getId());
     }
-
 
     private void checkMissingSubmissions(String courseId, Assignment assignment) {
         List<Enrollment> enrollments = Enrollment.loadEnrollments();

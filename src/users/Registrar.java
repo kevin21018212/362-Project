@@ -164,7 +164,5 @@ public class Registrar extends User implements RegistrarInterface {
 //    public
 
     @Override
-    public void swapCourseSection(String studentId, String courseId, String sectionId) {
-
-    }
+    public void swapCourseSection(String studentId, String courseId, String sectionId) { return; } //TODO: next iteration @Max M
 }

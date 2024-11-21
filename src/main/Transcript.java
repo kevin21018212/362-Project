@@ -147,7 +147,6 @@ public class Transcript implements TranscriptInterface {
                 creditsInProgress += 3;
             }
         }
-
         this.gpa = creditsCompleted > 0 ? totalPoints / creditsCompleted : 0.0;
     }
 

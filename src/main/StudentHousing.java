@@ -31,7 +31,6 @@ public class StudentHousing {
     private List<String> specialAccommodations;
     private String applicationStatus;
 
-    
     public StudentHousing(String studentID) {
         this.studentID = studentID;
         this.term = "Spring 2024";
@@ -186,6 +185,4 @@ public class StudentHousing {
         }
         return false; // Student ID not found
     }
-    
-
 }

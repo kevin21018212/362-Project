@@ -122,7 +122,6 @@ public class Inbox  {
 //            messageList.add(messages.get(i).toStringArray());
             messageList.add(message.toStringArray());
         }
-
         return messageList;
     }
 }

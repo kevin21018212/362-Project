@@ -148,7 +148,6 @@ public class DataAccess {
                 newData.add(row);
             }
         }
-
         FileUtils.writeStructuredData("", "instructors.txt", INSTRUCTOR_HEADERS, newData);
     }
 }
