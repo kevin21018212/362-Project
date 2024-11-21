@@ -3,20 +3,14 @@ package users;
 import helpers.Display;
 import helpers.User;
 import helpers.Utils;
-import main.Assignment;
-import main.Course;
-import main.Enrollment;
-import main.Submission;
+import main.*;
 import helpers.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static helpers.Display.displayMessage;
 import static helpers.Display.displayStudentMenu;
@@ -123,43 +117,8 @@ public class Student extends User {
     }
 
 
-    public List<String> getMajors(String department) {
-        List<String[]> data = FileUtils.readStructuredData("", "majors.txt");
-        List<String> majors = new ArrayList<>();
 
-        for (String[] row : data) {
-            if (row.length > 0 && row[0].trim().equalsIgnoreCase(department)) {
-                if (row.length > 1) {
-                    String majorsStr = row[1].trim();
-                    // Remove brackets and split by comma
-                    majorsStr = majorsStr.replaceAll("[\\[\\]]", ""); // Remove [ and ]
-                    String[] majorArray = majorsStr.split(",");
 
-                    // Add each major to the list, trimming whitespace
-                    for (String major : majorArray) {
-                        majors.add(major.trim());
-                    }
-                }
-                break;
-            }
-        }
-        return majors;
-    }
-
-    /**
-     * @return a List of the available departments
-     */
-    public List<String> getAllDepartments() {
-        List<String[]> data = FileUtils.readStructuredData("", "departments.txt");
-        List<String> departmentNames = new ArrayList<>();
-
-        for (String[] row : data) {
-            if (row.length > 0) {
-                departmentNames.add(row[0].trim());
-            }
-        }
-        return departmentNames;
-    }
 
     /**
      * @return A simple string of the department the student's major is a part of
@@ -233,6 +192,8 @@ public class Student extends User {
      * Initial display options for changing major, viewing major/department
      */
     public void changeMajorDisplay() {
+        Major majorHelper = new Major();
+
         System.out.println("1. View Major");
         System.out.println("2. Change Major");
         System.out.println("3. View Department");
@@ -244,10 +205,11 @@ public class Student extends User {
                 displayMessage("Your current Major is: " + getMajor());
                 break;
             case "2":
-                handleMajorChange();
+                handleMajorChange(majorHelper);
                 break;
             case "3":
-                displayMessage("Your current Department is: " + getStudentDepartment());
+                String department = majorHelper.getDepartmentByMajor(this.major);
+                displayMessage("Your current Department is: " + department);
                 break;
             case "4":
                 Display.displayStudentMenu();
@@ -261,7 +223,7 @@ public class Student extends User {
      * Handles the logic and user walkthrough of changing the logged-in student's major.
      * Also updates the students.txt file with any changes to their major
      */
-    private void handleMajorChange() {
+    private void handleMajorChange(Major majorHelper) {
         displayMessage("Your current Major is: " + getMajor());
         System.out.println("1. Type 1 to change your major.");
         System.out.println("2. Press 2 for No, go back.");
@@ -271,19 +233,22 @@ public class Student extends User {
             boolean selectingMajor = true;
             while (selectingMajor) {
                 System.out.println("Changing your major...");
-                displayDepartmentNames();
+                List<String> departments = majorHelper.getAllDepartments();
+                System.out.println("\nDepartments Available:");
+                departments.forEach(Display::displayMessage);
+
                 String departmentName = Utils.getInput("\nSelect a department or type 'back' to cancel:");
 
                 if (departmentName.equalsIgnoreCase("back")) {
                     break;
                 }
 
-                displayMajors(departmentName);
+                majorHelper.displayMajors(departmentName);
                 String selectedMajor = Utils.getInput("\nSelect a major or type 'back' for departments:");
 
-                if (selectedMajor.equals("1")) {
-                    selectingMajor = false;
-                } else if (!selectedMajor.equalsIgnoreCase("back")) {
+                if (selectedMajor.equalsIgnoreCase("back")) {
+                    continue;
+                } else {
                     setMajor(selectedMajor);
                     updateStudentRecordInFile();
                     displayMessage("Your new Major is: " + getMajor());
@@ -293,23 +258,8 @@ public class Student extends User {
         }
     }
 
-    /**
-     * Displays a list of all the available majors for the specified majors
-     * @param department
-     */
-    public void displayMajors(String department) {
-        List<String> majors = getMajors(department);
-        System.out.println("Majors in " + department + " Department:");
-        majors.forEach(System.out::println);
-    }
 
-    /**
-     * Displays a list of all the available departments
-     */
-    public void displayDepartmentNames() {
-        System.out.println("\nDepartments Available:");
-        getAllDepartments().forEach(Display::displayMessage);
-    }
+
 
     public void viewUniversityBillingOptions(){
         System.out.println("\nPlease Select an option regarding your University Bill or Scholarships:");
@@ -842,6 +792,7 @@ public class Student extends User {
     }
 
     public void submitAssignment() {
+        Course.loadCourses();
         // Display all enrolled courses for the student
         Enrollment.displayAllEnrolledCourses(this.id);
 
@@ -898,7 +849,7 @@ public class Student extends User {
             existingSubmissions.add(submissionData);
 
             // Write back to file with headers
-            FileUtils.writeStructuredData("", fileName,
+            FileUtils.writeStructuredData(directory, fileName,
                     new String[]{"SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"},
                     existingSubmissions);
 
@@ -1016,7 +967,72 @@ public class Student extends User {
             return "F";
         }
     }
+    public void trackAcademicProgress() {
+        //1. retrieve student major
+        if (this.major == null || this.major.isEmpty()) {
+            displayMessage("Major information is incomplete or missing. Please contact the registrar.");
+            return; // Alternate Flow: Major Not Found
+        }
 
+        Major majorHelper = new Major();
+
+        Course.allCourses = Course.loadCourses();
+        // 2. fetch the list of student enrolled courses
+        List<String> enrolledCourses = Enrollment.getEnrolledCourses(this.id);
+        if (enrolledCourses.isEmpty()) {
+            displayMessage("No enrollment data available. Please ensure your courses are properly recorded.");
+            return; // Alternate Flow: Enrollment Data Missing
+        }
+
+        // 3. get all the required courses from the major
+        List<String> requiredCourses = majorHelper.getCoursesByMajor(this.major);
+        if (requiredCourses.isEmpty()) {
+            displayMessage("Degree requirements are incomplete. Please contact your academic advisor.");
+            return; // Alternate Flow: Incomplete Major Requirements
+        }
+
+        //4: remaining courses -> required - enrolled courses
+        Set<String> remainingCourses = calculateRemainingCourses(requiredCourses, enrolledCourses);
+        //5. display academic progress report
+        displayAcademicProgressReport(enrolledCourses,remainingCourses);
+    }
+
+    private void displayAcademicProgressReport(List<String> enrolledCourses, Set<String> remainingCourses) {
+        displayMessage("\n--- Academic Progress Report ---");
+        displayMessage("Student Name: " + this.name);
+        displayMessage("Student ID: " + this.id);
+        displayMessage("Major: " + this.major);
+
+        displayMessage("\nCompleted Courses:");
+        if (enrolledCourses.isEmpty()) {
+            displayMessage("   None");
+        } else {
+            for (String courseId : enrolledCourses) {
+                Course course = Course.findCourseById(courseId);
+                String courseName = (course != null) ? course.getName() : "Course Not Found";
+                displayMessage("   " + courseId + ": " + courseName);
+            }
+        }
+
+        displayMessage("\nRemaining Courses:");
+        if (remainingCourses.isEmpty()) {
+            displayMessage("   All major requirements have been completed. Congratulations!");
+        } else {
+            for (String courseId : remainingCourses) {
+                Course course = Course.findCourseById(courseId);
+                String courseName = (course != null) ? course.getName() : "Course Not Found";
+                displayMessage("   " + courseId + ": " + courseName);
+            }
+        }
+    }
+
+
+    private Set<String> calculateRemainingCourses(List<String> requiredCourses, List<String> enrolledCourses) {
+        Set<String> completedCourses = new HashSet<>(enrolledCourses);
+        Set<String> remainingCourses = new HashSet<>(requiredCourses);
+        remainingCourses.removeAll(completedCourses);
+        return remainingCourses;
+    }
 
     public void applyForGraduation() {
         // Sample requirements for graduation
@@ -1052,6 +1068,7 @@ public class Student extends User {
         // Placeholder - Implement logic to calculate GPA based on course grades
         return 3.0; // Example return value for eligibility
     }
+
 
     public void markGraduationApplication() {
         // Implement logic to mark graduation application status

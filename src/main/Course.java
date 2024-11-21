@@ -88,6 +88,14 @@ public class Course {
         return prereqs;
     }
 
+    public static List<String> parsePrerequisites(String prereqsInput) {
+        List<String> prerequisites = new ArrayList<>();
+        for (String prereq : prereqsInput.split(",")) {
+            prerequisites.add(prereq.trim());
+        }
+        return prerequisites;
+    }
+
     private static int[] checkCapacity(String capacityStr) {
         String[] parts = capacityStr.replace("[", "").replace("]", "").split(",");
         int enrolled = Integer.parseInt(parts[0].trim());

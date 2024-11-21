@@ -22,7 +22,6 @@ public class Enrollment {
 
     public String getStudentId() { return studentId; }
     public String getCourseId() { return courseId; }
-
     @Override
     public String toString() {
         return studentId + "::" + courseId;
@@ -57,15 +56,13 @@ public class Enrollment {
     }
 
     public static void displayAllEnrolledCourses(String studentId) {
-        List<Enrollment> enrollments = loadEnrollments();
+        List<String> enrolledCourseIds = getEnrolledCourses(studentId);
         List<Course> enrolledCourses = new ArrayList<>();
 
-        for (Enrollment enrollment : enrollments) {
-            if (enrollment.getStudentId().equals(studentId)) {
-                Course course = Course.findCourseById(enrollment.getCourseId());
-                if (course != null) {
-                    enrolledCourses.add(course);
-                }
+        for (String courseId : enrolledCourseIds) {
+            Course course = Course.findCourseById(courseId);
+            if (course != null) {
+                enrolledCourses.add(course);
             }
         }
 
@@ -77,6 +74,18 @@ public class Enrollment {
                 Display.displayMessage(course.getId() + ": " + course.getName() + " Instructor: " + course.getInstructorId());
             }
         }
+    }
+
+    public static List<String> getEnrolledCourses(String studentId) {
+        List<String> enrolledCourses = new ArrayList<>();
+        List<Enrollment> enrollments = Enrollment.loadEnrollments();
+
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment.getStudentId().equals(studentId)) {
+                enrolledCourses.add(enrollment.getCourseId());
+            }
+        }
+        return enrolledCourses;
     }
 
     public static boolean checkPrerequisites(String studentId, Course course) {

@@ -18,32 +18,81 @@ public class Display {
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID to login. Please visit the Registrar menu to create an account: ");
         Student student = DataAccess.findStudentById(id);
-//        if (id.equalsIgnoreCase("new")) {
-//            displayMessage("LOL");
-//        } else {
-//            student = Student.findStudentById(id);
-            if (student == null) {
-                displayMessage("Student not found.");
-                return;
-            }
-//        }
+
+        if (student == null) {
+            displayMessage("Student not found.");
+            return;
+        }
 
         while (true) {
             displayMessage("\nStudent Menu:");
-            displayMessage("1 View my Courses");
+            displayMessage("1 Course Management");
+            displayMessage("2 Academic Records");
+            displayMessage("3 Financial Services");
+            displayMessage("4 Student Services");
+            displayMessage("5 Logout");
+            String choice = Utils.getInput("Select an option: ");
+
+            switch (choice) {
+                case "1":
+                    displayCourseManagementMenu(student);
+                    break;
+                case "2":
+                    displayAcademicRecordsMenu(student);
+                    break;
+                case "3":
+                    displayFinancialServicesMenu(student);
+                    break;
+                case "4":
+                    displayStudentServicesMenu(student);
+                    break;
+                case "5":
+                    return;
+                default:
+                    displayMessage("Invalid option");
+            }
+        }
+    }
+
+    private static void displayAcademicRecordsMenu(Student student) {
+        while (true) {
+            displayMessage("\nAcademic Records:");
+            displayMessage("1 View or Change Major");
+            displayMessage("2 View Grades");
+            displayMessage("3 View Academic Progress");
+            displayMessage("4 Apply for Graduation");
+            displayMessage("5 Back to Main Menu");
+            String choice = Utils.getInput("Select an option: ");
+
+            switch (choice) {
+                case "1":
+                    student.changeMajorDisplay();
+                    break;
+                case "2":
+                    student.viewGrades();
+                    break;
+                case "3":
+                    student.trackAcademicProgress();
+                    break;
+                case "4":
+                    student.applyForGraduation();
+                    break;
+                case "5":
+                    return; // Back to main menu
+                default:
+                    displayMessage("Invalid option");
+            }
+        }
+    }
+
+    private static void displayCourseManagementMenu(Student student) {
+        while (true) {
+            displayMessage("\nCourse Management:");
+            displayMessage("1 View My Courses");
             displayMessage("2 Enroll in Course");
             displayMessage("3 Submit Assignment");
-            displayMessage("4 View or Change Major");
-            displayMessage("5 View Grades");
-            displayMessage("6 Apply for Graduation");
-            displayMessage("7 Drop a class");
-            displayMessage("8 View University Bill");
-            displayMessage("9 View Extracurricular Activities");
-            displayMessage("10 View Messages");
-            displayMessage("11 Apply for Student Housing");
-            displayMessage("12 Directory Menu");
-            displayMessage("13 Register for Meal Plan");
-            displayMessage("14 Logout\n");
+            displayMessage("4 Drop a Class");
+            displayMessage("5 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -51,64 +100,83 @@ public class Display {
                     student.viewCourses();
                     break;
                 case "2":
-                    assert student != null;
                     Course.displayAllCourses();
                     student.enrollInCourse();
                     break;
                 case "3":
-                    assert student != null;
                     student.submitAssignment();
                     break;
                 case "4":
-                    assert student != null;
-                    student.changeMajorDisplay();
+                    Enrollment.dropCourse(student.getId());
                     break;
                 case "5":
-                    assert student != null;
-                    student.viewGrades();
-                    break;
-                case "6":
-                    assert student != null;
-                    student.applyForGraduation();
-                    break;
-                case "7":
-                    assert student != null;
-                    Enrollment.dropCourse(student.id);
-                	break;
-                case "8":
-                    assert student != null;
-                    student.viewUniversityBillingOptions();
-                    break;
-                case "10":
-                    assert student != null;
-                    MessageDisplay messageDisplay = new MessageDisplay(student.getId(), student.getName());
-                    messageDisplay.displayMessageMenu();
-                    break;
-                case "9":
-                    assert student != null;
-                    student.displayStudentExtracurricularMenu();
-                    break;
-                case "12":
-                    assert student != null;
-                    DirectoryDisplay directoryDisplay = new DirectoryDisplay();
-                    directoryDisplay.displayDirectoryMenu();
-                    break;
-                case "11":
-                	assert student != null;
-                	StudentHousing sh = new StudentHousing(student.id);
-                	sh.apply();
-                	break;
-                case "13":
-                	assert student != null;
-                	MealPlan.chooseMealPlan(student.id);
-                	break;
-                case "14":
-                   return;
+                    return;
                 default:
-                    displayMessage("Bad Baka");
+                    displayMessage("Invalid option");
             }
         }
     }
+
+    private static void displayFinancialServicesMenu(Student student) {
+        while (true) {
+            displayMessage("\nFinancial Services:");
+            displayMessage("1 View University Bill");
+            displayMessage("2 Apply for Student Housing");
+            displayMessage("3 Register for Meal Plan");
+            displayMessage("4 Back to Main Menu");
+            String choice = Utils.getInput("Select an option: ");
+
+            switch (choice) {
+                case "1":
+                    student.viewUniversityBillingOptions();
+                    break;
+                case "2":
+                    StudentHousing sh = new StudentHousing(student.getId());
+                    sh.apply();
+                    break;
+                case "3":
+                    MealPlan.chooseMealPlan(student.id);
+                    break;
+                case "4":
+                    return;
+                default:
+                    displayMessage("Invalid option");
+            }
+        }
+    }
+
+    private static void displayStudentServicesMenu(Student student) {
+        while (true) {
+            displayMessage("\nStudent Services:");
+            displayMessage("1 View Extracurricular Activities");
+            displayMessage("2 View Messages");
+            displayMessage("3 Directory Menu");
+            displayMessage("4 Back to Main Menu");
+            String choice = Utils.getInput("Select an option: ");
+
+            switch (choice) {
+                case "1":
+                    student.displayStudentExtracurricularMenu();
+                    break;
+                case "2":
+                    MessageDisplay messageDisplay = new MessageDisplay(student.getId(), student.getName());
+                    messageDisplay.displayMessageMenu();
+                    break;
+                case "3":
+                    DirectoryDisplay directoryDisplay = new DirectoryDisplay();
+                    directoryDisplay.displayDirectoryMenu();
+                    break;
+                case "4":
+                    return; // Go back to the main menu
+                default:
+                    displayMessage("Invalid option");
+            }
+        }
+    }
+
+
+
+
 
     public static void displayInstructorMenu() {
         String id = Utils.getInput("Enter Instructor ID or 'new' to create an account: ");
