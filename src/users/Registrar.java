@@ -92,7 +92,7 @@ public class Registrar extends User implements RegistrarInterface {
         // Create detailed record in student_details.txt
         String[] detailsData = {
                 studentId + "::" + dateOfBirth + "::" + address + "::" +
-                        programOfStudy + "::" + academicTerm + "##"
+                        programOfStudy + "::" + academicTerm + "::0::0::n/a::n/a"
         };
         List<String[]> existingDetails = FileUtils.readStructuredData("registrar", "student_details.txt");
         existingDetails.add(detailsData);
