@@ -1,4 +1,4 @@
-ID::Name::Email::Major::Scholarships::Tuition##
+ID::Name::Email::Major::Scholarships::Tuition::studentClub1::studentClub2##
 6969::Max may::maxmay@m::Biology::3000::600::n/a::n/a##
 3058::Freak Bob::ski@mask.com::Biology::0::0::n/a::n/a##
 1234::max12::email::ComputerScience::500::5050::n/a::n/a##
