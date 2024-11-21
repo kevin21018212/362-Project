@@ -111,18 +111,12 @@ public class MessageDisplay {
 
         switch (choice) {
             case "1":
-                if (inboxController.sendMessage(recipient, subject, body)) {
+                if (inboxController.sendMessage(recipient, subject, body))
                     System.out.println("Message sent successfully");
-                } else {
-                    System.out.println("Recipient not found");
-                }
                 break;
             case "2":
-                if (inboxController.saveDraft(recipient, subject, body)) {
+                if (inboxController.saveDraft(recipient, subject, body))
                     System.out.println("Draft saved successfully");
-                } else {
-                    System.out.println("Recipient not found");
-                }
                 break;
             case "3":
                 System.out.println("Message cancelled");

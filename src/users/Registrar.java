@@ -45,6 +45,13 @@ public class Registrar extends User implements RegistrarInterface {
         super(id, name, email);
     }
 
+    public void addStudentInbox(String studentId, String name){
+        List<String[]> inboxes = FileUtils.readStructuredData("inboxes", "inboxList.txt");
+        String[] inboxData = {studentId+"::"+name+"::"+"0"+"0"};
+        inboxes.add(inboxData);
+        FileUtils.writeStructuredData("inboxes", "inboxList.txt", new String[]{"OwnerID::OwnerName::size::unreadCount##"}, inboxes);
+    }
+
     /**
      * Enrolls a new student in the system with complete registration information.
      * Creates entries in both students.txt and student_details.txt.
@@ -91,6 +98,8 @@ public class Registrar extends User implements RegistrarInterface {
         existingDetails.add(detailsData);
         FileUtils.writeStructuredData("registrar", "student_details.txt",
                 STUDENT_DETAILS_HEADERS, existingDetails);
+
+        addStudentInbox(studentId, fullName);
 
         Display.displayMessage("Student successfully enrolled with ID: " + studentId);
     }
