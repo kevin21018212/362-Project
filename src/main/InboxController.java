@@ -46,7 +46,9 @@ public class InboxController implements InboxInterface {
      */
     public void addMessagesToInbox(Inbox inbox) {
         List<String[]> messages = FileUtils.readStructuredData("inbox/inboxes", inbox.getOwnerId() + ".txt");
-        for (String[] stringMessage : messages) {
+//        for (String[] stringMessage : messages) {
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            String[] stringMessage = messages.get(i);
             Inbox.Message message = new Inbox.Message(stringMessage[0], stringMessage[1], stringMessage[2], stringMessage[3], stringMessage[4]);
             inbox.addMessage(message);
         }
