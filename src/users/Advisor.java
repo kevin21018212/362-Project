@@ -11,6 +11,7 @@ public class Advisor extends User {
     public static enum Days {
         MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
     }
+    public static final String[] ADVISOR_FIELDS = {"id::name::email::department::[students]::[schedule]"};
 
     public Advisor(String id, String name, String email, String department) {
         super(id, name, email);
