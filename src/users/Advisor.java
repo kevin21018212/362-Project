@@ -1,23 +1,22 @@
 package users;
 
 import helpers.User;
-
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class Advisor extends User {
     private String department;
     private ArrayList<String> students;
-    private ArrayList<Integer>[] schedule;
+    private List<String>[][] schedule;
+    public static enum Days {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
+    }
+
     public Advisor(String id, String name, String email, String department) {
         super(id, name, email);
         this.department = department;
         this.students = new ArrayList<>();
-        this.schedule = new ArrayList[5];
-    }
-
-    private void getData() {
-        
+        this.schedule = new ArrayList[5][8];
     }
 
     public String getDepartment() {
@@ -28,7 +27,7 @@ public class Advisor extends User {
         return students;
     }
 
-    public ArrayList<Integer>[] getSchedule() {
+    public List<String>[][] getSchedule() {
         return schedule;
     }
 
@@ -44,18 +43,26 @@ public class Advisor extends User {
         return students.remove(studentId);
     }
 
-    public boolean addMeeting(int day, int time) {
-        if (day < 0 || day >= 5 || time < 0 || time >= 8) {
+    public boolean addMeeting(int day, int time, String studentId) {
+        if (day < Days.MONDAY.ordinal()|| day > Days.FRIDAY.ordinal() || time < 0 || time >= 8) {
             return false;
         }
-        if (schedule[day] == null) {
-            schedule[day] = new ArrayList<>();
-        }
-        if (schedule[day].contains(time)) {
+        if (!schedule[day][time].isEmpty()) {
             return false;
         }
-        schedule[day].add(time);
+        schedule[day][time].add(studentId);
         return true;
     }
 
+    public void printSchedule() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Days.values()[i]);
+            for (int j = 0; j < 8; j++) {
+                System.out.println("Time: " + j);
+                for (String student : schedule[i][j]) {
+                    System.out.println(student);
+                }
+            }
+        }
+    }
 }
