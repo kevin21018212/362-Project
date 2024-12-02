@@ -1,0 +1,2 @@
+id::name::email::department::[students]##
+111::Emily M::LAS::[1234, 3058, 1234]##
