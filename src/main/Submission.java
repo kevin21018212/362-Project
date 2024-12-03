@@ -52,7 +52,6 @@ public class Submission {
             if (assignId.equals(assignmentId)) {
                 submissions.add(new Submission(submissionId, assignId, studentId, grade, submittedDate));
             }
-
         }
         return submissions;
     }

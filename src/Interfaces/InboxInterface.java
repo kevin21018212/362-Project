@@ -1,5 +1,4 @@
 package Interfaces;
-
 import users.Inbox;
 
 import java.util.Stack;
@@ -13,9 +12,7 @@ public interface InboxInterface {
     void editDraft(String messageId);
     boolean sendDraft(String messageId);
     boolean saveDraft(String recipientId, String subject, String body);
-
     boolean deleteDraft(String messageId);
-
     Inbox findInbox(String ownerId);
     String genMessageID(String recipientID);
 }

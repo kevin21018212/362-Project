@@ -62,14 +62,12 @@ public class Student extends User {
 
     public int getScholarshipAmount() {
         List<String[]> data = FileUtils.readStructuredData("", "students.txt");
-
         for (String[] row : data) {
             // Check if this row is the current student's row by matching ID
             if (row[0].equals(this.id)) {
                 return Integer.parseInt(row[4]);
             }
         }
-
         return 0;
     }
 
@@ -98,11 +96,9 @@ public class Student extends User {
     public void updateStudentRecordInFile() {
         List<String[]> data = FileUtils.readStructuredData("", "students.txt");
         List<String[]> updatedData = new ArrayList<>();
-
         // Convert tuition and scholarship amounts to strings to match file format
         String tuition = this.tuitionAmount != null ? this.tuitionAmount : "0";
         String scholarship = this.scholarshipAmount != null ? this.scholarshipAmount : "0";
-
         for (String[] row : data) {
             // Check if the row corresponds to the current student by ID
             if (row[0].equals(this.id)) {
@@ -116,25 +112,18 @@ public class Student extends User {
         FileUtils.writeStructuredData("", "students.txt", STUDENT_HEADERS, updatedData);
     }
 
-
-
-
-
     /**
      * @return A simple string of the department the student's major is a part of
      */
     public String getStudentDepartment() {
         List<String[]> data = FileUtils.readStructuredData("", "majors.txt");
-
         for (String[] row : data) {
             if (row.length > 1) {
                 String departmentName = row[0].trim();
                 String majorsList = row[1].trim();
-
                 // Remove the square brackets around the majors list and split by comma
                 majorsList = majorsList.replace("[", "").replace("]", "");
                 String[] majors = majorsList.split(",");
-
                 // Check if the current student's major is in the majors array
                 for (String major : majors) {
                     if (major.trim().equalsIgnoreCase(this.major)) {
@@ -143,7 +132,6 @@ public class Student extends User {
                 }
             }
         }
-
         return "Department not found";
     }
 
@@ -153,18 +141,15 @@ public class Student extends User {
     public void enrollInCourse() {
         String courseId = Utils.getInput("Enter course ID: ");
         Course course = Course.findCourseById(courseId);
-
         if (course == null) {
             Display.displayMessage("Course not found");
             return;
         }
-
         // Validate enrollment
         if (course.isFull()) {
             Display.displayMessage("Course is full");
             return;
         }
-
         if (!Enrollment.checkPrerequisites(this.getId(), course)) {
             Display.displayMessage("Prerequisites not met");
             return;
@@ -175,15 +160,12 @@ public class Student extends User {
                 return;
             }
         }
-
         // Create and save enrollment
         Enrollment enrollment = new Enrollment(this.getId(), courseId);
         Enrollment.saveEnrollment(enrollment);
-
         // Update course capacity
         course.incrementEnrollment();
         course.updateEnrollmentCount();
-
         Display.displayMessage("Successfully enrolled in " + course.getName());
     }
 
@@ -192,12 +174,10 @@ public class Student extends User {
      */
     public void changeMajorDisplay() {
         Major majorHelper = new Major();
-
         System.out.println("1. View Major");
         System.out.println("2. Change Major");
         System.out.println("3. View Department");
         System.out.println("4. Go Back\n");
-
         String num = Utils.getInput("\nChoose an Option to Proceed:");
         switch(num) {
             case "1":
@@ -226,7 +206,6 @@ public class Student extends User {
         displayMessage("Your current Major is: " + getMajor());
         System.out.println("1. Type 1 to change your major.");
         System.out.println("2. Press 2 for No, go back.");
-
         String choice = Utils.getInput("\nAre you sure you want to change your major?");
         if (choice.equals("1")) {
             boolean selectingMajor = true;
@@ -362,9 +341,7 @@ public class Student extends User {
      */
     public int calculateTuition(int classCount) {
         String isInState = Utils.getInput("\nAre you an Iowa resident? (yes/no): ");
-
         int tuitionPerClass = OUT_OF_STATE_TUITION_PER_CLASS;
-
         if(isInState.equalsIgnoreCase("yes")){
             tuitionPerClass = IN_STATE_TUITION_PER_CLASS;
         }
@@ -379,14 +356,12 @@ public class Student extends User {
 
     public void payUniversityBill(){
         System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
-
         displayMessage("\nPlease Select a Payment Method: ");
         displayMessage("1 Cash");
         displayMessage("2 Check");
         displayMessage("3 Credit/Debit Card");
         displayMessage("4 Venmo/Paypal");
         displayMessage("5 Go Back");
-
         String paymentMethod = Utils.getInput("\nPlease select an option (Ex: 3): ");
 
         switch (paymentMethod){
@@ -471,8 +446,7 @@ public class Student extends User {
         switch (payBillMenuChoice){
             case "1":
                 payUniversityBill();
-                //TODO - Edit tuition and scholarship values after payment
-                break;
+                break;//TODO - Edit tuition and scholarship values after payment
             case "2":
                 viewUniversityBillingOptions();
                 break;
@@ -508,7 +482,6 @@ public class Student extends User {
         final int ACT_MED = 100;
         final int ACT_SMALL = 100;
         int runningTotal = 0;
-
         //Calculate in-state scholarship
         System.out.println("\nScholarships:");
         String isInState = Utils.getInput("Are you an Iowa resident? (yes/no): ");
@@ -516,11 +489,9 @@ public class Student extends User {
         if(isInState.equalsIgnoreCase("yes")){
             runningTotal += IOWA_RESIDENT_SCHOLARSHIP;
         }
-
         //calculate high school GPA scholarship
         System.out.println("Please enter your high school GPA such as '3.5'.");
         float highSchoolGPA = Float.parseFloat(Utils.getInput("\nGPA: "));
-
         if(highSchoolGPA >= 3.8){
             System.out.println("Congrats! You have earned the top GPA Scholarship!");
             runningTotal += HS_GPA_TOP;
@@ -533,7 +504,6 @@ public class Student extends User {
         } else {
             System.out.println("Sorry! You do not qualify for a GPA Scholarship!");
         }
-
         //calculate ACT-based scholarship
         System.out.println("\nPlease enter your ACT score such as '25'.");
         int studentACT = Integer.parseInt(Utils.getInput("ACT Score: "));
@@ -549,11 +519,9 @@ public class Student extends User {
         } else {
             System.out.println("Sorry! You do not qualify for a ACT Scholarship!");
         }
-
         System.out.println("\nThank you for applying for Academic Scholarships!");
         System.out.println("You have earned a total of: $" + runningTotal);
         setScholarshipAmount(Integer.toString(runningTotal));
-
         return runningTotal;
     }
 
@@ -564,10 +532,8 @@ public class Student extends User {
      */
     public int getClassCountFromFile(int studentId) {
         int classCount = 0;
-
         // Read structured data from enrollments.txt
         List<String[]> data = FileUtils.readStructuredData("", "enrollments.txt");
-
         // Iterate through each row of data
         for (String[] row : data) {
             if (row.length > 1) {
@@ -577,7 +543,6 @@ public class Student extends User {
                 }
             }
         }
-
         return classCount;
     }
 
@@ -589,7 +554,6 @@ public class Student extends User {
         displayMessage("4 Drop an Extracurricular Activity");
         displayMessage("5 Return to Student Menu");
         String id = Utils.getInput("\nPlease select an option (Ex: 3): ");
-
         switch (id) {
             case "1":
                 viewEnrolledExtracurriculars();
@@ -606,7 +570,6 @@ public class Student extends User {
             case "5":
                 displayStudentMenu();
                 break;
-
             default:
                 displayMessage("Something went wrong... returning to student menu.");
                 displayStudentMenu();
@@ -617,21 +580,17 @@ public class Student extends User {
      * Displays the enrolled extracurricular activities of the logged-in student.
      */
     public void viewEnrolledExtracurriculars(){
-
         if(studentClub2.equalsIgnoreCase("n/a") && studentClub1.equalsIgnoreCase("n/a")){
             System.out.println("You are not enrolled in any clubs.");
         } else {
             System.out.println("Your currently enrolled in: ");
         }
-
         if(!studentClub1.equalsIgnoreCase("n/a")){
             System.out.println(getStudentClub1());
         }
-
         if(!studentClub2.equalsIgnoreCase("n/a")){
             System.out.println(getStudentClub2());
         }
-
         displayStudentExtracurricularMenu();
     }
 
@@ -689,9 +648,7 @@ public class Student extends User {
                 }
             }
         }
-
         displayStudentExtracurricularMenu();
-
     }
 
     /**
@@ -707,7 +664,6 @@ public class Student extends User {
                 return "n/a".equalsIgnoreCase(row[6]) || "n/a".equalsIgnoreCase(row[7]);
             }
         }
-
         return false;
     }
 
@@ -989,6 +945,7 @@ public class Student extends User {
 
         //4: remaining courses -> required - enrolled courses
         Set<String> remainingCourses = calculateRemainingCourses(requiredCourses, enrolledCourses);
+
         //5. display academic progress report
         displayAcademicProgressReport(enrolledCourses,remainingCourses);
     }
@@ -1024,8 +981,12 @@ public class Student extends User {
 
 
     private Set<String> calculateRemainingCourses(List<String> requiredCourses, List<String> enrolledCourses) {
+        System.out.println(requiredCourses);
+        System.out.println(enrolledCourses);
         Set<String> completedCourses = new HashSet<>(enrolledCourses);
+
         Set<String> remainingCourses = new HashSet<>(requiredCourses);
+
         remainingCourses.removeAll(completedCourses);
         return remainingCourses;
     }
@@ -1127,7 +1088,4 @@ public class Student extends User {
             Display.displayMessage("You are not enrolled in any courses.");
         }
     }
-
-
-
 }

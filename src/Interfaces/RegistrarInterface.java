@@ -1,7 +1,5 @@
 package Interfaces;
-
 import main.StudentRegistration;
-
 import java.util.Random;
 
 public interface RegistrarInterface {

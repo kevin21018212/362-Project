@@ -1,7 +1,5 @@
 package Interfaces;
-
 import users.Directory.EndOfWordData;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 

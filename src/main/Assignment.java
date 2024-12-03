@@ -101,7 +101,6 @@ public class Assignment {
             };
             submissionData.add(data);
         }
-
         return submissionData;
     }
 }
