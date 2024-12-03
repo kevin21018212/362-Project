@@ -3,12 +3,8 @@ ID::Name::Email::Major::Scholarships::Tuition##
 3058::Bob Sponge::ski@mask.com::Biology::0::0::n/a::n/a##
 1235::max12::email::ComputerScience::500::5050::n/a::n/a##
 7828::freak::jajkfjafj::COMS::0::0::n/a::n/a##
-<<<<<<< HEAD
-6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::600::400::Tennis::Investing##
-=======
-6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::600::400::n/a::Investing##
+6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::0::400##
 0990::max may::maxmmm@ia.edi::COMS::0::0::n/a::n/a##
 0941::new stu::1111::COMS::0::0::n/a::n/a##
 4526::newstu1::1::COMS::0::0::n/a::n/a##
 2112::KevDemo2::Fake@gmail.com::Computer Science::0::0::n/a::n/a##
->>>>>>> a2a1e84c9c0ee0660a0b3ea9042d9f8bf4e9c6cd

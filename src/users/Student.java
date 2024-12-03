@@ -249,15 +249,15 @@ public class Student extends User {
                 System.out.println("\nYour current Tuition/Fees total: $" + tuitionAmount);
                 if(tuitionAmount.equals("0")){
                     System.out.println("You must apply for tuition and scholarships, please press option 3.");
-                    viewUniversityBillingOptions();
                 }
+                viewUniversityBillingOptions();
                 break;
             case "2":
                 System.out.println("\nYour current Scholarships total: $" + getScholarshipAmount());
                 if(scholarshipAmount.equals("0")){
                     System.out.println("You must apply for tuition and scholarships, please press option 3.\n");
-                    viewUniversityBillingOptions();
                 }
+                viewUniversityBillingOptions();
                 break;
             case "3":
                 viewUniversityBill();
@@ -591,7 +591,7 @@ public class Student extends User {
         if(!studentClub2.equalsIgnoreCase("n/a")){
             System.out.println(getStudentClub2());
         }
-        displayStudentExtracurricularMenu();
+        //displayStudentExtracurricularMenu();
     }
 
     public void browseExtracurricularActivities(){
