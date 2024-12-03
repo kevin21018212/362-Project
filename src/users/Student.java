@@ -187,7 +187,6 @@ public class Student extends User {
         Display.displayMessage("Successfully enrolled in " + course.getName());
     }
 
-
     /**
      * Initial display options for changing major, viewing major/department
      */
@@ -257,9 +256,6 @@ public class Student extends User {
             }
         }
     }
-
-
-
 
     public void viewUniversityBillingOptions(){
         System.out.println("\nPlease Select an option regarding your University Bill or Scholarships:");
