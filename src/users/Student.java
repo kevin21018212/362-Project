@@ -946,6 +946,7 @@ public class Student extends User {
 
         //4: remaining courses -> required - enrolled courses
         Set<String> remainingCourses = calculateRemainingCourses(requiredCourses, enrolledCourses);
+
         //5. display academic progress report
         displayAcademicProgressReport(enrolledCourses,remainingCourses);
     }
@@ -981,8 +982,12 @@ public class Student extends User {
 
 
     private Set<String> calculateRemainingCourses(List<String> requiredCourses, List<String> enrolledCourses) {
+        System.out.println(requiredCourses);
+        System.out.println(enrolledCourses);
         Set<String> completedCourses = new HashSet<>(enrolledCourses);
+
         Set<String> remainingCourses = new HashSet<>(requiredCourses);
+
         remainingCourses.removeAll(completedCourses);
         return remainingCourses;
     }
