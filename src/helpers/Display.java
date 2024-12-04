@@ -166,7 +166,7 @@ public class Display {
                     break;
                 case "4":
                     AdvisorDisplay advisorDisplay = new AdvisorDisplay(student.getAdvisor());
-                    advisorDisplay.displayAdvisorMenuForStudents();
+                    advisorDisplay.displayAdvisorMenuForStudents(student.getId());
                     break;
                 case "5":
                     return; // Go back to the main menu

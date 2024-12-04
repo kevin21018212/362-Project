@@ -14,4 +14,6 @@ public interface AdvisorInterface {
     boolean cancelMeeting(int day, int time, String studentId);
     boolean addMeeting(int day, int time, String studentId);
     void saveToData();
+    void messageStudent(String message);
+    void messageAdvisor(String message);
 }

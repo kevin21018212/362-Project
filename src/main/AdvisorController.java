@@ -38,14 +38,14 @@ public class AdvisorController implements AdvisorInterface {
                 }
 
                 // Parse and add registration holds if the data exists and isn't empty
-//                if (advisor.length > 5 && advisor[5] != null && !advisor[5].isEmpty()) {
-//                    String[] holds = advisor[5].substring(1, advisor[5].length() - 1).split(",");
-//                    for (String hold : holds) {
-//                        if (!hold.trim().isEmpty()) {
-//                            newAdvisor.addRegistrationHold(hold.trim());
-//                        }
-//                    }
-//                }
+                if (advisor.length > 5 && advisor[5] != null && !advisor[5].isEmpty()) {
+                    String[] holds = advisor[5].substring(1, advisor[5].length() - 1).split(",");
+                    for (String hold : holds) {
+                        if (!hold.trim().isEmpty()) {
+                            newAdvisor.addRegistrationHold(hold.trim());
+                        }
+                    }
+                }
 
                 // Parse and add schedule if the data exists and isn't empty
                 if (advisor.length > 6 && advisor[6] != null && !advisor[6].isEmpty()) {
@@ -150,9 +150,25 @@ public class AdvisorController implements AdvisorInterface {
 
     }
 
+    /**
+     * @param message
+     */
+    @Override
+    public void messageStudent(String message) {
+
+    }
+
+    /**
+     * @param message
+     */
+    @Override
+    public void messageAdvisor(String message) {
+
+    }
+
     @Override
     public void printSchedule() {
-        advisor.printSchedule();
+        //TODO
     }
 
     /**

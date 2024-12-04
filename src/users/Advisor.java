@@ -11,9 +11,8 @@ public class Advisor extends User {
     private HashSet<String> students;
     private HashSet<String> registrationHolds;
     private String[][] schedule;
-    public static enum Days {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
-    }
+    public static enum Days {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY}
+    public static final String[] TIMES = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"};
     public static final String[] ADVISOR_FIELDS = {"id::name::email::department::[students]::[registrationHolds]::[schedule]"};
 
     public Advisor(String id, String name, String email, String department) {
@@ -41,6 +40,10 @@ public class Advisor extends User {
 
     public String[][] getSchedule() {
         return schedule;
+    }
+
+    public void addRegistrationHold(String hold) {
+        registrationHolds.add(hold);
     }
 
     public boolean addStudent(String studentId) {
@@ -78,15 +81,4 @@ public class Advisor extends User {
         return true;
     }
 
-    public void printSchedule() { //TODO
-//        for (int i = 0; i < 5; i++) {
-//            System.out.println(Days.values()[i]);
-//            for (int j = 0; j < 8; j++) {
-//                System.out.println("Time: " + j);
-//                for (String student : schedule[i][j]) {
-//                    System.out.println(student);
-//                }
-//            }
-//        }
-    }
 }

@@ -13,7 +13,7 @@ public class AdvisorDisplay {
         this.advisorController = new AdvisorController(id);
     }
 
-    public void displayAdvisorMenuForStudents() {
+    public void displayAdvisorMenuForStudents(String studentId) {
         while (true) {
             System.out.println("\nAdvisor Menu:");
             System.out.println("1: View Schedule");
@@ -28,7 +28,7 @@ public class AdvisorDisplay {
                     advisorController.printSchedule();
                     break;
                 case "2":
-                    addMeeting();
+                    addMeeting(studentId);
                     break;
                 case "3":
                     cancelMeeting();
@@ -41,7 +41,7 @@ public class AdvisorDisplay {
         }
     }
 
-    public void displayMenu(){
+    public void displayMenu() {
         while (true) {
             System.out.println("\nAdvisor Menu:");
             System.out.println("1: View Schedule");
@@ -61,7 +61,7 @@ public class AdvisorDisplay {
                     advisorController.printSchedule();
                     break;
                 case "2":
-                    addMeeting();
+                    addMeeting(null);
                     break;
                 case "3":
                     cancelMeeting();
@@ -73,10 +73,11 @@ public class AdvisorDisplay {
         }
     }
 
-    private void addMeeting() {
+    private void addMeeting(String studentId) {
         int day = Integer.parseInt(Utils.getInput("Enter day: "));
         int time = Integer.parseInt(Utils.getInput("Enter time: "));
-        String studentId = Utils.getInput("Enter student ID: ");
+        if (studentId == null)
+            studentId = Utils.getInput("Enter student ID: ");
         advisorController.addMeeting(day, time, studentId);
     }
 
