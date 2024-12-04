@@ -69,7 +69,7 @@ public class Advisor extends User {
         return schedule[day][time].remove(studentId);
     }
 
-    public void printSchedule() {
+    public void printSchedule() { //TODO
         for (int i = 0; i < 5; i++) {
             System.out.println(Days.values()[i]);
             for (int j = 0; j < 8; j++) {

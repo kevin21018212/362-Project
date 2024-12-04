@@ -1,6 +1,8 @@
 import helpers.Display;
 import helpers.Utils;
 
+import helpers.displays.AdvisorDisplay;
+
 public class Main {
     public static void main(String[] args) {
             while (true) {
@@ -9,7 +11,8 @@ public class Main {
                 System.out.println("2. Instructor Login");
                 System.out.println("3. Faculty Login");
                 System.out.println("4. Registrar Login");
-                System.out.println("5. Exit\n");
+                System.out.println("5. Advisor Login");
+                System.out.println("6. Exit\n");
                 String choice = Utils.getInput("Choose Option: ");
 
                 switch (choice) {
@@ -27,6 +30,11 @@ public class Main {
                         Display.displayRegistrarMenu();
                         break;
                     case "5":
+                        String advisorID = Utils.getInput("Enter Advisor ID: ");
+                        AdvisorDisplay advisorDisplay = new AdvisorDisplay(advisorID);
+                        advisorDisplay.displayMenu();
+                        break;
+                    case "6":
                         System.out.println("End");
                         return;
 

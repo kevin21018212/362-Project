@@ -104,7 +104,6 @@ public class AdvisorDisplay {
 
     private void removeStudent() {
         String studentId = Utils.getInput("Enter student ID: ");
-
     }
 
     private void removeRegistrationHold() {
