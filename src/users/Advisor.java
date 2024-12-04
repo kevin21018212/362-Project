@@ -80,5 +80,4 @@ public class Advisor extends User {
         schedule[day][time] = "";
         return true;
     }
-
 }

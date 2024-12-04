@@ -15,25 +15,25 @@ public class AdvisorDisplay {
 
     public void displayAdvisorMenuForStudents(String studentId) {
         while (true) {
+            advisorController.printSchedule();
+
             System.out.println("\nAdvisor Menu:");
-            System.out.println("1: View Schedule");
-            System.out.println("2: Add Meeting");
-            System.out.println("3: Cancel Meeting");
-            System.out.println("4: Exit");
+            System.out.println("1: Add Meeting");
+            System.out.println("2: Cancel Meeting");
+            System.out.println("0: Exit");
+
+            System.out.println("Advisor Schedule:");
 
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
                 case "1":
-                    advisorController.printSchedule();
-                    break;
-                case "2":
                     addMeeting(studentId);
                     break;
-                case "3":
+                case "2":
                     cancelMeeting();
                     break;
-                case "4":
+                case "0":
                     return;
                 default:
                     System.out.println("Invalid option");
@@ -74,6 +74,8 @@ public class AdvisorDisplay {
     }
 
     private void addMeeting(String studentId) {
+        advisorController.printSchedule();
+
         int day = Integer.parseInt(Utils.getInput("Enter day: "));
         int time = Integer.parseInt(Utils.getInput("Enter time: "));
         if (studentId == null)
@@ -82,8 +84,11 @@ public class AdvisorDisplay {
     }
 
     private void cancelMeeting() {
+        advisorController.printSchedule();
+
         int day = Integer.parseInt(Utils.getInput("Enter day: "));
-        int time = Integer.parseInt(Utils.getInput("Enter time: "));
+        int time = Integer.parseInt(Utils.getInput("Enter time (e.g. 11:00 as 11): "));
+
         String studentId = Utils.getInput("Enter student ID: ");
         advisorController.cancelMeeting(day, time, studentId);
     }

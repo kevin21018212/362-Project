@@ -7,6 +7,8 @@ import helpers.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static users.Advisor.TIMES;
+
 public class AdvisorController implements AdvisorInterface {
     private Advisor advisor;
 
@@ -83,15 +85,6 @@ public class AdvisorController implements AdvisorInterface {
     }
 
     /**
-     * @param id
-     * @return
-     */
-    @Override
-    public String[][] getSchedule(String id) {
-        return new String[0][]; //TODO
-    }
-
-    /**
      * @param day
      * @param time
      * @param studentId
@@ -101,6 +94,8 @@ public class AdvisorController implements AdvisorInterface {
     public boolean cancelMeeting(int day, int time, String studentId) {
         if (advisor.cancelMeeting(day, time, studentId)) {
             System.out.println("Meeting cancelled successfully");
+            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " cancelled for student " + studentId);
+            messageStudent(studentId,"Meeting with Advisor", "Meeting at " + day + " " + time + " cancelled");
             return true;
         } else {
             System.out.println("Meeting not found");
@@ -118,6 +113,8 @@ public class AdvisorController implements AdvisorInterface {
     public boolean addMeeting(int day, int time, String studentId) {
         if (advisor.addMeeting(day, time, studentId)) {
             System.out.println("Meeting scheduled successfully");
+            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " scheduled for student " + studentId);
+            messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor at " + day + " " + time + " scheduled");
             return true;
         } else {
             System.out.println("Meeting already scheduled for this time");
@@ -154,21 +151,43 @@ public class AdvisorController implements AdvisorInterface {
      * @param message
      */
     @Override
-    public void messageStudent(String message) {
-
+    public void messageStudent(String ID, String subject, String message) {
+        InboxController ic = new InboxController("-1", "DO NOT REPLY");
+        ic.sendMessage(ID, subject, message);
     }
 
     /**
      * @param message
      */
     @Override
-    public void messageAdvisor(String message) {
-
+    public void messageAdvisor(String subject, String message) {
+        InboxController ic = new InboxController("-1", "DO NOT REPLY");
+        ic.sendMessage(advisor.getId(), subject, message);
     }
 
     @Override
     public void printSchedule() {
-        //TODO
+        // Print header with times
+        System.out.print("              ");
+        for (String time : TIMES) {
+            System.out.printf("%-8s", time);
+        }
+        System.out.println();
+
+        // Print schedule for each day
+        int i = 1;
+        for (Advisor.Days day : Advisor.Days .values()) {
+            System.out.printf(i +". "+"%-9s", day);
+            for (int timeSlot = 0; timeSlot < TIMES.length; timeSlot++) {
+                String meeting = advisor.getSchedule()[day.ordinal()][timeSlot];
+                // Center the meeting ID or dash in an 8-character space
+                String display = meeting != null ? meeting : "-";
+                int padding = (8 - display.length()) / 2;
+                System.out.print(" ".repeat(padding) + display + " ".repeat(8 - display.length() - padding));
+            }
+            i += 1;
+            System.out.println();
+        }
     }
 
     /**
