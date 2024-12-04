@@ -17,12 +17,48 @@ public class AdvisorController implements AdvisorInterface {
 
     @Override
     public Advisor getAdvisorFromData(String id) {
-        List<String[]> advisorData = FileUtils.readStructuredData("advisors", "advisors.txt");
-        for (String[] advisors : advisorData) {
-            if (advisors[0].equals(id)) {
-                Advisor advisor = new Advisor(advisors[0], advisors[1], advisors[2], advisors[3]);
-                addStudents(advisor, new ArrayList<>(List.of(advisors[4].split(","))));
-                return advisor;
+        List<String[]> advisorData = FileUtils.readStructuredData("advisor", "advisors.txt");
+        for (String[] advisor : advisorData) {
+            if (advisor[0].equals(id)) {
+                Advisor newAdvisor = new Advisor(
+                        advisor[0],  // id
+                        advisor[1],  // name
+                        advisor[2],  // email
+                        advisor[3]   // department
+                );
+
+                // Parse and add students if the data exists and isn't empty
+                if (advisor.length > 4 && advisor[4] != null && !advisor[4].isEmpty()) {
+                    String[] students = advisor[4].substring(0, advisor[4].length()).split(",");
+                    for (String studentId : students) {
+                        if (!studentId.trim().isEmpty()) {
+                            newAdvisor.addStudent(studentId.trim());
+                        }
+                    }
+                }
+
+                // Parse and add registration holds if the data exists and isn't empty
+//                if (advisor.length > 5 && advisor[5] != null && !advisor[5].isEmpty()) {
+//                    String[] holds = advisor[5].substring(1, advisor[5].length() - 1).split(",");
+//                    for (String hold : holds) {
+//                        if (!hold.trim().isEmpty()) {
+//                            newAdvisor.addRegistrationHold(hold.trim());
+//                        }
+//                    }
+//                }
+
+                // Parse and add schedule if the data exists and isn't empty
+                if (advisor.length > 6 && advisor[6] != null && !advisor[6].isEmpty()) {
+                    String[] schedule = advisor[6].substring(1, advisor[6].length() - 1).split(",");
+                    for (int i = 0; i < 5; i++) {
+                        for (int j = 0; j < 8; j++) {
+                            if (!schedule[i * 8 + j].trim().isEmpty())
+                                newAdvisor.addMeeting(i, j, schedule[i * 8 + j]);
+                        }
+                    }
+                }
+
+                return newAdvisor;
             }
         }
         return null;
@@ -87,6 +123,31 @@ public class AdvisorController implements AdvisorInterface {
             System.out.println("Meeting already scheduled for this time");
             return false;
         }
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void saveToData() {
+        List<String[]> advisorData = new ArrayList<>();
+        advisorData.add(new String[]{
+                advisor.getId(),
+                advisor.getName(),
+                advisor.getEmail(),
+                advisor.getDepartment(),
+                String.join(",", advisor.getStudents()),
+                String.join(",", advisor.getRegistrationHolds())
+        });
+        String[] schedule = new String[5 * 8];
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 8; j++) {
+                schedule[i * 8 + j] = String.join(",", advisor.getSchedule()[i][j]);
+            }
+        }
+        advisorData.add(schedule);
+        FileUtils.writeStructuredData("advisors", "advisors.txt", Advisor.ADVISOR_FIELDS, advisorData);
+
     }
 
     @Override

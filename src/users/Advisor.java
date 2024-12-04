@@ -4,23 +4,27 @@ import helpers.User;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Arrays;
 
 public class Advisor extends User {
     private String department;
     private HashSet<String> students;
     private HashSet<String> registrationHolds;
-    private List<String>[][] schedule;
+    private String[][] schedule;
     public static enum Days {
         MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
     }
-    public static final String[] ADVISOR_FIELDS = {"id::name::email::department::[students]::[schedule]:[registrationHolds]"};
+    public static final String[] ADVISOR_FIELDS = {"id::name::email::department::[students]::[registrationHolds]::[schedule]"};
 
     public Advisor(String id, String name, String email, String department) {
         super(id, name, email);
         this.department = department;
         this.students = new HashSet<>();
         this.registrationHolds = new HashSet<>();
-        this.schedule = new ArrayList[5][8];
+        this.schedule = new String[5][8];
+//        for (String[] row : this.schedule) {
+//            Arrays.fill(row, " ");
+//        }
     }
 
     public String getDepartment() {
@@ -35,7 +39,7 @@ public class Advisor extends User {
         return registrationHolds;
     }
 
-    public List<String>[][] getSchedule() {
+    public String[][] getSchedule() {
         return schedule;
     }
 
@@ -55,10 +59,10 @@ public class Advisor extends User {
         if (day < Days.MONDAY.ordinal()|| day > Days.FRIDAY.ordinal() || time < 0 || time >= 8) {
             return false;
         }
-        if (!schedule[day][time].isEmpty()) {
+        if (schedule[day][time] != null) {
             return false;
         }
-        schedule[day][time].add(studentId);
+        schedule[day][time] = studentId;
         return true;
     }
 
@@ -66,18 +70,23 @@ public class Advisor extends User {
         if (day < Days.MONDAY.ordinal()|| day > Days.FRIDAY.ordinal() || time < 0 || time >= 8) {
             return false;
         }
-        return schedule[day][time].remove(studentId);
+        if (schedule[day][time].equals(studentId)) {
+            System.out.println("Meeting not found");
+            return false;
+        }
+        schedule[day][time] = "";
+        return true;
     }
 
     public void printSchedule() { //TODO
-        for (int i = 0; i < 5; i++) {
-            System.out.println(Days.values()[i]);
-            for (int j = 0; j < 8; j++) {
-                System.out.println("Time: " + j);
-                for (String student : schedule[i][j]) {
-                    System.out.println(student);
-                }
-            }
-        }
+//        for (int i = 0; i < 5; i++) {
+//            System.out.println(Days.values()[i]);
+//            for (int j = 0; j < 8; j++) {
+//                System.out.println("Time: " + j);
+//                for (String student : schedule[i][j]) {
+//                    System.out.println(student);
+//                }
+//            }
+//        }
     }
 }

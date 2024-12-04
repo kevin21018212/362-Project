@@ -1,2 +1,2 @@
 id::name::email::department::[students]::[holds]##
-111::Emily M::LAS::[1234, 3058, 1234]::##
+111::Emily M::emily@iastate.edu::LAS::1234,3058::1234,3058:: , , , , , ,1234,3058, , , , , , , , , , ,  , , , , , , , , , , , , , , , , , , , , , , ##
