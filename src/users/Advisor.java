@@ -8,16 +8,18 @@ import java.util.List;
 public class Advisor extends User {
     private String department;
     private HashSet<String> students;
+    private HashSet<String> registrationHolds;
     private List<String>[][] schedule;
     public static enum Days {
         MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
     }
-    public static final String[] ADVISOR_FIELDS = {"id::name::email::department::[students]::[schedule]"};
+    public static final String[] ADVISOR_FIELDS = {"id::name::email::department::[students]::[schedule]:[registrationHolds]"};
 
     public Advisor(String id, String name, String email, String department) {
         super(id, name, email);
         this.department = department;
         this.students = new HashSet<>();
+        this.registrationHolds = new HashSet<>();
         this.schedule = new ArrayList[5][8];
     }
 
@@ -27,6 +29,10 @@ public class Advisor extends User {
 
     public HashSet<String> getStudents() {
         return students;
+    }
+
+    public HashSet<String> getRegistrationHolds() {
+        return registrationHolds;
     }
 
     public List<String>[][] getSchedule() {

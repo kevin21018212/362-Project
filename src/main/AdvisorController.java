@@ -11,12 +11,12 @@ public class AdvisorController implements AdvisorInterface {
     private Advisor advisor;
 
     public AdvisorController(String id) {
-        advisor = getAdvisor(id);
+        this.advisor = getAdvisorFromData(id);
 
     }
 
     @Override
-    public Advisor getAdvisor(String id) {
+    public Advisor getAdvisorFromData(String id) {
         List<String[]> advisorData = FileUtils.readStructuredData("advisors", "advisors.txt");
         for (String[] advisors : advisorData) {
             if (advisors[0].equals(id)) {
@@ -92,5 +92,13 @@ public class AdvisorController implements AdvisorInterface {
     @Override
     public void printSchedule() {
         advisor.printSchedule();
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Advisor getAdvisor() {
+        return this.advisor;
     }
 }

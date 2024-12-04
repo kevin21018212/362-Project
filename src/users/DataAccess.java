@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataAccess {
-    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition"};
+    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition", "Advisor"};
     private static final String[] INSTRUCTOR_HEADERS = {"ID", "Name", "Email"};
     private static final String[] REGISTRAR_HEADERS = {"ID", "Name", "Email"};
 
