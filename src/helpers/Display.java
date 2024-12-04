@@ -1,17 +1,14 @@
 package helpers;
 
+import helpers.displays.AdvisorDisplay;
 import helpers.displays.MessageDisplay;
 
-import main.Course;
+import main.*;
 import users.DataAccess;
 import users.Instructor;
 import users.Registrar;
 import users.Student;
-import main.Enrollment;
 import helpers.displays.DirectoryDisplay;
-import main.StudentHousing;
-import main.MealPlan;
-
 
 
 public class Display {
@@ -151,7 +148,8 @@ public class Display {
             displayMessage("1 View Extracurricular Activities");
             displayMessage("2 View Messages");
             displayMessage("3 Directory Menu");
-            displayMessage("4 Back to Main Menu");
+            displayMessage("4 Schedule Meeting with Advisor");
+            displayMessage("5 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -167,6 +165,10 @@ public class Display {
                     directoryDisplay.displayDirectoryMenu();
                     break;
                 case "4":
+                    AdvisorDisplay advisorDisplay = new AdvisorDisplay(student.getAdvisor());
+                    advisorDisplay.displayAdvisorMenuForStudents();
+                    break;
+                case "5":
                     return; // Go back to the main menu
                 default:
                     displayMessage("Invalid option");

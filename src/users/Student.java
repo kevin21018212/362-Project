@@ -16,7 +16,7 @@ import static helpers.Display.displayMessage;
 import static helpers.Display.displayStudentMenu;
 
 public class Student extends User {
-    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition"};
+    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition", "Advisor"};
     private static final String[] STUDENT_CLUBS = {"Soccer", "Baseball", "Poker", "Pickleball", "Tennis", "Finance", "Investing", "Hacking"};
     private String major;
     private String scholarshipAmount;
@@ -25,6 +25,8 @@ public class Student extends User {
     private String studentClub1;
     private String studentClub2;
 
+    private String advisor;
+
     private final int IN_STATE_TUITION_PER_CLASS = 800;
     private final int OUT_OF_STATE_TUITION_PER_CLASS = 1500;
     private final int IOWA_RESIDENT_SCHOLARSHIP = 200;
@@ -32,13 +34,18 @@ public class Student extends User {
     private final int TECHNOLOGY_FEE = 300;
     private final int COST_PER_BOOK = 50;
 
-    public Student(String id, String name, String email, String major, String scholarshipAmount, String tuitionAmount, String studentClub1, String studentClub2) {
+    public Student(String id, String name, String email, String major, String scholarshipAmount, String tuitionAmount, String studentClub1, String studentClub2, String advisor) {
         super(id, name, email);
         this.major = major;
         this.scholarshipAmount = scholarshipAmount;
         this.tuitionAmount = tuitionAmount;
         this.studentClub1 = studentClub1;
         this.studentClub2 = studentClub2;
+        this.advisor = advisor;
+    }
+
+    public String getAdvisor() {
+        return advisor;
     }
 
     public String getMajor() { return major; }
