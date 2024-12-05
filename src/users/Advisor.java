@@ -73,9 +73,7 @@ public class Advisor extends User {
         if (day < Days.MONDAY.ordinal()|| day > Days.FRIDAY.ordinal() || time < 0 || time >= 8) {
             return false;
         }
-        System.out.println("schedule[day][time]: " + schedule[day][time]);
         if (!schedule[day][time].equals(studentId)) {
-            System.out.println("Meeting not found");
             return false;
         }
         schedule[day][time] = null;

@@ -54,7 +54,7 @@ public class AdvisorController implements AdvisorInterface {
                     String[] schedule = advisor[6].substring(1, advisor[6].length() - 1).split(",");
                     for (int i = 0; i < 5; i++) {
                         for (int j = 0; j < 8; j++) {
-                            if (!schedule[i * 8 + j].trim().isEmpty())
+                            if (!schedule[i * 8 + j].equals("-"))
                                 newAdvisor.addMeeting(i, j, schedule[i * 8 + j]);
                         }
                     }
@@ -100,8 +100,8 @@ public class AdvisorController implements AdvisorInterface {
         if (advisor.addMeeting(day, time, studentId)) {
             time += 9;
             System.out.println("Meeting scheduled successfully");
-            messageAdvisor("Meeting with"+studentId, "Meeting at " + Advisor.Days.values()[day] + " " + time + ":00 scheduled for student " + studentId);
-            messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor on " + day + " at " + time + " scheduled");
+            messageAdvisor("Meeting with "+studentId, "Meeting at " + Advisor.Days.values()[day] + " " + time + ":00 scheduled for student " + studentId);
+            messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor on " + Advisor.Days.values()[day] + " at " + time + ":00 scheduled");
             saveToData();
             return true;
         } else {
@@ -125,8 +125,8 @@ public class AdvisorController implements AdvisorInterface {
         if (advisor.cancelMeeting(day, time, studentId)) {
             time += 9;
             System.out.println("Meeting cancelled successfully");
-            messageAdvisor("Meeting with"+studentId, "Meeting at " + Advisor.Days.values()[day] + " " + time + ":00 cancelled for student " + studentId);
-            messageStudent(studentId,"Meeting with Advisor", "Meeting on " + day + " at " + time + " cancelled");
+            messageAdvisor("Meeting with"+studentId, "Meeting on " + Advisor.Days.values()[day] + " " + time + ":00 cancelled for student " + studentId);
+            messageStudent(studentId,"Meeting with Advisor", "Meeting on " + Advisor.Days.values()[day] + " at " + time + ":00 cancelled");
             saveToData();
             return true;
         } else {
@@ -153,7 +153,7 @@ public class AdvisorController implements AdvisorInterface {
                 if (advisor.getSchedule()[i][j] != null) {
                     schedule[i * 8 + j] = String.join(",", advisor.getSchedule()[i][j]);
                 } else {
-                    schedule[i * 8 + j] = String.join(",", " ");
+                    schedule[i * 8 + j] = String.join(",", "-");
                 }
             }
         }

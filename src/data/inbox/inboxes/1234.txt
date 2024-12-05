@@ -1,13 +1,3 @@
 messageId::senderId::senderName::subject::message####
-4638::1234::DO NOT REPLY::Meeting with Advisor::Meeting on 0 at 15 cancelled##
-0760::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor at 0 14 scheduled##
-9200::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor at 0 14 scheduled##
-8894::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor at 2 14 scheduled##
-4507::1234::DO NOT REPLY::Meeting with Advisor::Meeting at 1 15 cancelled##
 8593::1234::Bob Sponge::yo::wassssup##
-8038::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor at 1 1 scheduled##
-6341::1234::DO NOT REPLY::Meeting with Advisor::Meeting at 0 15 cancelled##
-1354::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor at 1 13 scheduled##
-9954::1234::DO NOT REPLY::Meeting with Advisor::Meeting at 0 15 cancelled##
-0590::1234::DO NOT REPLY::Meeting with Advisor::Meeting at 0 15 cancelled##
-2301::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on 0 at 15 scheduled##
+0338::1234::DO NOT REPLY::Meeting with Advisor::Meeting on MONDAY at 16:00 cancelled##
