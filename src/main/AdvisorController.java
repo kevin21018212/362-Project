@@ -74,6 +74,7 @@ public class AdvisorController implements AdvisorInterface {
         for (String student : students) {
             advisor.addStudent(student);
         }
+        saveToData();
     }
 
     /**
@@ -97,11 +98,11 @@ public class AdvisorController implements AdvisorInterface {
             return false;
         }
         if (advisor.addMeeting(day, time, studentId)) {
-            day += 1;
             time += 9;
             System.out.println("Meeting scheduled successfully");
-            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " scheduled for student " + studentId);
+            messageAdvisor("Meeting with"+studentId, "Meeting at " + Advisor.Days.values()[day] + " " + time + ":00 scheduled for student " + studentId);
             messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor at " + day + " " + time + " scheduled");
+            saveToData();
             return true;
         } else {
             System.out.println("Meeting already scheduled for this time");
@@ -122,11 +123,11 @@ public class AdvisorController implements AdvisorInterface {
             return false;
         }
         if (advisor.cancelMeeting(day, time, studentId)) {
-            day += 1;
             time += 9;
             System.out.println("Meeting cancelled successfully");
-            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " cancelled for student " + studentId);
+            messageAdvisor("Meeting with"+studentId, "Meeting at " + Advisor.Days.values()[day] + " " + time + ":00 cancelled for student " + studentId);
             messageStudent(studentId,"Meeting with Advisor", "Meeting at " + day + " " + time + " cancelled");
+            saveToData();
             return true;
         } else {
             System.out.println("Meeting not found");
@@ -151,7 +152,12 @@ public class AdvisorController implements AdvisorInterface {
         String[] schedule = new String[5 * 8];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 8; j++) {
-                schedule[i * 8 + j] = String.join(",", advisor.getSchedule()[i][j]);
+                if (advisor.getSchedule()[i][j] != null) {
+                    schedule[i * 8 + j] = String.join(",", advisor.getSchedule()[i][j]);
+                } else {
+                    schedule[i * 8 + j] = String.join(",", " ");
+                }
+
             }
         }
         advisorData.add(schedule);
