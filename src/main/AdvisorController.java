@@ -51,7 +51,7 @@ public class AdvisorController implements AdvisorInterface {
 
                 // Parse and add schedule if the data exists and isn't empty
                 if (advisor.length > 6 && advisor[6] != null && !advisor[6].isEmpty()) {
-                    String[] schedule = advisor[6].substring(1, advisor[6].length() - 1).split(",");
+                    String[] schedule = advisor[6].substring(0, advisor[6].length()).split(",");
                     for (int i = 0; i < 5; i++) {
                         for (int j = 0; j < 8; j++) {
                             if (!schedule[i * 8 + j].equals("-"))
@@ -147,16 +147,15 @@ public class AdvisorController implements AdvisorInterface {
                 break;
             }
         }
-        String[] schedule = new String[5 * 8];
+
+        // Create schedule string with proper length
+        String[] schedule = new String[40];  // 5 days * 8 time slots
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 8; j++) {
-                if (advisor.getSchedule()[i][j] != null) {
-                    schedule[i * 8 + j] = String.join(",", advisor.getSchedule()[i][j]);
-                } else {
-                    schedule[i * 8 + j] = String.join(",", "-");
-                }
+                schedule[i * 8 + j] = advisor.getSchedule()[i][j] != null ? advisor.getSchedule()[i][j] : "-";
             }
         }
+
         advisorData.add(new String[]{
                 advisor.getId(),
                 advisor.getName(),
@@ -167,9 +166,7 @@ public class AdvisorController implements AdvisorInterface {
                 String.join(",", schedule)
         });
 
-//        advisorData.add(stringSchedule);
         FileUtils.writeStructuredData("advisor", "advisors.txt", Advisor.ADVISOR_FIELDS, advisorData);
-
     }
 
     /**
