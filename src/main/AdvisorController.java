@@ -91,18 +91,20 @@ public class AdvisorController implements AdvisorInterface {
      * @return
      */
     @Override
-    public boolean cancelMeeting(int day, int time, String studentId) {
+    public boolean addMeeting(int day, int time, String studentId) {
         if (!advisor.getStudents().contains(studentId)) {
             System.out.println("Student not found");
             return false;
         }
-        if (advisor.cancelMeeting(day, time, studentId)) {
-            System.out.println("Meeting cancelled successfully");
-            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " cancelled for student " + studentId);
-            messageStudent(studentId,"Meeting with Advisor", "Meeting at " + day + " " + time + " cancelled");
+        if (advisor.addMeeting(day, time, studentId)) {
+            day += 1;
+            time += 9;
+            System.out.println("Meeting scheduled successfully");
+            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " scheduled for student " + studentId);
+            messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor at " + day + " " + time + " scheduled");
             return true;
         } else {
-            System.out.println("Meeting not found");
+            System.out.println("Meeting already scheduled for this time");
             return false;
         }
     }
@@ -114,18 +116,20 @@ public class AdvisorController implements AdvisorInterface {
      * @return
      */
     @Override
-    public boolean addMeeting(int day, int time, String studentId) {
+    public boolean cancelMeeting(int day, int time, String studentId) {
         if (!advisor.getStudents().contains(studentId)) {
             System.out.println("Student not found");
             return false;
         }
-        if (advisor.addMeeting(day, time, studentId)) {
-            System.out.println("Meeting scheduled successfully");
-            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " scheduled for student " + studentId);
-            messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor at " + day + " " + time + " scheduled");
+        if (advisor.cancelMeeting(day, time, studentId)) {
+            day += 1;
+            time += 9;
+            System.out.println("Meeting cancelled successfully");
+            messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " cancelled for student " + studentId);
+            messageStudent(studentId,"Meeting with Advisor", "Meeting at " + day + " " + time + " cancelled");
             return true;
         } else {
-            System.out.println("Meeting already scheduled for this time");
+            System.out.println("Meeting not found");
             return false;
         }
     }

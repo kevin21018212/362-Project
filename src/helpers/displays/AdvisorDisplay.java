@@ -30,7 +30,7 @@ public class AdvisorDisplay {
                     addMeeting(studentId);
                     break;
                 case "2":
-                    cancelMeeting();
+                    cancelMeeting(studentId);
                     break;
                 case "0":
                     return;
@@ -63,7 +63,7 @@ public class AdvisorDisplay {
                     addMeeting(null);
                     break;
                 case "3":
-                    cancelMeeting();
+                    cancelMeeting(null);
                     break;
 
                 default:
@@ -93,7 +93,7 @@ public class AdvisorDisplay {
         advisorController.addMeeting(day, time, studentId);
     }
 
-    private void cancelMeeting() {
+    private void cancelMeeting(String studentId) {
         advisorController.printSchedule();
 
         int day = Integer.parseInt(Utils.getInput("Enter day: "));
@@ -109,7 +109,8 @@ public class AdvisorDisplay {
             return;
         }
 
-        String studentId = Utils.getInput("Enter student ID: ");
+        if (studentId == null)
+            studentId = Utils.getInput("Enter student ID: ");
         advisorController.cancelMeeting(day, time, studentId);
     }
 
