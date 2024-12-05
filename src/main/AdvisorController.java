@@ -78,14 +78,6 @@ public class AdvisorController implements AdvisorInterface {
     }
 
     /**
-     * @param id
-     */
-    @Override
-    public void addSchedule(String id) {
-
-    }
-
-    /**
      * @param day
      * @param time
      * @param studentId
