@@ -1,3 +1,0 @@
-id::name::email::department::[students]::[registrationHolds]::[schedule]##
-111::Emily M::emily@iastate.edu::LAS::1234,3058::234,305##
-null::null::null::null::null::1234::1234::3058::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null::null##

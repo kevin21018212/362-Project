@@ -1,2 +1,3 @@
-id::name::email::department::[students]::[holds]##
-111::Emily M::emily@iastate.edu::LAS::1234,3058::1234,3058:: , , , , , ,1234,3058, , , , , , , , , , ,  , , , , , , , , , , , , , , , , , , , , , , ##
+id::name::email::department::[students]::[registrationHolds]::[schedule]##
+ , , , , , , ,3058, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ##
+111::Emily M::emily@iastate.edu::LAS::1234,3058::1234,3058:: , , , , , ,1234, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ##

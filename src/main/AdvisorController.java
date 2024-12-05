@@ -41,7 +41,7 @@ public class AdvisorController implements AdvisorInterface {
 
                 // Parse and add registration holds if the data exists and isn't empty
                 if (advisor.length > 5 && advisor[5] != null && !advisor[5].isEmpty()) {
-                    String[] holds = advisor[5].substring(1, advisor[5].length() - 1).split(",");
+                    String[] holds = advisor[5].substring(0, advisor[5].length()).split(",");
                     for (String hold : holds) {
                         if (!hold.trim().isEmpty()) {
                             newAdvisor.addRegistrationHold(hold.trim());
@@ -101,7 +101,7 @@ public class AdvisorController implements AdvisorInterface {
             time += 9;
             System.out.println("Meeting scheduled successfully");
             messageAdvisor("Meeting with"+studentId, "Meeting at " + Advisor.Days.values()[day] + " " + time + ":00 scheduled for student " + studentId);
-            messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor at " + day + " " + time + " scheduled");
+            messageStudent(studentId,"Meeting with Advisor", "Meeting with advisor on " + day + " at " + time + " scheduled");
             saveToData();
             return true;
         } else {
@@ -126,7 +126,7 @@ public class AdvisorController implements AdvisorInterface {
             time += 9;
             System.out.println("Meeting cancelled successfully");
             messageAdvisor("Meeting with"+studentId, "Meeting at " + Advisor.Days.values()[day] + " " + time + ":00 cancelled for student " + studentId);
-            messageStudent(studentId,"Meeting with Advisor", "Meeting at " + day + " " + time + " cancelled");
+            messageStudent(studentId,"Meeting with Advisor", "Meeting on " + day + " at " + time + " cancelled");
             saveToData();
             return true;
         } else {
@@ -140,15 +140,13 @@ public class AdvisorController implements AdvisorInterface {
      */
     @Override
     public void saveToData() {
-        List<String[]> advisorData = new ArrayList<>();
-        advisorData.add(new String[]{
-                advisor.getId(),
-                advisor.getName(),
-                advisor.getEmail(),
-                advisor.getDepartment(),
-                String.join(",", advisor.getStudents()),
-                String.join(",", advisor.getRegistrationHolds())
-        });
+        List<String[]> advisorData = FileUtils.readStructuredData("advisor", "advisors.txt");
+        for (int i = 0; i < advisorData.size(); i++) {
+            if (advisorData.get(i)[0].equals(advisor.getId())) {
+                advisorData.remove(i);
+                break;
+            }
+        }
         String[] schedule = new String[5 * 8];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 8; j++) {
@@ -157,11 +155,20 @@ public class AdvisorController implements AdvisorInterface {
                 } else {
                     schedule[i * 8 + j] = String.join(",", " ");
                 }
-
             }
         }
-        advisorData.add(schedule);
-        FileUtils.writeStructuredData("advisors", "advisors.txt", Advisor.ADVISOR_FIELDS, advisorData);
+        advisorData.add(new String[]{
+                advisor.getId(),
+                advisor.getName(),
+                advisor.getEmail(),
+                advisor.getDepartment(),
+                String.join(",", advisor.getStudents()),
+                String.join(",", advisor.getRegistrationHolds()),
+                String.join(",", schedule)
+        });
+
+//        advisorData.add(stringSchedule);
+        FileUtils.writeStructuredData("advisor", "advisors.txt", Advisor.ADVISOR_FIELDS, advisorData);
 
     }
 
