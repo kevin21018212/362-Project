@@ -15,14 +15,13 @@ public class AdvisorDisplay {
 
     public void displayAdvisorMenuForStudents(String studentId) {
         while (true) {
+            System.out.println("Advisor Schedule:");
             advisorController.printSchedule();
 
             System.out.println("\nAdvisor Menu:");
             System.out.println("1: Add Meeting");
             System.out.println("2: Cancel Meeting");
             System.out.println("0: Exit");
-
-            System.out.println("Advisor Schedule:");
 
             String choice = Utils.getInput("Select an option: ");
 
@@ -77,7 +76,18 @@ public class AdvisorDisplay {
         advisorController.printSchedule();
 
         int day = Integer.parseInt(Utils.getInput("Enter day: "));
+        day -= 1;
+        if (day < Advisor.Days.MONDAY.ordinal() || day > Advisor.Days.FRIDAY.ordinal()) {
+            System.out.println("Invalid day");
+            return;
+        }
         int time = Integer.parseInt(Utils.getInput("Enter time: "));
+        time -= 9;
+        if (time < 0 || time >= 8) {
+            System.out.println("Invalid time");
+            return;
+        }
+
         if (studentId == null)
             studentId = Utils.getInput("Enter student ID: ");
         advisorController.addMeeting(day, time, studentId);
@@ -87,13 +97,23 @@ public class AdvisorDisplay {
         advisorController.printSchedule();
 
         int day = Integer.parseInt(Utils.getInput("Enter day: "));
+        day -= 1;
+        if (day < Advisor.Days.MONDAY.ordinal() || day > Advisor.Days.FRIDAY.ordinal()) {
+            System.out.println("Invalid day");
+            return;
+        }
         int time = Integer.parseInt(Utils.getInput("Enter time (e.g. 11:00 as 11): "));
+        time -= 9;
+        if (time < 0 || time >= 8) {
+            System.out.println("Invalid time");
+            return;
+        }
 
         String studentId = Utils.getInput("Enter student ID: ");
         advisorController.cancelMeeting(day, time, studentId);
     }
 
-    private void addStudent() {
+    private void addStudent() { //TODO: Implement
         System.out.println("Enter Student IDs to Add: ");
         ArrayList<String> students = new ArrayList<>();
         String studentId = Utils.getInput("Enter student ID or 0 to stop: ");
@@ -110,6 +130,7 @@ public class AdvisorDisplay {
 
     private void removeStudent() {
         String studentId = Utils.getInput("Enter student ID: ");
+        //TODO
     }
 
     private void removeRegistrationHold() {

@@ -92,6 +92,10 @@ public class AdvisorController implements AdvisorInterface {
      */
     @Override
     public boolean cancelMeeting(int day, int time, String studentId) {
+        if (!advisor.getStudents().contains(studentId)) {
+            System.out.println("Student not found");
+            return false;
+        }
         if (advisor.cancelMeeting(day, time, studentId)) {
             System.out.println("Meeting cancelled successfully");
             messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " cancelled for student " + studentId);
@@ -111,6 +115,10 @@ public class AdvisorController implements AdvisorInterface {
      */
     @Override
     public boolean addMeeting(int day, int time, String studentId) {
+        if (!advisor.getStudents().contains(studentId)) {
+            System.out.println("Student not found");
+            return false;
+        }
         if (advisor.addMeeting(day, time, studentId)) {
             System.out.println("Meeting scheduled successfully");
             messageAdvisor("Meeting with"+studentId, "Meeting at " + day + " " + time + " scheduled for student " + studentId);
