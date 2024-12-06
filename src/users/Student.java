@@ -6,10 +6,7 @@ import helpers.Utils;
 import main.*;
 import helpers.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import static helpers.Display.displayMessage;
@@ -1095,4 +1092,42 @@ public class Student extends User {
             Display.displayMessage("You are not enrolled in any courses.");
         }
     }
+    public void submitFeedback() {
+        // Prompt the student to input the course ID, rating, and comments
+        String courseId = Utils.getInput("Enter the Course ID for feedback: ");
+        String ratingStr = Utils.getInput("Enter your Rating (1-5): ");
+        String comments = Utils.getInput("Enter your comments: ");
+
+        try {
+            // Convert the rating to an integer and validate it
+            int rating = Integer.parseInt(ratingStr);
+            if (rating < 1 || rating > 5) {
+                throw new NumberFormatException("Rating must be between 1 and 5.");
+            }
+
+            // Define the path to the feedback file
+            String feedbackFile = "src/data/feedback.txt";
+
+            // Format the feedback entry (student ID, course ID, rating, comments)
+            String feedbackEntry = this.id + "::" + courseId + "::" + rating + "::" + comments + "##";
+
+            // Append the feedback entry to the file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(feedbackFile, true))) {
+                writer.write(feedbackEntry);
+                writer.newLine();
+            }
+
+            // Confirm to the student that their feedback was submitted
+            Display.displayMessage("Thank you for your feedback!");
+        } catch (NumberFormatException e) {
+            // Handle invalid rating input
+            Display.displayMessage("Invalid rating. Please enter a number between 1 and 5.");
+        } catch (IOException e) {
+            // Handle IO exceptions if there's an error with file writing
+            Display.displayMessage("Error saving feedback. Please try again.");
+        }
+    }
+
+
+
 }

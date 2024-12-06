@@ -1,0 +1,5 @@
+1234::CS101::4::Excellent course with practical examples##
+5678::CS101::3::Good, but could use more detailed explanations##
+9101::MATH101::5::Great professor and clear instructions##
+1234::CS102::2::The course felt rushed.##
+
