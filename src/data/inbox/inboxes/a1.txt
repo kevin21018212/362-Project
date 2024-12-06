@@ -1,0 +1,2 @@
+messageId::senderId::senderName::subject::message####
+3772::a1::DO NOT REPLY::Meeting with3058::Meeting on MONDAY 16:00 cancelled for student 3058##

@@ -1,7 +1,10 @@
 messageId::senderId::senderName::subject::message####
-5410::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on TUESDAY at 12##
-5891::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on TUESDAY at 12##
-8593::1234::Bob Sponge::yo::wassssup##
-0338::1234::DO NOT REPLY::Meeting with Advisor::Meeting on MONDAY at 16##
+6788::1234::DO NOT REPLY::You Have a Registration Hold::Your registration hold cannot be released due to outstanding balance.##
+0213::1234::DO NOT REPLY::Meeting with Advisor::Meeting on TUESDAY at 12##
 5707::1234::DO NOT REPLY::Meeting with Advisor::Meeting on TUESDAY at 12##
-0213::1234::DO NOT REPLY::Meeting with Advisor::Meeting on TUESDAY at 12:00 cancelled##
+0338::1234::DO NOT REPLY::Meeting with Advisor::Meeting on MONDAY at 16##
+8593::1234::Bob Sponge::yo::wassssup##
+5891::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on TUESDAY at 12##
+5410::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on TUESDAY at 12##
+2445::1234::DO NOT REPLY::You Have a Registration Hold::Your registration hold cannot be released due to outstanding balance.##
+1315::1234::DO NOT REPLY::You Have a Registration Hold::Your registration hold cannot be released due to outstanding balance.##

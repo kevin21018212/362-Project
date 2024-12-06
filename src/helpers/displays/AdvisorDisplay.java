@@ -52,6 +52,7 @@ public class AdvisorDisplay {
             System.out.println("4: Add Student");
             System.out.println("5: Remove Student");
             System.out.println("6: Remove Registration Hold");
+            System.out.println("7: View Messages");
             System.out.println("0: Exit");
 
             String choice = Utils.getInput("Select an option: ");
@@ -63,9 +64,11 @@ public class AdvisorDisplay {
                     advisorController.printSchedule();
                     break;
                 case "2":
+                    System.out.println("Your students are: "+advisorController.getAllStudents(false));
                     addMeeting(null);
                     break;
                 case "3":
+                    System.out.println("Your students are: "+advisorController.getAllStudents(false));
                     cancelMeeting(null);
                     break;
                 case "4":
@@ -75,8 +78,13 @@ public class AdvisorDisplay {
                     removeStudent();
                     break; 
                 case "6":
+                    System.out.println("Your students are: "+advisorController.getAllStudents(true));
                     removeRegistrationHold();
                     break;
+                    case "7":
+                        MessageDisplay messageDisplay = new MessageDisplay(advisorController.getAdvisor().getId(), advisorController.getAdvisor().getName());
+                        messageDisplay.displayMessageMenu();
+                        break;
                 default:
                     System.out.println("Invalid option");
             }
@@ -156,7 +164,10 @@ public class AdvisorDisplay {
     }
 
     private void removeRegistrationHold() {
-        String stuID = Utils.getInput("Enter student ID: ");
+        String stuID = Utils.getInput("Enter student ID(0 to cancel): ");
+        if (stuID.equals("0")) {
+            return;
+        }
         List<String[]> allStudents = FileUtils.readStructuredData("", "students.txt");
         Student student = null;
         for (String[] students : allStudents) {
@@ -169,6 +180,10 @@ public class AdvisorDisplay {
             System.out.println("Student not found.");
             return;
         }
-        advisorController.releaseRegistrationHold(student);
+        if (advisorController.releaseRegistrationHold(student)){
+            System.out.println("Hold removed.");
+        } else {
+            System.out.println("Hold not removed.");
+        }
     }
 }

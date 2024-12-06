@@ -108,6 +108,15 @@ public class AdvisorController implements AdvisorInterface {
         return true;
     }
 
+    @Override
+    public String getAllStudents(boolean hold) {
+        if (!hold) {
+            return String.join(", ", advisor.getStudents());
+        } else {
+            return String.join(", ", advisor.getRegistrationHolds());
+        }
+    }
+
     /**
      * Schedules a meeting between advisor and student.
      * @param day The day of the week (0-4)
@@ -218,30 +227,6 @@ public class AdvisorController implements AdvisorInterface {
     }
 
     /**
-     * Prints the advisor's schedule in a formatted table.
-     */
-    @Override
-    public void printSchedule() {
-        System.out.print(" ");
-        for (String time : TIMES) {
-            System.out.printf("%-8s", time);
-        }
-        System.out.println();
-        int i = 1;
-        for (Advisor.Days day : Advisor.Days.values()) {
-            System.out.printf(i +". "+"%-9s", day);
-            for (int timeSlot = 0; timeSlot < TIMES.length; timeSlot++) {
-                String meeting = advisor.getSchedule()[day.ordinal()][timeSlot];
-                String display = meeting != null ? meeting : "-";
-                int padding = (8 - display.length()) / 2;
-                System.out.print(" ".repeat(padding) + display + " ".repeat(8 - display.length() - padding));
-            }
-            i += 1;
-            System.out.println();
-        }
-    }
-
-    /**
      * Checks if a student has a valid appointment.
      * @param studentId The ID of the student to check
      * @return true if student has a valid appointment, false otherwise
@@ -250,7 +235,7 @@ public class AdvisorController implements AdvisorInterface {
     public boolean hasValidAppointment(String studentId) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 8; j++) {
-                if (advisor.getSchedule()[i][j].equals(studentId)) {
+                if (advisor.getSchedule()[i][j] != null && advisor.getSchedule()[i][j].equals(studentId)) {
                     return true;
                 }
             }
@@ -280,12 +265,12 @@ public class AdvisorController implements AdvisorInterface {
 
         if (!hasValidAppointment(student.getId())) {
             System.out.println("Student does not have an appointment.");
-            System.out.println("Would you like to...\n1. Schedule an appointment\n2. Exit and notify student to make an appointment\n 3. Override hold");
+            System.out.println("Would you like to...\n1. Exit and schedule an appointment\n2. Exit and have system notify student to make an appointment\n3. Override hold");
             String choice = Utils.getInput("Enter choice: ");
             switch (choice) {
                 case "1": return false;
                 case "2":
-                    System.out.println("Student must make an appointment before hold can be removed.");
+                    messageStudent(student.getId(),"You Have a Registration Hold", "Please schedule an appointment with your advisor.");
                     return false;
                 case "3": return overrideRegistrationHold(student);
                 default: System.out.println("Invalid option");
@@ -316,6 +301,7 @@ public class AdvisorController implements AdvisorInterface {
         String choice = Utils.getInput("Release registration hold? (Y/N)");
         if (choice.equalsIgnoreCase("Y")) {
             this.advisor.getRegistrationHolds().remove(student.getId());
+            saveToData();
             return true;
         }
         return false;
@@ -339,6 +325,7 @@ public class AdvisorController implements AdvisorInterface {
         String choice = Utils.getInput("Release registration hold? (Y/N)");
         if (choice.equalsIgnoreCase("Y")) {
             this.advisor.getRegistrationHolds().remove(student.getId());
+            saveToData();
             return true;
         }
         return false;
@@ -351,5 +338,29 @@ public class AdvisorController implements AdvisorInterface {
     @Override
     public Advisor getAdvisor() {
         return this.advisor;
+    }
+
+    /**
+     * Prints the advisor's schedule in a formatted table.
+     */
+    @Override
+    public void printSchedule() {
+        System.out.print("              ");
+        for (String time : TIMES) {
+            System.out.printf("%-8s", time);
+        }
+        System.out.println();
+        int i = 1;
+        for (Advisor.Days day : Advisor.Days.values()) {
+            System.out.printf(i +". "+"%-9s", day);
+            for (int timeSlot = 0; timeSlot < TIMES.length; timeSlot++) {
+                String meeting = advisor.getSchedule()[day.ordinal()][timeSlot];
+                String display = meeting != null ? meeting : "-";
+                int padding = (8 - display.length()) / 2;
+                System.out.print(" ".repeat(padding) + display + " ".repeat(8 - display.length() - padding));
+            }
+            i += 1;
+            System.out.println();
+        }
     }
 }
