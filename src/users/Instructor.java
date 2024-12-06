@@ -218,4 +218,40 @@ public class Instructor extends User {
             Display.displayMessage("You are not assigned to any courses.");
         }
     }
+
+    public void viewFeedback() {
+        String courseId = Utils.getInput("Enter the Course ID to view feedback: ");
+        String feedbackFile = "src/data/feedback.txt";
+
+        Display.displayMessage("\nFeedback for Course: " + courseId);
+        Display.displayMessage("---------------------------------------");
+
+        boolean feedbackFound = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(feedbackFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Feedback format: StudentID::CourseID::Rating::Comments##
+                String[] feedbackDetails = line.split("::");
+                if (feedbackDetails.length >= 4 && feedbackDetails[1].equals(courseId)) {
+                    String studentId = feedbackDetails[0];
+                    String rating = feedbackDetails[2];
+                    String comments = feedbackDetails[3].replace("##", "");
+
+                    Display.displayMessage("Student ID: " + studentId);
+                    Display.displayMessage("Rating: " + rating);
+                    Display.displayMessage("Comments: " + comments);
+                    Display.displayMessage("---------------------------------------");
+                    feedbackFound = true;
+                }
+            }
+
+            if (!feedbackFound) {
+                Display.displayMessage("No feedback found for this course.");
+            }
+        } catch (IOException e) {
+            Display.displayMessage("Error reading feedback. Please try again.");
+        }
+    }
+
 }

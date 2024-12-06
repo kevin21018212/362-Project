@@ -11,6 +11,8 @@ import users.Student;
 import helpers.displays.DirectoryDisplay;
 
 
+
+
 public class Display {
     public static void displayStudentMenu() {
         String id = Utils.getInput("Enter Student ID to login. Please visit the Registrar menu to create an account: ");
@@ -149,7 +151,8 @@ public class Display {
             displayMessage("2 View Messages");
             displayMessage("3 Directory Menu");
             displayMessage("4 Schedule Meeting with Advisor");
-            displayMessage("5 Back to Main Menu");
+            displayMessage("5 Provide Professor Feedback");
+            displayMessage("6 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -169,7 +172,10 @@ public class Display {
                     advisorDisplay.displayAdvisorMenuForStudents(student.getId());
                     break;
                 case "5":
-                    return; // Go back to the main menu
+                    student.submitFeedback(); // Call method for submitting feedback
+                    break;
+                case "6":
+                    return;
                 default:
                     displayMessage("Invalid option");
             }
@@ -198,9 +204,10 @@ public class Display {
             displayMessage("1 View Courses");
             displayMessage("2 Grade Assignments");
             displayMessage("3 View Messages");
-            displayMessage("5 Logout");
             displayMessage("4 Create Course");  // New option to create a course
-            displayMessage("6 Directory");
+            displayMessage("5 View Feedback");
+            displayMessage("6 Logout");
+            displayMessage("7 Directory");
             String choice = Utils.getInput("Select an option: \n");
 
             switch (choice) {
@@ -214,17 +221,20 @@ public class Display {
                     MessageDisplay messageDisplay = new MessageDisplay(instructor.getId(), instructor.getName());
                     messageDisplay.displayMessageMenu();
                     break;
-                case "5":
-                    return;
                 case "4":  // New case to create a course
                     instructor.createCourse();
                     break;
+                case "5":
+                    instructor.viewFeedback();
+                    break;
                 case "6":
+                    return;
+                case "7":
                     DirectoryDisplay directoryDisplay = new DirectoryDisplay();
                     directoryDisplay.displayDirectoryMenu();
                     break;
                 default:
-                    displayMessage("Bad Baka");
+                    displayMessage("Invalid option.");
             }
         }
     }
