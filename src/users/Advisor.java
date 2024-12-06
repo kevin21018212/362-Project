@@ -1,5 +1,6 @@
 package users;
 
+import helpers.Display;
 import helpers.User;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,6 +15,8 @@ public class Advisor extends User {
     public static enum Days {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY}
     public static final String[] TIMES = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"};
     public static final String[] ADVISOR_FIELDS = {"id::name::email::department::[students]::[registrationHolds]::[schedule]"};
+
+    private boolean canOverrideHold;
 
     public Advisor(String id, String name, String email, String department) {
         super(id, name, email);
@@ -78,5 +81,9 @@ public class Advisor extends User {
         }
         schedule[day][time] = null;
         return true;
+    }
+
+    public boolean canOverrideHold() {
+        return canOverrideHold;
     }
 }

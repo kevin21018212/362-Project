@@ -1,8 +1,11 @@
 package main;
 
 import Interfaces.AdvisorInterface;
+import helpers.Display;
+import helpers.Utils;
 import users.Advisor;
 import helpers.FileUtils;
+import users.Student;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +14,13 @@ import static users.Advisor.TIMES;
 
 public class AdvisorController implements AdvisorInterface {
     private Advisor advisor;
+
+    private static final double GPA_THRESHOLD = 2.0;
+    private static final String HOLD_RELEASE_MESSAGE = "Your registration hold has been released.";
+    private static final String HOLD_DENIED_GPA_MESSAGE =
+            "Your registration hold cannot be released due to GPA requirements.";
+    private static final String HOLD_DENIED_BALANCE_MESSAGE =
+            "Your registration hold cannot be released due to outstanding balance.";
 
     public AdvisorController(String id) {
         this.advisor = getAdvisorFromData(id);
@@ -75,6 +85,17 @@ public class AdvisorController implements AdvisorInterface {
             advisor.addStudent(student);
         }
         saveToData();
+    }
+
+    @Override
+    public boolean removeStudent(String studentId) {
+        if (!advisor.getStudents().contains(studentId)) {
+            System.out.println("Student not found");
+            return false;
+        }
+        advisor.removeStudent(studentId);
+        saveToData();
+        return true;
     }
 
     /**
@@ -202,6 +223,105 @@ public class AdvisorController implements AdvisorInterface {
             i += 1;
             System.out.println();
         }
+    }
+
+    @Override
+    public boolean hasValidAppointment(String studentId) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (advisor.getSchedule()[i][j].equals(studentId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean releaseRegistrationHold(Student student) {
+        if (!this.advisor.canOverrideHold()) {
+            System.out.println("You do not have permission to remove holds.");
+            return false;
+        }
+
+        if (!this.advisor.getStudents().contains(student.getId())) {
+            System.out.println("Student is not assigned to this advisor.");
+            return false;
+        }
+
+        if (!this.advisor.getRegistrationHolds().contains(student.getId())) {
+            System.out.println("Student does not have a registration hold.");
+            return false;
+        }
+
+        // Check appointment
+        if (!hasValidAppointment(student.getId())) {
+            System.out.println("Student does not have an appointment.");
+            System.out.println("Would you like to...\n1. Schedule an appointment\n2. Exit and notify student to make an appointment\n 3. Override hold");
+            String choice = Utils.getInput("Enter choice: ");
+            switch (choice) {
+                case "1":
+                    return false;
+                case "2":
+                    System.out.println("Student must make an appointment before hold can be removed.");
+                    return false;
+                case "3":
+                    return overrideRegistrationHold(student);
+                default:
+                    System.out.println("Invalid option");
+            }
+
+            return false;
+        }
+
+        // Check GPA
+        if (student.getGPA() < GPA_THRESHOLD) {
+            Display.displayMessage("Cannot release hold: GPA below threshold (" + student.getGPA() + ")");
+            messageStudent(student.getId(),"You Have a Registration Hold", HOLD_DENIED_GPA_MESSAGE);
+            String choice = Utils.getInput("Override hold? (Y/N)");
+            if (choice.equalsIgnoreCase("Y")) {
+                return overrideRegistrationHold(student);
+            }
+            return false;
+        }
+
+        // Check outstanding balance
+        if (student.getTuitionAmount() != 0) {
+            Display.displayMessage("Cannot release hold: Outstanding balance exists");
+            messageStudent(student.getId(),"You Have a Registration Hold", HOLD_DENIED_BALANCE_MESSAGE);
+            String choice = Utils.getInput("Override hold? (Y/N)");
+            if (choice.equalsIgnoreCase("Y")) {
+                return overrideRegistrationHold(student);
+            }
+            return false;
+        }
+
+        String choice = Utils.getInput("Release registration hold? (Y/N)");
+        if (choice.equalsIgnoreCase("Y")) {
+            this.advisor.getRegistrationHolds().remove(student.getId());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean overrideRegistrationHold(Student student) {
+        if (!this.advisor.canOverrideHold()) {
+            Display.displayMessage("You do not have permission to override holds.");
+            return false;
+        }
+
+        if (!this.advisor.getRegistrationHolds().contains(student.getId())) {
+            Display.displayMessage("Student does not have a registration hold.");
+            return false;
+        }
+
+        Display.displayMessage("Are you sure you want to override the hold? (Y/N)");
+        String choice = Utils.getInput("Release registration hold? (Y/N)");
+        if (choice.equalsIgnoreCase("Y")) {
+            this.advisor.getRegistrationHolds().remove(student.getId());
+            return true;
+        }
+        return false;
     }
 
     /**

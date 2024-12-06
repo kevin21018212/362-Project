@@ -1,6 +1,7 @@
 package Interfaces;
 
 import users.Advisor;
+import users.Student;
 
 import java.util.ArrayList;
 
@@ -14,4 +15,7 @@ public interface AdvisorInterface {
     void saveToData();
     void messageStudent(String ID, String subject, String message);
     void messageAdvisor(String subject, String message);
+    boolean removeStudent(String studentId);
+    boolean hasValidAppointment(String studentId);
+    boolean releaseRegistrationHold(Student student);
 }

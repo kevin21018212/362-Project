@@ -1,10 +1,13 @@
 package helpers.displays;
 
+import helpers.FileUtils;
 import helpers.Utils;
 import main.AdvisorController;
 import users.Advisor;
+import users.Student;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdvisorDisplay {
     AdvisorController advisorController;
@@ -65,7 +68,15 @@ public class AdvisorDisplay {
                 case "3":
                     cancelMeeting(null);
                     break;
-
+                case "4":
+                    addStudent();
+                    break;
+                case "5":
+                    removeStudent();
+                    break; 
+                case "6":
+                    removeRegistrationHold();
+                    break;
                 default:
                     System.out.println("Invalid option");
             }
@@ -114,12 +125,18 @@ public class AdvisorDisplay {
         advisorController.cancelMeeting(day, time, studentId);
     }
 
-    private void addStudent() { //TODO: Implement
+    private void addStudent() { //TODO: TEST
         System.out.println("Enter Student IDs to Add: ");
         ArrayList<String> students = new ArrayList<>();
+        List<String[]> allStudents = FileUtils.readStructuredData("", "students.txt");
         String studentId = Utils.getInput("Enter student ID or 0 to stop: ");
         while (!studentId.equals("0")) {
-            students.add(studentId);
+            for (String[] student : allStudents) {
+                if (student[0].equals(studentId)) {
+                    students.add(studentId);
+                    break;
+                }
+            }
             studentId = Utils.getInput("Enter student ID: ");
         }
         if (students.isEmpty()) {
@@ -131,10 +148,27 @@ public class AdvisorDisplay {
 
     private void removeStudent() {
         String studentId = Utils.getInput("Enter student ID: ");
-        //TODO
+        if (advisorController.getAdvisor().getStudents().contains(studentId)) {
+            advisorController.removeStudent(studentId);
+        } else {
+            System.out.println("Student not found.");
+        }
     }
 
     private void removeRegistrationHold() {
-        //TODO
+        String stuID = Utils.getInput("Enter student ID: ");
+        List<String[]> allStudents = FileUtils.readStructuredData("", "students.txt");
+        Student student = null;
+        for (String[] students : allStudents) {
+            if (students[0].equals(stuID)) {
+                student = new Student(students[0], students[1], students[2], students[3], students[4], students[5], students[6], students[7], students[8]);
+                break;
+            }
+        }
+        if (student == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+        advisorController.releaseRegistrationHold(student);
     }
 }
