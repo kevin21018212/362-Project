@@ -1,5 +1,5 @@
-ID::Name::Email::Major::Scholarships::Tuition##
-1234::Max may::maxmay@m::Biology::3000::600::n/a::n/a##
+ID::Name::Email::Major::Scholarships::Tuition::Advisor##
+1234::Max may::maxmay@m::Biology::3000::600::n/a::n/a::111##
 3058::Bob Sponge::ski@mask.com::Biology::0::0::n/a::n/a##
 1235::max12::email::ComputerScience::500::5050::n/a::n/a##
 7828::freak::jajkfjafj::COMS::0::0::n/a::n/a##

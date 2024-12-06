@@ -1,2 +1,7 @@
 messageId::senderId::senderName::subject::message####
+5410::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on TUESDAY at 12##
+5891::1234::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on TUESDAY at 12##
 8593::1234::Bob Sponge::yo::wassssup##
+0338::1234::DO NOT REPLY::Meeting with Advisor::Meeting on MONDAY at 16##
+5707::1234::DO NOT REPLY::Meeting with Advisor::Meeting on TUESDAY at 12##
+0213::1234::DO NOT REPLY::Meeting with Advisor::Meeting on TUESDAY at 12:00 cancelled##

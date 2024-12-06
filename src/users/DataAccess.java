@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataAccess {
-    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition"};
+    private static final String[] STUDENT_HEADERS = {"ID", "Name", "Email", "Major", "Scholarships", "Tuition", "Advisor"};
     private static final String[] INSTRUCTOR_HEADERS = {"ID", "Name", "Email"};
     private static final String[] REGISTRAR_HEADERS = {"ID", "Name", "Email"};
 
@@ -16,7 +16,7 @@ public class DataAccess {
 
         for (String[] row : data) {
             if (row.length >= 3) {
-                students.add(new Student(row[0], row[1], row[2], row[3], row[4], row[5],row[6], row[7]));
+                students.add(new Student(row[0], row[1], row[2], row[3], row[4], row[5],row[6], row[7], row[8]));
             }
         }
         return students;
@@ -97,7 +97,7 @@ public class DataAccess {
 
         for (String[] row : data) {
             if (row.length >= 3 && row[0].equals(id)) {
-                return new Student(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]);
+                return new Student(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]);
             }
         }
         return null;
