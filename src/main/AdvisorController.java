@@ -104,6 +104,13 @@ public class AdvisorController implements AdvisorInterface {
             return false;
         }
         advisor.removeStudent(studentId);
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (advisor.getSchedule()[i][j] != null && advisor.getSchedule()[i][j].equals(studentId)) {
+                    advisor.getSchedule()[i][j] = null;
+                }
+            }
+        }
         saveToData();
         return true;
     }
