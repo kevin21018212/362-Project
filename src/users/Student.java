@@ -6,10 +6,9 @@ import helpers.Utils;
 import main.*;
 import helpers.FileUtils;
 import main.Library.Library;
-import main.Library.Reservation;
-import main.Library.Room;
 
 import java.io.*;
+import java.time.LocalTime;
 import java.util.*;
 
 import static helpers.Display.displayMessage;
@@ -48,22 +47,27 @@ public class Student extends User {
         return advisor;
     }
 
-    public String getMajor() { return major; }
-    public void setMajor(String major) { this.major = major; }
+    public String getMajor() {
+        return major;
+    }
 
-    public String getStudentClub1(){
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getStudentClub1() {
         return studentClub1;
     }
 
-    public String getStudentClub2(){
+    public String getStudentClub2() {
         return studentClub2;
     }
 
-    public void setStudentClub1(String club){
+    public void setStudentClub1(String club) {
         this.studentClub1 = club;
     }
 
-    public void setStudentClub2(String club){
+    public void setStudentClub2(String club) {
         this.studentClub2 = club;
     }
 
@@ -79,16 +83,24 @@ public class Student extends User {
         return 0;
     }
 
-    public void setScholarshipAmount(String amount) { this.scholarshipAmount = amount; }
-    public int getTuitionAmount(){return Integer.parseInt(tuitionAmount);}
-    public void setTuitionAmount(String amount) { this.tuitionAmount = amount; }
+    public void setScholarshipAmount(String amount) {
+        this.scholarshipAmount = amount;
+    }
 
-    public int getTotalUniversityBill(){
+    public int getTuitionAmount() {
+        return Integer.parseInt(tuitionAmount);
+    }
+
+    public void setTuitionAmount(String amount) {
+        this.tuitionAmount = amount;
+    }
+
+    public int getTotalUniversityBill() {
         int temp = getTuitionAmount() - getScholarshipAmount();
         return Math.max(temp, 0);
     }
 
-    public int getStudentID(){
+    public int getStudentID() {
         return Integer.parseInt(id);
     }
 
@@ -144,44 +156,35 @@ public class Student extends User {
     }
 
 
+
+
     public void reserveStudyRoom() {
         Scanner scanner = new Scanner(System.in);
 
-        //Show accessible and inaccessible rooms
-        Library.showAllRooms(this.id);
+        // Step 1: Show available rooms
+        System.out.println("Available Rooms:");
+        Library.showAllRooms();
 
-        //Choose Room
+        // Step 2: Prompt user to select a room
         System.out.print("Enter the Room ID you want to reserve: ");
         String roomId = scanner.nextLine().trim();
 
-        // Load the selected room to validate further operations
-        List<Room> rooms = Library.loadRooms();
-        Room selectedRoom = null;
-        for (Room room : rooms) {
-            if (room.getId().equalsIgnoreCase(roomId)) {
-                selectedRoom = room;
-                break;
-            }
-        }
+        // Step 3: Show room schedule
+        System.out.println("\nRoom Schedule:");
+        Library.showRoomSchedule(roomId);
 
-        if (selectedRoom == null) {
-            System.out.println("Invalid Room ID. Please try again.");
-            return;
-        }
-
-        // Step 4: Show the room's schedule
-        List<Reservation> reservations = Reservation.loadReservations();
-        selectedRoom.showSchedule(reservations);
-
-        // Step 5: Prompt user for time and duration
+        // Step 4: Prompt user for time and duration
         System.out.print("Enter start time for your reservation (HH:mm): ");
         String startTime = scanner.nextLine().trim();
         System.out.print("Enter the duration of your reservation in minutes: ");
         int durationMinutes = scanner.nextInt();
 
-        // Step 6: Reserve the room
-        selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
+        // Step 5: Reserve the room
+        Library.reserveRoom(roomId, startTime, durationMinutes, this.id);
     }
+
+
+
 
     /**
      * Enrolls a student in a course (broken rn?)
@@ -227,7 +230,7 @@ public class Student extends User {
         System.out.println("3. View Department");
         System.out.println("4. Go Back\n");
         String num = Utils.getInput("\nChoose an Option to Proceed:");
-        switch(num) {
+        switch (num) {
             case "1":
                 displayMessage("Your current Major is: " + getMajor());
                 break;
@@ -284,7 +287,7 @@ public class Student extends User {
         }
     }
 
-    public void viewUniversityBillingOptions(){
+    public void viewUniversityBillingOptions() {
         System.out.println("\nPlease Select an option regarding your University Bill or Scholarships:");
         displayMessage("1 View current University Tuition and Fees");
         displayMessage("2 View current awarded Scholarship amount.");
@@ -295,14 +298,14 @@ public class Student extends User {
         switch (choice) {
             case "1":
                 System.out.println("\nYour current Tuition/Fees total: $" + tuitionAmount);
-                if(tuitionAmount.equals("0")){
+                if (tuitionAmount.equals("0")) {
                     System.out.println("You must apply for tuition and scholarships, please press option 3.");
                 }
                 viewUniversityBillingOptions();
                 break;
             case "2":
                 System.out.println("\nYour current Scholarships total: $" + getScholarshipAmount());
-                if(scholarshipAmount.equals("0")){
+                if (scholarshipAmount.equals("0")) {
                     System.out.println("You must apply for tuition and scholarships, please press option 3.\n");
                 }
                 viewUniversityBillingOptions();
@@ -315,7 +318,7 @@ public class Student extends User {
                 System.out.println("Your current Scholarships total: $" + getScholarshipAmount());
                 System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
 
-                if(getTotalUniversityBill() == 0){
+                if (getTotalUniversityBill() == 0) {
                     System.out.println("\nYou owe nothing for tuition, so there is no bill to pay! Congrats!");
                     break;
                 } else {
@@ -345,7 +348,7 @@ public class Student extends User {
         int tempTuition = calculateTuition(classCount);
         tuitionAmount = Integer.toString(tempTuition);
 
-        if(!tuitionAmount.equals("0")){
+        if (!tuitionAmount.equals("0")) {
             System.out.println("Total Tuition: $" + tuitionAmount);
         } else {
             System.out.println("You are not enrolled in any classes.");
@@ -375,7 +378,7 @@ public class Student extends User {
 
         //ensure amount owed cannot be negative
         int amountOwed = totalCost - tempScholarshipAmount;
-        if(amountOwed < 0){
+        if (amountOwed < 0) {
             amountOwed = 0;
             System.out.println("Congrats! You owe $" + amountOwed + " because your scholarships cover your costs!");
         } else {
@@ -390,7 +393,7 @@ public class Student extends User {
     public int calculateTuition(int classCount) {
         String isInState = Utils.getInput("\nAre you an Iowa resident? (yes/no): ");
         int tuitionPerClass = OUT_OF_STATE_TUITION_PER_CLASS;
-        if(isInState.equalsIgnoreCase("yes")){
+        if (isInState.equalsIgnoreCase("yes")) {
             tuitionPerClass = IN_STATE_TUITION_PER_CLASS;
         }
 
@@ -402,7 +405,7 @@ public class Student extends User {
         return totalTuition;
     }
 
-    public void payUniversityBill(){
+    public void payUniversityBill() {
         System.out.println("\nYour current University Bill Total: $" + getTotalUniversityBill());
         displayMessage("\nPlease Select a Payment Method: ");
         displayMessage("1 Cash");
@@ -412,19 +415,19 @@ public class Student extends User {
         displayMessage("5 Go Back");
         String paymentMethod = Utils.getInput("\nPlease select an option (Ex: 3): ");
 
-        switch (paymentMethod){
+        switch (paymentMethod) {
             case "1":
                 int confirmPayment = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                    if(confirmPayment <= getTotalUniversityBill() && (confirmPayment >=0)){
-                        System.out.println("Thank you!");
-                        System.out.println("Please deliver your cash to the Billing Center within 7 business days.");
-                        handleUniversityBillPayment(confirmPayment);
-                    } else {
-                        System.out.println("That was not correct, please try again");
-                        payUniversityBill();
-                    }
-                    break;
+                if (confirmPayment <= getTotalUniversityBill() && (confirmPayment >= 0)) {
+                    System.out.println("Thank you!");
+                    System.out.println("Please deliver your cash to the Billing Center within 7 business days.");
+                    handleUniversityBillPayment(confirmPayment);
+                } else {
+                    System.out.println("That was not correct, please try again");
+                    payUniversityBill();
+                }
+                break;
             case "2":
                 System.out.println("You have selected to pay with check.");
                 String rountingNumber = Utils.getInput("\nPlease enter your routing number: ");
@@ -432,11 +435,11 @@ public class Student extends User {
                 System.out.println("IF you would like to cancel, please enter 1 on the following prompt");
                 int confirmPaymentCheck = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                if(confirmPaymentCheck <= getTotalUniversityBill() && (confirmPaymentCheck >=0)){
+                if (confirmPaymentCheck <= getTotalUniversityBill() && (confirmPaymentCheck >= 0)) {
                     System.out.println("Thank you!");
                     System.out.println("Your check has been confirmed");
                     handleUniversityBillPayment(confirmPaymentCheck);
-                } else if(confirmPaymentCheck == 1){
+                } else if (confirmPaymentCheck == 1) {
                     System.out.println("You have cancelled your payment.");
                     payUniversityBill();
                 }
@@ -451,11 +454,11 @@ public class Student extends User {
                 System.out.println("\nIf you would like to cancel, please enter 1 on the following prompt");
                 int confirmPaymentCard = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                if(confirmPaymentCard <= getTotalUniversityBill() && (confirmPaymentCard >=0)){
+                if (confirmPaymentCard <= getTotalUniversityBill() && (confirmPaymentCard >= 0)) {
                     System.out.println("Thank you!");
                     System.out.println("Your card payment has been confirmed");
                     handleUniversityBillPayment(confirmPaymentCard);
-                } else if(confirmPaymentCard == 1){
+                } else if (confirmPaymentCard == 1) {
                     System.out.println("You have cancelled your payment.");
                     payUniversityBill();
                 }
@@ -466,11 +469,11 @@ public class Student extends User {
                 System.out.println("\nIf you would like to cancel, please enter 1 on the following prompt");
                 int confirmPaymentOnline = Integer.parseInt(Utils.getInput("\nPlease Enter the amount you would like to pay:"));
 
-                if(confirmPaymentOnline <= getTotalUniversityBill() && (confirmPaymentOnline >=0)){
+                if (confirmPaymentOnline <= getTotalUniversityBill() && (confirmPaymentOnline >= 0)) {
                     System.out.println("Thank you!");
                     handleUniversityBillPayment(confirmPaymentOnline);
                     System.out.println("Your card payment has been confirmed");
-                } else if(confirmPaymentOnline == 1){
+                } else if (confirmPaymentOnline == 1) {
                     System.out.println("You have cancelled your payment.");
                     payUniversityBill();
                 }
@@ -484,14 +487,14 @@ public class Student extends User {
         }
     }
 
-    public void payUniversityBillMenu(){
+    public void payUniversityBillMenu() {
         displayMessage("\nPay University Bill Menu: ");
         displayMessage("1 Pay Bill");
         displayMessage("2 Cancel (Go Back)");
 
         String payBillMenuChoice = Utils.getInput("\nPlease select an option (Ex: 3): ");
 
-        switch (payBillMenuChoice){
+        switch (payBillMenuChoice) {
             case "1":
                 payUniversityBill();
                 break;//TODO - Edit tuition and scholarship values after payment
@@ -503,7 +506,7 @@ public class Student extends User {
         }
     }
 
-    public void handleUniversityBillPayment(int amount){
+    public void handleUniversityBillPayment(int amount) {
         int newStudentTuition = getTuitionAmount() - amount - getScholarshipAmount();
 
         System.out.println("Your new University Bill balance is: $" + newStudentTuition);
@@ -522,7 +525,7 @@ public class Student extends User {
      * @return The integer amount of scholarships the student has earned based on GPA and ACT score.
      * Updates the students.txt file with the new amount
      */
-    public int calculateScholarshipAmount(){
+    public int calculateScholarshipAmount() {
         final int HS_GPA_TOP = 400;
         final int HS_GPA_MED = 200;
         final int HS_GPA_SMALL = 100;
@@ -534,19 +537,19 @@ public class Student extends User {
         System.out.println("\nScholarships:");
         String isInState = Utils.getInput("Are you an Iowa resident? (yes/no): ");
 
-        if(isInState.equalsIgnoreCase("yes")){
+        if (isInState.equalsIgnoreCase("yes")) {
             runningTotal += IOWA_RESIDENT_SCHOLARSHIP;
         }
         //calculate high school GPA scholarship
         System.out.println("Please enter your high school GPA such as '3.5'.");
         float highSchoolGPA = Float.parseFloat(Utils.getInput("\nGPA: "));
-        if(highSchoolGPA >= 3.8){
+        if (highSchoolGPA >= 3.8) {
             System.out.println("Congrats! You have earned the top GPA Scholarship!");
             runningTotal += HS_GPA_TOP;
-        } else if(highSchoolGPA < 3.8 && highSchoolGPA >= 3.3){
+        } else if (highSchoolGPA < 3.8 && highSchoolGPA >= 3.3) {
             System.out.println("Congrats! You have earned the medium GPA Scholarship!");
             runningTotal += HS_GPA_MED;
-        } else if(highSchoolGPA < 3.3 && highSchoolGPA >= 3.0){
+        } else if (highSchoolGPA < 3.3 && highSchoolGPA >= 3.0) {
             System.out.println("Congrats! You have earned a small GPA Scholarship!");
             runningTotal += HS_GPA_SMALL;
         } else {
@@ -555,13 +558,13 @@ public class Student extends User {
         //calculate ACT-based scholarship
         System.out.println("\nPlease enter your ACT score such as '25'.");
         int studentACT = Integer.parseInt(Utils.getInput("ACT Score: "));
-        if(studentACT >= 32){
+        if (studentACT >= 32) {
             System.out.println("Congrats! You have earned the top ACT Scholarship!");
             runningTotal += ACT_TOP;
-        } else if(studentACT < 32 && studentACT >= 27){
+        } else if (studentACT < 32 && studentACT >= 27) {
             System.out.println("Congrats! You have earned the medium ACT Scholarship!");
             runningTotal += ACT_MED;
-        } else if(studentACT < 27 && studentACT >= 24){
+        } else if (studentACT < 27 && studentACT >= 24) {
             System.out.println("Congrats! You have earned a small ACT Scholarship!");
             runningTotal += ACT_SMALL;
         } else {
@@ -594,7 +597,7 @@ public class Student extends User {
         return classCount;
     }
 
-    public void displayStudentExtracurricularMenu(){
+    public void displayStudentExtracurricularMenu() {
         displayMessage("\nStudent Extracurricular Menu: ");
         displayMessage("1 View My Extracurricular Activities");
         displayMessage("2 Browse Available Extracurricular Activities");
@@ -627,22 +630,22 @@ public class Student extends User {
     /**
      * Displays the enrolled extracurricular activities of the logged-in student.
      */
-    public void viewEnrolledExtracurriculars(){
-        if(studentClub2.equalsIgnoreCase("n/a") && studentClub1.equalsIgnoreCase("n/a")){
+    public void viewEnrolledExtracurriculars() {
+        if (studentClub2.equalsIgnoreCase("n/a") && studentClub1.equalsIgnoreCase("n/a")) {
             System.out.println("You are not enrolled in any clubs.");
         } else {
             System.out.println("Your currently enrolled in: ");
         }
-        if(!studentClub1.equalsIgnoreCase("n/a")){
+        if (!studentClub1.equalsIgnoreCase("n/a")) {
             System.out.println(getStudentClub1());
         }
-        if(!studentClub2.equalsIgnoreCase("n/a")){
+        if (!studentClub2.equalsIgnoreCase("n/a")) {
             System.out.println(getStudentClub2());
         }
         //displayStudentExtracurricularMenu();
     }
 
-    public void browseExtracurricularActivities(){
+    public void browseExtracurricularActivities() {
         displayAvailableExtracurriculars();
     }
 
@@ -653,7 +656,7 @@ public class Student extends User {
      * 3. Validates entered club name to check if matches available options
      * 4. Updates either studentClub1 or studentClub2 depending on which slot is open
      */
-    public void joinExtracurricularActivity(){
+    public void joinExtracurricularActivity() {
         if (!checkStudentExtracurricularAvailability()) {
             System.out.println("You are already enrolled in the maximum number of clubs. Please drop a club to join another.");
             displayStudentExtracurricularMenu();
@@ -832,13 +835,7 @@ public class Student extends User {
             String submittedDate = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ISO_DATE);
 
             // Create submission data array
-            String[] submissionData = {
-                    submissionId,
-                    assignmentId,
-                    this.id,
-                    "Not Graded",
-                    submittedDate
-            };
+            String[] submissionData = {submissionId, assignmentId, this.id, "Not Graded", submittedDate};
 
             // Read existing submissions
             String directory = "courses/" + courseId + "/";
@@ -849,9 +846,7 @@ public class Student extends User {
             existingSubmissions.add(submissionData);
 
             // Write back to file with headers
-            FileUtils.writeStructuredData(directory, fileName,
-                    new String[]{"SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"},
-                    existingSubmissions);
+            FileUtils.writeStructuredData(directory, fileName, new String[]{"SubmissionId", "AssignmentId", "StudentId", "Grade", "SubmittedDate"}, existingSubmissions);
 
             displayMessage("Assignment submitted successfully.");
         }
@@ -967,6 +962,7 @@ public class Student extends User {
             return "F";
         }
     }
+
     public void trackAcademicProgress() {
         //1. retrieve student major
         if (this.major == null || this.major.isEmpty()) {
@@ -995,7 +991,7 @@ public class Student extends User {
         Set<String> remainingCourses = calculateRemainingCourses(requiredCourses, enrolledCourses);
 
         //5. display academic progress report
-        displayAcademicProgressReport(enrolledCourses,remainingCourses);
+        displayAcademicProgressReport(enrolledCourses, remainingCourses);
     }
 
     private void displayAcademicProgressReport(List<String> enrolledCourses, Set<String> remainingCourses) {
@@ -1079,6 +1075,7 @@ public class Student extends User {
         // Implement logic to mark graduation application status
         displayMessage("Graduation application status has been updated in the system.");
     }
+
     public void viewCourses() {
         String enrollmentsFile = "src/data/enrollments.txt"; // Path to enrollments file
         String coursesFile = "src/data/courses.txt"; // Path to courses file
@@ -1136,6 +1133,7 @@ public class Student extends User {
             Display.displayMessage("You are not enrolled in any courses.");
         }
     }
+
     public void submitFeedback() {
         // Prompt the student to input the course ID, rating, and comments
         String courseId = Utils.getInput("Enter the Course ID for feedback: ");
@@ -1171,105 +1169,6 @@ public class Student extends User {
             Display.displayMessage("Error saving feedback. Please try again.");
         }
     }
-
-    public void dropOut() {
-        // Display a confirmation prompt
-        String confirmation = Utils.getInput("Are you sure you want to drop out of the university? This action cannot be undone. Type 'yes' to confirm: ");
-
-        if (!confirmation.equalsIgnoreCase("yes")) {
-            Display.displayMessage("Dropout process canceled.");
-            return;
-        }
-
-        // List of main files to modify
-        String[] filesToUpdate = {
-                "src/data/enrollments.txt",
-                "src/data/feedback.txt",
-                "src/data/students.txt"
-        };
-
-        // Path to the dropped out students file
-        String droppedOutFile = "src/data/droppedOutStudents.txt";
-
-        try (BufferedWriter droppedOutWriter = new BufferedWriter(new FileWriter(droppedOutFile, true))) {
-            // Save the student information to droppedOutStudents.txt
-            String droppedOutInfo = String.format("%s::%s::%s::%s##", this.id, this.name, this.major, this.email);
-            droppedOutWriter.write(droppedOutInfo);
-            droppedOutWriter.newLine();
-
-            // Update main files
-            for (String filePath : filesToUpdate) {
-                File file = new File(filePath);
-                File tempFile = new File(filePath + ".tmp");
-
-                try (BufferedReader reader = new BufferedReader(new FileReader(file));
-                     BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        // Skip lines containing the student's ID
-                        if (!line.contains(this.id)) {
-                            writer.write(line);
-                            writer.newLine();
-                        }
-                    }
-                }
-
-                // Replace the original file with the updated temporary file
-                if (!file.delete()) {
-                    throw new IOException("Could not delete the original file: " + filePath);
-                }
-                if (!tempFile.renameTo(file)) {
-                    throw new IOException("Could not rename the temporary file: " + tempFile.getAbsolutePath());
-                }
-            }
-
-            // Handle submissions and assignments in course folders
-            File coursesFolder = new File("src/data/courses");
-            File[] courseFolders = coursesFolder.listFiles(File::isDirectory); // Get all course directories
-
-            if (courseFolders != null) {
-                for (File courseFolder : courseFolders) {
-                    // Locate submissions.txt inside the course folder
-                    File submissionsFile = new File(courseFolder, "submissions.txt");
-
-                    if (submissionsFile.exists()) {
-                        File tempFile = new File(courseFolder, "submissions.tmp");
-
-                        try (BufferedReader reader = new BufferedReader(new FileReader(submissionsFile));
-                             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                // Skip lines containing the student's ID
-                                if (!line.contains(this.id)) {
-                                    writer.write(line);
-                                    writer.newLine();
-                                }
-                            }
-                        }
-
-                        // Replace submissions.txt with the updated temporary file
-                        if (!submissionsFile.delete()) {
-                            throw new IOException("Could not delete the original file: " + submissionsFile.getAbsolutePath());
-                        }
-                        if (!tempFile.renameTo(submissionsFile)) {
-                            throw new IOException("Could not rename the temporary file: " + tempFile.getAbsolutePath());
-                        }
-                    }
-                }
-            }
-
-            // Notify the user of success
-            Display.displayMessage("Your records have been removed. You have successfully dropped out of the university.");
-
-        } catch (IOException e) {
-            // Handle errors during file processing
-            Display.displayMessage("An error occurred while processing your dropout request. Please try again.");
-            e.printStackTrace();
-        }
-    }
-
 
 
 }

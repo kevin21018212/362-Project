@@ -47,7 +47,7 @@ public class Display {
                     displayStudentServicesMenu(student);
                     break;
                 case "5":
-                    displayLibaryPortal(student);
+                    displayLibraryPortal(student);
                     break;
                 case "6":
                     return;
@@ -92,26 +92,27 @@ public class Display {
         }
     }
 
-    private static void displayLibaryPortal(Student student) {
+    private static void displayLibraryPortal(Student student) {
         while (true) {
-            displayMessage("\n Library Menu");
-            displayMessage("1 Reserve a study room");
-            displayMessage("2 View Grades");
-            displayMessage("3 View Academic Progress");
-            displayMessage("4 Apply for Graduation");
-            displayMessage("5 Back to Main Menu");
+            displayMessage("\nLibrary Menu");
+            displayMessage("1. Reserve a study room");
+            displayMessage("5. Back to main menu\n");
+
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
                 case "1":
                     student.reserveStudyRoom();
+                    break;
                 case "5":
-                    return; // Back to main menu
+                    return;
                 default:
-                    displayMessage("Invalid option");
+                    displayMessage("Invalid option. Please try again.");
+                    break;
             }
         }
     }
+
 
     private static void displayCourseManagementMenu(Student student) {
         while (true) {
