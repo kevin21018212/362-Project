@@ -1,0 +1,2 @@
+messageId::senderId::senderName::subject::message####
+3767::1235::DO NOT REPLY::Meeting with Advisor::Meeting with advisor on MONDAY at 9:00 scheduled##

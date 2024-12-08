@@ -18,4 +18,5 @@ public interface AdvisorInterface {
     boolean removeStudent(String studentId);
     boolean hasValidAppointment(String studentId);
     boolean releaseRegistrationHold(Student student);
+    String getAllStudents(boolean hold);
 }
