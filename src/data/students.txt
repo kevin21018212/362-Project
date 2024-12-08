@@ -7,3 +7,4 @@ ID::Name::Email::Major::Scholarships::Tuition::Advisor##
 0990::max may::maxmmm@ia.edi::COMS::0::0::n/a::n/a::a3##
 0941::new stu::1111::COMS::0::0::n/a::n/a::a3##
 4526::newstu1::1::COMS::0::0::n/a::n/a::a3##
+2112::KevDemo2::Fake@gmail.com::Computer Science::0::0::n/a::n/a::a1##

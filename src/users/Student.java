@@ -6,10 +6,7 @@ import helpers.Utils;
 import main.*;
 import helpers.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import static helpers.Display.displayMessage;
@@ -176,7 +173,6 @@ public class Student extends User {
         Display.displayMessage("Successfully enrolled in " + course.getName());
     }
 
-
     /**
      * Initial display options for changing major, viewing major/department
      */
@@ -257,15 +253,15 @@ public class Student extends User {
                 System.out.println("\nYour current Tuition/Fees total: $" + tuitionAmount);
                 if(tuitionAmount.equals("0")){
                     System.out.println("You must apply for tuition and scholarships, please press option 3.");
-                    viewUniversityBillingOptions();
                 }
+                viewUniversityBillingOptions();
                 break;
             case "2":
                 System.out.println("\nYour current Scholarships total: $" + getScholarshipAmount());
                 if(scholarshipAmount.equals("0")){
                     System.out.println("You must apply for tuition and scholarships, please press option 3.\n");
-                    viewUniversityBillingOptions();
                 }
+                viewUniversityBillingOptions();
                 break;
             case "3":
                 viewUniversityBill();
@@ -599,7 +595,7 @@ public class Student extends User {
         if(!studentClub2.equalsIgnoreCase("n/a")){
             System.out.println(getStudentClub2());
         }
-        displayStudentExtracurricularMenu();
+        //displayStudentExtracurricularMenu();
     }
 
     public void browseExtracurricularActivities(){
@@ -953,6 +949,7 @@ public class Student extends User {
 
         //4: remaining courses -> required - enrolled courses
         Set<String> remainingCourses = calculateRemainingCourses(requiredCourses, enrolledCourses);
+
         //5. display academic progress report
         displayAcademicProgressReport(enrolledCourses,remainingCourses);
     }
@@ -988,8 +985,12 @@ public class Student extends User {
 
 
     private Set<String> calculateRemainingCourses(List<String> requiredCourses, List<String> enrolledCourses) {
+        System.out.println(requiredCourses);
+        System.out.println(enrolledCourses);
         Set<String> completedCourses = new HashSet<>(enrolledCourses);
+
         Set<String> remainingCourses = new HashSet<>(requiredCourses);
+
         remainingCourses.removeAll(completedCourses);
         return remainingCourses;
     }
@@ -1091,4 +1092,42 @@ public class Student extends User {
             Display.displayMessage("You are not enrolled in any courses.");
         }
     }
+    public void submitFeedback() {
+        // Prompt the student to input the course ID, rating, and comments
+        String courseId = Utils.getInput("Enter the Course ID for feedback: ");
+        String ratingStr = Utils.getInput("Enter your Rating (1-5): ");
+        String comments = Utils.getInput("Enter your comments: ");
+
+        try {
+            // Convert the rating to an integer and validate it
+            int rating = Integer.parseInt(ratingStr);
+            if (rating < 1 || rating > 5) {
+                throw new NumberFormatException("Rating must be between 1 and 5.");
+            }
+
+            // Define the path to the feedback file
+            String feedbackFile = "src/data/feedback.txt";
+
+            // Format the feedback entry (student ID, course ID, rating, comments)
+            String feedbackEntry = this.id + "::" + courseId + "::" + rating + "::" + comments + "##";
+
+            // Append the feedback entry to the file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(feedbackFile, true))) {
+                writer.write(feedbackEntry);
+                writer.newLine();
+            }
+
+            // Confirm to the student that their feedback was submitted
+            Display.displayMessage("Thank you for your feedback!");
+        } catch (NumberFormatException e) {
+            // Handle invalid rating input
+            Display.displayMessage("Invalid rating. Please enter a number between 1 and 5.");
+        } catch (IOException e) {
+            // Handle IO exceptions if there's an error with file writing
+            Display.displayMessage("Error saving feedback. Please try again.");
+        }
+    }
+
+
+
 }
