@@ -1,0 +1,4 @@
+R1::5::[Computer Science, Mathematics]##
+R2::10::[Engineering]##
+R3::15::[Biology, Chemistry]##
+R4::20::[Open]##

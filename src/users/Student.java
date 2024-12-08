@@ -5,6 +5,7 @@ import helpers.User;
 import helpers.Utils;
 import main.*;
 import helpers.FileUtils;
+import main.Library;
 
 import java.io.*;
 import java.util.*;
@@ -63,6 +64,7 @@ public class Student extends User {
     public void setStudentClub2(String club){
         this.studentClub2 = club;
     }
+
 
     public int getScholarshipAmount() {
         List<String[]> data = FileUtils.readStructuredData("", "students.txt");
@@ -137,6 +139,19 @@ public class Student extends User {
             }
         }
         return "Department not found";
+    }
+
+
+    public void reserveStudyRoom() {
+        Library.showAllRooms();
+        System.out.println("Enter room name:");
+        String roomName = System.console().readLine();
+
+        Library.showRoomSchedule(roomName);
+        System.out.println("Enter time to reserve:");
+        String time = System.console().readLine();
+
+        Library.reserveRoom(roomName, time, this.getId());
     }
 
     /**
