@@ -29,7 +29,8 @@ public class Display {
             displayMessage("2 Academic Records");
             displayMessage("3 Financial Services");
             displayMessage("4 Student Services");
-            displayMessage("5 Logout");
+            Display.displayMessage("5 Drop Out");
+            Display.displayMessage("6 Logout");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -46,7 +47,10 @@ public class Display {
                     displayStudentServicesMenu(student);
                     break;
                 case "5":
-                    return;
+                    student.dropOut();
+                    return; // Exit after dropping out
+                case "6":
+                    return; // Logout
                 default:
                     displayMessage("Invalid option");
             }

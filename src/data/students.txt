@@ -4,7 +4,5 @@ ID::Name::Email::Major::Scholarships::Tuition::Advisor##
 1235::max12::email::ComputerScience::500::5050::n/a::n/a::a2##
 7828::freak::jajkfjafj::COMS::0::0::n/a::n/a::a3##
 6037::Alex Moeller::Alexmoe@iastate.edu::Software Engineering::600::400::n/a::Investing::a3##
-0990::max may::maxmmm@ia.edi::COMS::0::0::n/a::n/a::a3##
-0941::new stu::1111::COMS::0::0::n/a::n/a::a3##
 4526::newstu1::1::COMS::0::0::n/a::n/a::a3##
 2112::KevDemo2::Fake@gmail.com::Computer Science::0::0::n/a::n/a::a1##
