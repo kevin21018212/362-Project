@@ -6,6 +6,8 @@ import helpers.Utils;
 import main.*;
 import helpers.FileUtils;
 import main.Library.Library;
+import main.Library.Reservation;
+import main.Library.Room;
 
 import java.io.*;
 import java.time.LocalTime;
@@ -161,26 +163,40 @@ public class Student extends User {
     public void reserveStudyRoom() {
         Scanner scanner = new Scanner(System.in);
 
-        // Step 1: Show available rooms
-        System.out.println("Available Rooms:");
-        Library.showAllRooms();
+        //Show accessible and inaccessible rooms
+        Library.showAllRooms(this.id);
 
-        // Step 2: Prompt user to select a room
+        //Choose Room
         System.out.print("Enter the Room ID you want to reserve: ");
         String roomId = scanner.nextLine().trim();
 
-        // Step 3: Show room schedule
-        System.out.println("\nRoom Schedule:");
-        Library.showRoomSchedule(roomId);
+        // Load the selected room to validate further operations
+        List<Room> rooms = Library.loadRooms();
+        Room selectedRoom = null;
+        for (Room room : rooms) {
+            if (room.getId().equalsIgnoreCase(roomId)) {
+                selectedRoom = room;
+                break;
+            }
+        }
 
-        // Step 4: Prompt user for time and duration
+        if (selectedRoom == null) {
+            System.out.println("Invalid Room ID. Please try again.");
+            return;
+        }
+
+        // Step 4: Show the room's schedule
+        List<Reservation> reservations = Reservation.loadReservations();
+        selectedRoom.showSchedule(reservations);
+
+        // Step 5: Prompt user for time and duration
         System.out.print("Enter start time for your reservation (HH:mm): ");
         String startTime = scanner.nextLine().trim();
         System.out.print("Enter the duration of your reservation in minutes: ");
         int durationMinutes = scanner.nextInt();
 
-        // Step 5: Reserve the room
-        Library.reserveRoom(roomId, startTime, durationMinutes, this.id);
+        // Step 6: Reserve the room
+        selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
     }
 
 
