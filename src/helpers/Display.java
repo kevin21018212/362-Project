@@ -29,8 +29,8 @@ public class Display {
             displayMessage("2 Academic Records");
             displayMessage("3 Financial Services");
             displayMessage("4 Student Services");
-            Display.displayMessage("5 Drop Out");
-            Display.displayMessage("6 Logout");
+            displayMessage("5 Library Portal");
+            displayMessage("6 Logout");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -47,10 +47,10 @@ public class Display {
                     displayStudentServicesMenu(student);
                     break;
                 case "5":
-                    student.dropOut();
-                    return; // Exit after dropping out
+                    displayLibaryPortal(student);
+                    break;
                 case "6":
-                    return; // Logout
+                    return;
                 default:
                     displayMessage("Invalid option");
             }
@@ -80,6 +80,27 @@ public class Display {
                 case "4":
                     student.applyForGraduation();
                     break;
+                case "5":
+                    return; // Back to main menu
+                default:
+                    displayMessage("Invalid option");
+            }
+        }
+    }
+
+    private static void displayLibaryPortal(Student student) {
+        while (true) {
+            displayMessage("\n Library Menu");
+            displayMessage("1 Reserve a study room");
+            displayMessage("2 View Grades");
+            displayMessage("3 View Academic Progress");
+            displayMessage("4 Apply for Graduation");
+            displayMessage("5 Back to Main Menu");
+            String choice = Utils.getInput("Select an option: ");
+
+            switch (choice) {
+                case "1":
+                    student.reserveStudyRoom();
                 case "5":
                     return; // Back to main menu
                 default:

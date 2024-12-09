@@ -64,6 +64,7 @@ public class Student extends User {
         this.studentClub2 = club;
     }
 
+
     public int getScholarshipAmount() {
         List<String[]> data = FileUtils.readStructuredData("", "students.txt");
         for (String[] row : data) {
@@ -137,6 +138,19 @@ public class Student extends User {
             }
         }
         return "Department not found";
+    }
+
+
+    public void reserveStudyRoom() {
+        Library.showAllRooms();
+        System.out.println("Enter room name:");
+        String roomName = System.console().readLine();
+
+        Library.showRoomSchedule(roomName);
+        System.out.println("Enter time to reserve:");
+        String time = System.console().readLine();
+
+        Library.reserveRoom(roomName, time, this.getId());
     }
 
     /**
