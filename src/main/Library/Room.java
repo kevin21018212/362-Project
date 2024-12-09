@@ -47,19 +47,6 @@ public class Room {
 
     // reserve room
     public void reserveRoom(String studentId, String startTimeStr, int durationMinutes) {
-        // find the student
-        Student student = DataAccess.findStudentById(studentId);
-        if (student == null) {
-            System.out.println("Student not found!");
-            return;
-        }
-
-        // check if the student's major is allowed
-        if (!isMajorAllowed(student.getMajor())) {
-            System.out.println("Student's major is not allowed to reserve this room.");
-            return;
-        }
-
         // parse start time
         LocalTime startTime;
         try {
@@ -71,7 +58,6 @@ public class Room {
 
         Duration duration = Duration.ofMinutes(durationMinutes);
         List<Reservation> reservations = Reservation.loadReservations();
-
         // check for overlapping reservations
         for (Reservation reservation : reservations) {
             if (reservation.getRoomId().equalsIgnoreCase(id) && reservation.overlaps(startTime, duration)) {
@@ -79,7 +65,6 @@ public class Room {
                 return;
             }
         }
-
         // add and save the new reservation
         reservations.add(new Reservation(id, studentId, startTime, duration));
         Reservation.saveReservations(reservations);
@@ -120,12 +105,6 @@ public class Room {
             System.out.println("No matching reservation found for the provided details.");
         }
     }
-
-
-
-
-
-
     @Override
     public String toString() {
         return "Room: " + id + ", Capacity: " + capacity + ", Allowed Majors: " + allowedMajors;

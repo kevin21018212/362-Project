@@ -140,7 +140,8 @@ public class Library {
         Book.saveBooks(books);
         System.out.println("Books for your required courses have been checked out.");
     }
-    // helper methods
+
+    //finds a student in the db
     private static Student validateStudent(String studentId) {
         Student student = DataAccess.findStudentById(studentId);
         if (student == null) {
