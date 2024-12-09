@@ -8,9 +8,11 @@ import helpers.FileUtils;
 import main.Library.Library;
 import main.Library.Reservation;
 import main.Library.Room;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 import java.io.*;
-import java.time.LocalTime;
 import java.util.*;
 
 import static helpers.Display.displayMessage;
@@ -821,7 +823,7 @@ public class Student extends User {
                 purchaseUniversityEventTicket();
                 break;
             case "3":
-                //viewPurchasedEventTickets();
+                viewPurchasedEventTickets();
                 break;
             case "4":
                 displayStudentMenu();
@@ -832,17 +834,26 @@ public class Student extends User {
         }
     }
 
-    public static void appendToFile(String filePath, String data) {
-        try (FileWriter fw = new FileWriter(filePath, true);
-             BufferedWriter bw = new BufferedWriter(fw)) {
-                bw.write(data);
-                bw.newLine();
-                System.out.println("File updated");
-        } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
-        }
-    }
+    /**
+     * Appends a new row of purchased tickets to the tickets.txt file
+     * @param studentId
+     * @param eventName - name of event for purchased tickets
+     * @param eventDate
+     * @param eventLocation
+     * @param numTickets - number of tickets purchased
+     */
+    public void updateTicketsFile(String studentId, String eventName, String eventDate, String eventLocation, String numTickets) {
+        List<String[]> data = FileUtils.readStructuredData("", "tickets.txt");
+        List<String[]> updatedData = new ArrayList<>();
 
+        updatedData.addAll(data);
+
+        updatedData.add(new String[]{studentId, eventName, eventDate, eventLocation, numTickets});
+
+        String[] headers = {"studentID", "eventName", "eventDate", "eventLocation", "numTickets"};
+
+        FileUtils.writeStructuredData("", "tickets.txt", headers, updatedData);
+    }
 
     /**
      * Displays a List of the upcoming University Events
@@ -869,6 +880,7 @@ public class Student extends User {
     }
 
     public void purchaseUniversityEventTicket(){
+        String studentIDTemp = String.valueOf(getStudentID());
         viewUniversityEventList();
 
         System.out.println("\nPlease select which event you would like to purchase tickets for by typing the event name.");
@@ -897,8 +909,7 @@ public class Student extends User {
                     eventFound = true;
 
                     // Write to tickets.txt
-                    String ticketData = getStudentID() + "::" + eventName + "::" + eventDate + "::" + eventLocation + "::" + numTickets + "##";
-                    appendToFile("tickets.txt", ticketData);
+                    updateTicketsFile(studentIDTemp, eventName, eventDate, eventLocation, numTickets);
 
                     System.out.println("Ticket(s) purchased successfully!");
                     System.out.println("Details");
@@ -914,6 +925,29 @@ public class Student extends User {
             purchaseUniversityEventTicket();
         }
     }
+
+    public void viewPurchasedEventTickets() {
+        String currentStudentId = String.valueOf(getStudentID());
+        List<String[]> data = FileUtils.readStructuredData("", "tickets.txt");
+        List<String[]> studentTickets = new ArrayList<>();
+
+        for (String[] row : data) {
+            if (row[0].equals(currentStudentId)) {
+                studentTickets.add(row);
+            }
+        }
+
+        // Display only eventName and numTickets for each set of tickets
+        if (studentTickets.isEmpty()) {
+            System.out.println("No purchased tickets found for the current student.");
+        } else {
+            System.out.println("Purchased Event Tickets:");
+            for (String[] ticket : studentTickets) {
+                System.out.println(ticket[1] + " - Tickets: " + ticket[4]);
+            }
+        }
+    }
+
 
     public void submitAssignment() {
         Course.loadCourses();
