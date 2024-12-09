@@ -85,6 +85,9 @@ public class Reservation {
         FileUtils.writeStructuredData(DIRECTORY, RESERVATIONS_FILE, new String[]{"RoomID", "StudentID", "StartTime", "DurationMinutes"}, data);
     }
 
+
+
+
     @Override
     public String toString() {
         return "RoomID: " + roomId + ", StudentID: " + studentId + ", StartTime: " + startTime + ", Duration: " + duration.toMinutes() + " mins";

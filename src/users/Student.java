@@ -161,42 +161,93 @@ public class Student extends User {
 
     public void reserveStudyRoom() {
         Scanner scanner = new Scanner(System.in);
+        while (true) {
 
-        //Show accessible and inaccessible rooms
-        Library.showAllRooms(this.id);
+            //load rooms
+            List<Room> rooms = Library.loadRooms();
+            List<Reservation> reservations = Reservation.loadReservations();
 
-        //Choose Room
-        System.out.print("Enter the Room ID you want to reserve: ");
-        String roomId = scanner.nextLine().trim();
+            showMyReservations(reservations);
+            System.out.println("\n--- Study Room Reservation ---");
+            System.out.println("1. Reserve a Room");
+            System.out.println("2. Cancel a Reservation");
+            System.out.println("3. Exit");
 
-        // Load the selected room to validate further operations
-        List<Room> rooms = Library.loadRooms();
-        Room selectedRoom = null;
-        for (Room room : rooms) {
-            if (room.getId().equalsIgnoreCase(roomId)) {
-                selectedRoom = room;
-                break;
+            System.out.print("Enter your choice: ");
+            String choice = scanner.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    // show accessible and inaccessible rooms
+                    Library.showAllRooms(this.id);
+                    // choose room
+                    System.out.print("Enter the Room ID you want to reserve: ");
+                    String roomId = scanner.nextLine().trim();
+                    Room selectedRoom = Library.findRoomById(rooms, roomId);
+                    if (selectedRoom == null) {
+                        System.out.println("Invalid Room ID. Please try again.");
+                        break;
+                    }
+                    // check if the room is accessible
+                    if (!selectedRoom.isMajorAllowed(DataAccess.findStudentById(this.id).getMajor())) {
+                        System.out.println("You do not have access to reserve this room.");
+                        break;
+                    }
+                    // show the room's schedule
+                    selectedRoom.showSchedule(reservations);
+                    // get time and duration
+                    System.out.print("Enter start time for your reservation (HH:mm): ");
+                    String startTime = scanner.nextLine().trim();
+                    System.out.print("Enter the duration of your reservation in minutes: ");
+                    int durationMinutes = scanner.nextInt();
+                    scanner.nextLine(); //skip line
+                    // reserve
+                    selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
+                    break;
+
+                case "2":
+                    // choose room
+                    System.out.print("Enter the Room ID for the reservation you want to cancel: ");
+                    String cancelRoomId = scanner.nextLine().trim();
+                    // load the selected room
+                    Room cancelRoom = Library.findRoomById(rooms, cancelRoomId);
+                    if (cancelRoom == null) {
+                        System.out.println("Invalid Room ID. Please try again.");
+                        break;
+                    }
+                    // get start time to remove
+                    System.out.print("Enter the start time of your reservation to cancel (HH:mm): ");
+                    String cancelStartTime = scanner.nextLine().trim();
+                    // cancel the reservation
+                    cancelRoom.cancelReservation(this.id, cancelStartTime);
+                    break;
+                case "3":
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
-
-        if (selectedRoom == null) {
-            System.out.println("Invalid Room ID. Please try again.");
-            return;
-        }
-
-        // Step 4: Show the room's schedule
-        List<Reservation> reservations = Reservation.loadReservations();
-        selectedRoom.showSchedule(reservations);
-
-        // Step 5: Prompt user for time and duration
-        System.out.print("Enter start time for your reservation (HH:mm): ");
-        String startTime = scanner.nextLine().trim();
-        System.out.print("Enter the duration of your reservation in minutes: ");
-        int durationMinutes = scanner.nextInt();
-
-        // Step 6: Reserve the room
-        selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
     }
+
+    public void showMyReservations(  List<Reservation>reservations) {
+        // filter reservations for this student
+        boolean hasReservations = false;
+        System.out.println("\n--- Your Reservations ---");
+        for (Reservation reservation : reservations) {
+            if (reservation.getStudentId().equalsIgnoreCase(this.id)) {
+                System.out.println(reservation);
+                hasReservations = true;
+            }
+        }
+        // if no reservations found
+        if (!hasReservations) {
+            System.out.println("You have no reservations.");
+        }
+    }
+
+
+
 
     /**
      * Enrolls a student in a course (broken rn?)

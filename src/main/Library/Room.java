@@ -85,6 +85,43 @@ public class Room {
         Reservation.saveReservations(reservations);
         System.out.println("Room reserved successfully!");
     }
+    // Cancel a reservation for a specific room
+    public void cancelReservation(String studentId, String cancelStartTime) {
+        // Load all reservations
+        List<Reservation> reservations = Reservation.loadReservations();
+
+        // Parse the provided start time
+        LocalTime startTime;
+        try {
+            startTime = LocalTime.parse(cancelStartTime.trim());
+        } catch (Exception e) {
+            System.out.println("Invalid time format. Please use HH:mm.");
+            return;
+        }
+
+        // Find and remove the matching reservation
+        boolean reservationFound = false;
+        for (int i = 0; i < reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if (reservation.getRoomId().equalsIgnoreCase(id) &&
+                    reservation.getStudentId().equalsIgnoreCase(studentId) &&
+                    reservation.getStartTime().equals(startTime)) {
+                reservations.remove(i);
+                reservationFound = true;
+                break;
+            }
+        }
+
+        // save updated reservations list
+        if (reservationFound) {
+            Reservation.saveReservations(reservations);
+            System.out.println("Reservation canceled successfully.");
+        } else {
+            System.out.println("No matching reservation found for the provided details.");
+        }
+    }
+
+
 
     @Override
     public String toString() {
