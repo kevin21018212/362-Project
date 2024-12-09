@@ -1,0 +1,4 @@
+department::jobTitle::hourlyRate::hoursPerWeek##
+recreation::Personal Trainer::18::20##
+dining::Student Chef::12::30##
+Financial Aid::Secretary::13::20##
