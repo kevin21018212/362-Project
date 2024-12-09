@@ -12,7 +12,7 @@ public class Library {
     private static final String DIRECTORY = "library/";
     private static final String ROOMS_FILE = "rooms.txt";
 
-    // Load all rooms
+    // load all rooms
     public static List<Room> loadRooms() {
         List<String[]> roomData = FileUtils.readStructuredData(DIRECTORY, ROOMS_FILE);
         List<Room> rooms = new ArrayList<>();
@@ -73,7 +73,7 @@ public class Library {
             }
         }
     }
-    //Show a students checkout book
+    //show a list of all the students books that are checked out
     public static void showCheckedOutBooks(String studentId) {
         List<Book> books = Book.loadBooks();
 
@@ -91,7 +91,7 @@ public class Library {
         }
     }
 
-    //Checkout a single book
+    //checkout a single book
     public static void checkoutBook(String studentId, String bookId) {
         List<Book> books = Book.loadBooks();
         int currentCheckedOutCount = (int) books.stream().filter(book -> book.getCheckedOutBy().contains(studentId)).count();
@@ -117,7 +117,7 @@ public class Library {
         System.out.println("Book not found.");
     }
 
-    // Return a book
+    // return a book
     public static void returnBook(String studentId, String bookId) {
         List<Book> books = Book.loadBooks();
 
@@ -133,7 +133,7 @@ public class Library {
         System.out.println("Book not found or not checked out by you.");
     }
 
-    // Automatically checkout books for all enrolled courses
+    // automatically checkout books for all enrolled courses
     public static void autoCheckout(String studentId) {
         List<Book> books = Book.loadBooks();
         List<String> enrolledCourses = Enrollment.getEnrolledCourses(studentId);

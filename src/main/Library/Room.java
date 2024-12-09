@@ -23,11 +23,12 @@ public class Room {
         return id;
     }
 
+    //if the major can register a room
     public boolean isMajorAllowed(String major) {
         return allowedMajors.contains("Open") || allowedMajors.contains(major);
     }
 
-    // Show room schedule
+    //show room schedule
     public void showSchedule(List<Reservation> reservations) {
         System.out.println("Schedule for Room: " + id);
         boolean hasReservations = false;
@@ -44,22 +45,22 @@ public class Room {
         }
     }
 
-    // Reserve room
+    // reserve room
     public void reserveRoom(String studentId, String startTimeStr, int durationMinutes) {
-        // Find the student
+        // find the student
         Student student = DataAccess.findStudentById(studentId);
         if (student == null) {
             System.out.println("Student not found!");
             return;
         }
 
-        // Check if the student's major is allowed
+        // check if the student's major is allowed
         if (!isMajorAllowed(student.getMajor())) {
             System.out.println("Student's major is not allowed to reserve this room.");
             return;
         }
 
-        // Parse start time
+        // parse start time
         LocalTime startTime;
         try {
             startTime = LocalTime.parse(startTimeStr.trim());
@@ -71,7 +72,7 @@ public class Room {
         Duration duration = Duration.ofMinutes(durationMinutes);
         List<Reservation> reservations = Reservation.loadReservations();
 
-        // Check for overlapping reservations
+        // check for overlapping reservations
         for (Reservation reservation : reservations) {
             if (reservation.getRoomId().equalsIgnoreCase(id) && reservation.overlaps(startTime, duration)) {
                 System.out.println("Time slot overlaps with an existing reservation!");
@@ -79,7 +80,7 @@ public class Room {
             }
         }
 
-        // Add and save the new reservation
+        // add and save the new reservation
         reservations.add(new Reservation(id, studentId, startTime, duration));
         Reservation.saveReservations(reservations);
         System.out.println("Room reserved successfully!");

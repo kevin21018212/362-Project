@@ -40,18 +40,18 @@ public class Book {
     public boolean isAvailable() {
         return checkedOutBy.size() < amount;
     }
-
+    //append arr
     public void checkout(String studentId) {
         if (isAvailable() && !checkedOutBy.contains(studentId)) {
             checkedOutBy.add(studentId);
         }
     }
-
+    //update arr
     public void returnBook(String studentId) {
         checkedOutBy.remove(studentId);
     }
 
-    // Load all books from the file
+    // load all books from the file
     public static List<Book> loadBooks() {
         List<String[]> bookData = FileUtils.readStructuredData(DIRECTORY, BOOKS_FILE);
         List<Book> books = new ArrayList<>();
@@ -67,7 +67,7 @@ public class Book {
         return books;
     }
 
-    // Save books to the file
+    // save books to the file
     public static void saveBooks(List<Book> books) {
         List<String[]> data = new ArrayList<>();
         for (Book book : books) {
