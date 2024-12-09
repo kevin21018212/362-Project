@@ -12,141 +12,165 @@ public class Library {
     private static final String DIRECTORY = "library/";
     private static final String ROOMS_FILE = "rooms.txt";
 
-    // Load all rooms
+    // load all rooms
     public static List<Room> loadRooms() {
         List<String[]> roomData = FileUtils.readStructuredData(DIRECTORY, ROOMS_FILE);
         List<Room> rooms = new ArrayList<>();
-
         for (String[] row : roomData) {
             String id = row[0];
             int capacity = Integer.parseInt(row[1]);
-            String[] majorsArray = row[2].replace("[", "").replace("]", "").split(", ");
-            List<String> allowedMajors = List.of(majorsArray);
+            List<String> allowedMajors = List.of(row[2].replace("[", "").replace("]", "").split(", "));
             rooms.add(new Room(id, capacity, allowedMajors));
         }
         return rooms;
     }
 
-    // Show all rooms, differentiating between accessible and inaccessible
+    // Show accessible and inaccessible rooms for a student
     public static void showAllRooms(String studentId) {
-        Student student = DataAccess.findStudentById(studentId);
-        if (student == null) {
-            System.out.println("Invalid student ID!");
-            return;
-        }
+        Student student = validateStudent(studentId);
+        if (student == null) return;
 
         String major = student.getMajor();
         List<Room> rooms = loadRooms();
 
-        System.out.println("Accessible Rooms:");
-        for (Room room : rooms) {
-            if (room.isMajorAllowed(major)) {
-                System.out.println(room);
-            }
-        }
+        displayRooms(rooms, major, true);
+        displayRooms(rooms, major, false);
+    }
 
-        System.out.println("\nInaccessible Rooms:");
+    //shorter way to display rooms
+    private static void displayRooms(List<Room> rooms, String major, boolean accessible) {
+        String title = accessible ? "Accessible Rooms:" : "Inaccessible Rooms:";
+        System.out.println("\n" + title);
         for (Room room : rooms) {
-            if (!room.isMajorAllowed(major)) {
+            if (room.isMajorAllowed(major) == accessible) {
                 System.out.println(room);
             }
         }
     }
 
+    //finds a room given a Iid
+    public static Room findRoomById(List<Room> rooms, String roomId) {
+        for (Room room : rooms) {
+            if (room.getId().equalsIgnoreCase(roomId)) {
+                return room;
+            }
+        }
+        return null;
+    }
+    //makes sure a student can reserve a room
+    public static boolean validateRoom(Room room, String studentID) {
+        if (room == null) {
+            System.out.println("Invalid Room ID. Please try again.");
+            return false;
+        }
+        if (!room.isMajorAllowed(DataAccess.findStudentById(studentID).getMajor())) {
+            System.out.println("You do not have access to reserve this room.");
+            return false;
+        }
+        return true;
+    }
 
-    //Show all books
-    public static void showBooks(String studentId) {
-        List<Book> books = Book.loadBooks();
+
+    // show books grouped by enrollment
+    public static void showBooks(String studentId, List<Book> books) {
         List<String> enrolledCourses = Enrollment.getEnrolledCourses(studentId);
+        displayBooks(books, enrolledCourses, true);
+        displayBooks(books, enrolledCourses, false);
+    }
 
-        System.out.println("Books for Enrolled Courses:");
+    //shorter way to display books
+    private static void displayBooks(List<Book> books, List<String> enrolledCourses, boolean enrolled) {
+        String title = enrolled ? "Books for Enrolled Courses:" : "Books for Non-Enrolled Courses:";
+        System.out.println("\n" + title);
         for (Book book : books) {
-            if (enrolledCourses.contains(book.getCourseId())) {
-                System.out.println(book);
-            }
-        }
-
-        System.out.println("\nBooks for Non-Enrolled Courses:");
-        for (Book book : books) {
-            if (!enrolledCourses.contains(book.getCourseId())) {
+            if (enrolledCourses.contains(book.getCourseId()) == enrolled) {
                 System.out.println(book);
             }
         }
     }
-    //Show a students checkout book
-    public static void showCheckedOutBooks(String studentId) {
-        List<Book> books = Book.loadBooks();
 
-        System.out.println("Books Checked Out by " + studentId + ":");
-        boolean hasBooks = false;
-        for (Book book : books) {
-            if (book.getCheckedOutBy().contains(studentId)) {
-                System.out.println(book);
-                hasBooks = true;
-            }
-        }
-
-        if (!hasBooks) {
+    // Show books checked out by a student
+    public static void showCheckedOutBooks(String studentId, List<Book> books) {
+        List<Book> checkedOutBooks = getCheckedOutBooks(studentId, books);
+        if (checkedOutBooks.isEmpty()) {
             System.out.println("No books currently checked out.");
+        } else {
+            System.out.println("Books Checked Out by " + studentId + ":");
+            checkedOutBooks.forEach(System.out::println);
         }
     }
 
-    //Checkout a single book
-    public static void checkoutBook(String studentId, String bookId) {
-        List<Book> books = Book.loadBooks();
-        int currentCheckedOutCount = (int) books.stream().filter(book -> book.getCheckedOutBy().contains(studentId)).count();
+    // Checkout a single book
+    public static void checkoutBook(String studentId, String bookId, List<Book> books) {
+        if (!canCheckoutMoreBooks(studentId, books)) return;
 
-        if (currentCheckedOutCount >= 5) {
-            System.out.println("You have already checked out the maximum number of books.");
-            return;
+        Book book = findBookById(books, bookId);
+        if (book != null && book.isAvailable()) {
+            book.checkout(studentId);
+            Book.saveBooks(books);
+            System.out.println("Book checked out successfully!");
+        } else {
+            System.out.println("Book is not available for checkout or not found.");
         }
-
-        for (Book book : books) {
-            if (book.getId().equalsIgnoreCase(bookId)) {
-                if (book.isAvailable()) {
-                    book.checkout(studentId);
-                    Book.saveBooks(books);
-                    System.out.println("Book checked out successfully!");
-                } else {
-                    System.out.println("Book is not available for checkout.");
-                }
-                return;
-            }
-        }
-
-        System.out.println("Book not found.");
     }
 
-    // Return a book
-    public static void returnBook(String studentId, String bookId) {
-        List<Book> books = Book.loadBooks();
-
-        for (Book book : books) {
-            if (book.getId().equalsIgnoreCase(bookId) && book.getCheckedOutBy().contains(studentId)) {
-                book.returnBook(studentId);
-                Book.saveBooks(books);
-                System.out.println("Book returned successfully!");
-                return;
-            }
+    // return a book
+    public static void returnBook(String studentId, String bookId, List<Book> books) {
+        Book book = findBookById(books, bookId);
+        if (book != null && book.getCheckedOutBy().contains(studentId)) {
+            book.returnBook(studentId);
+            Book.saveBooks(books);
+            System.out.println("Book returned successfully!");
+        } else {
+            System.out.println("Book not found or not checked out by you.");
         }
-
-        System.out.println("Book not found or not checked out by you.");
     }
-
-    // Automatically checkout books for all enrolled courses
-    public static void autoCheckout(String studentId) {
-        List<Book> books = Book.loadBooks();
+    // auto checkout books for all enrolled courses
+    public static void autoCheckout(String studentId, List<Book> books) {
         List<String> enrolledCourses = Enrollment.getEnrolledCourses(studentId);
-        int currentCheckedOutCount = (int) books.stream().filter(book -> book.getCheckedOutBy().contains(studentId)).count();
-
+        int currentCheckedOutCount = (int) books.stream()
+                .filter(book -> book.getCheckedOutBy().contains(studentId))
+                .count();
         for (Book book : books) {
             if (enrolledCourses.contains(book.getCourseId()) && book.isAvailable() && currentCheckedOutCount < 5) {
                 book.checkout(studentId);
                 currentCheckedOutCount++;
             }
         }
-
         Book.saveBooks(books);
         System.out.println("Books for your required courses have been checked out.");
     }
+
+    //finds a student in the db
+    private static Student validateStudent(String studentId) {
+        Student student = DataAccess.findStudentById(studentId);
+        if (student == null) {
+            System.out.println("Invalid student ID!");
+        }
+        return student;
+    }
+     // looks through file and gets count of books u checked out
+    private static boolean canCheckoutMoreBooks(String studentId, List<Book> books) {
+        int count = (int) books.stream()
+                .filter(book -> book.getCheckedOutBy().contains(studentId))
+                .count();
+        if (count >= 5) {
+            System.out.println("You have already checked out the maximum number of books.");
+            return false;
+        }
+        return true;
+    }
+    private static Book findBookById(List<Book> books, String bookId) {
+        return books.stream()
+                .filter(book -> book.getId().equalsIgnoreCase(bookId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static List<Book> getCheckedOutBooks(String studentId, List<Book> books) {
+        return books.stream()
+                .filter(book -> book.getCheckedOutBy().contains(studentId))
+                .toList();
+    }
+
 }
