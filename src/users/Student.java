@@ -5,6 +5,9 @@ import helpers.User;
 import helpers.Utils;
 import main.*;
 import helpers.FileUtils;
+import main.Library.Library;
+import main.Library.Reservation;
+import main.Library.Room;
 
 import java.io.*;
 import java.util.*;
@@ -142,15 +145,42 @@ public class Student extends User {
 
 
     public void reserveStudyRoom() {
-        Library.showAllRooms();
-        System.out.println("Enter room name:");
-        String roomName = System.console().readLine();
+        Scanner scanner = new Scanner(System.in);
 
-        Library.showRoomSchedule(roomName);
-        System.out.println("Enter time to reserve:");
-        String time = System.console().readLine();
+        //Show accessible and inaccessible rooms
+        Library.showAllRooms(this.id);
 
-        Library.reserveRoom(roomName, time, this.getId());
+        //Choose Room
+        System.out.print("Enter the Room ID you want to reserve: ");
+        String roomId = scanner.nextLine().trim();
+
+        // Load the selected room to validate further operations
+        List<Room> rooms = Library.loadRooms();
+        Room selectedRoom = null;
+        for (Room room : rooms) {
+            if (room.getId().equalsIgnoreCase(roomId)) {
+                selectedRoom = room;
+                break;
+            }
+        }
+
+        if (selectedRoom == null) {
+            System.out.println("Invalid Room ID. Please try again.");
+            return;
+        }
+
+        // Step 4: Show the room's schedule
+        List<Reservation> reservations = Reservation.loadReservations();
+        selectedRoom.showSchedule(reservations);
+
+        // Step 5: Prompt user for time and duration
+        System.out.print("Enter start time for your reservation (HH:mm): ");
+        String startTime = scanner.nextLine().trim();
+        System.out.print("Enter the duration of your reservation in minutes: ");
+        int durationMinutes = scanner.nextInt();
+
+        // Step 6: Reserve the room
+        selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
     }
 
     /**

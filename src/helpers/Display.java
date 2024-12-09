@@ -64,7 +64,8 @@ public class Display {
             displayMessage("2 View Grades");
             displayMessage("3 View Academic Progress");
             displayMessage("4 Apply for Graduation");
-            displayMessage("5 Back to Main Menu");
+            displayMessage("5 Drop Out");
+            displayMessage("6 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -81,6 +82,9 @@ public class Display {
                     student.applyForGraduation();
                     break;
                 case "5":
+                    student.dropOut();
+                    break;
+                case "6":
                     return; // Back to main menu
                 default:
                     displayMessage("Invalid option");
