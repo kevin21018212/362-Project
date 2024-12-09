@@ -1186,5 +1186,87 @@ public class Student extends User {
         }
     }
 
+    public void dropOut() {
+        // Display a confirmation prompt
+        String confirmation = Utils.getInput("Are you sure you want to drop out of the university? This action cannot be undone. Type 'yes' to confirm: ");
+        if (!confirmation.equalsIgnoreCase("yes")) {
+            Display.displayMessage("Dropout process canceled.");
+            return;
+        }
+        // List of main files to modify
+        String[] filesToUpdate = {
+                "src/data/enrollments.txt",
+                "src/data/feedback.txt",
+                "src/data/students.txt"
+        };
+        // Path to the dropped out students file
+        String droppedOutFile = "src/data/droppedOutStudents.txt";
+        try (BufferedWriter droppedOutWriter = new BufferedWriter(new FileWriter(droppedOutFile, true))) {
+            // Save the student information to droppedOutStudents.txt
+            String droppedOutInfo = String.format("%s::%s::%s::%s##", this.id, this.name, this.major, this.email);
+            droppedOutWriter.write(droppedOutInfo);
+            droppedOutWriter.newLine();
+            // Update main files
+            for (String filePath : filesToUpdate) {
+                File file = new File(filePath);
+                File tempFile = new File(filePath + ".tmp");
+                try (BufferedReader reader = new BufferedReader(new FileReader(file));
+                     BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        // Skip lines containing the student's ID
+                        if (!line.contains(this.id)) {
+                            writer.write(line);
+                            writer.newLine();
+                        }
+                    }
+                }
+                // Replace the original file with the updated temporary file
+                if (!file.delete()) {
+                    throw new IOException("Could not delete the original file: " + filePath);
+                }
+                if (!tempFile.renameTo(file)) {
+                    throw new IOException("Could not rename the temporary file: " + tempFile.getAbsolutePath());
+                }
+            }
+            // Handle submissions and assignments in course folders
+            File coursesFolder = new File("src/data/courses");
+            File[] courseFolders = coursesFolder.listFiles(File::isDirectory); // Get all course directories
+            if (courseFolders != null) {
+                for (File courseFolder : courseFolders) {
+                    // Locate submissions.txt inside the course folder
+                    File submissionsFile = new File(courseFolder, "submissions.txt");
+                    if (submissionsFile.exists()) {
+                        File tempFile = new File(courseFolder, "submissions.tmp");
+                        try (BufferedReader reader = new BufferedReader(new FileReader(submissionsFile));
+                             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                // Skip lines containing the student's ID
+                                if (!line.contains(this.id)) {
+                                    writer.write(line);
+                                    writer.newLine();
+                                }
+                            }
+                        }
+                        // Replace submissions.txt with the updated temporary file
+                        if (!submissionsFile.delete()) {
+                            throw new IOException("Could not delete the original file: " + submissionsFile.getAbsolutePath());
+                        }
+                        if (!tempFile.renameTo(submissionsFile)) {
+                            throw new IOException("Could not rename the temporary file: " + tempFile.getAbsolutePath());
+                        }
+                    }
+                }
+            }
+            // Notify the user of success
+            Display.displayMessage("Your records have been removed. You have successfully dropped out of the university.");
+        } catch (IOException e) {
+            // Handle errors during file processing
+            Display.displayMessage("An error occurred while processing your dropout request. Please try again.");
+            e.printStackTrace();
+        }
+    }
+
 
 }
