@@ -182,7 +182,8 @@ public class Display {
             displayMessage("3 Directory Menu");
             displayMessage("4 Schedule Meeting with Advisor");
             displayMessage("5 Provide Professor Feedback");
-            displayMessage("6 Back to Main Menu");
+            displayMessage("6 View University Events");
+            displayMessage("7 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -205,6 +206,9 @@ public class Display {
                     student.submitFeedback(); // Call method for submitting feedback
                     break;
                 case "6":
+                    student.displayEventMenu();
+                    break;
+                case "7":
                     return;
                 default:
                     displayMessage("Invalid option");

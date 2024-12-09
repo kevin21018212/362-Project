@@ -1,0 +1,2 @@
+messageId::senderId::senderName::subject::message####
+2457::6037::Max may::hello::hello##

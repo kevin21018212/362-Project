@@ -157,9 +157,6 @@ public class Student extends User {
         return "Department not found";
     }
 
-
-
-
     public void reserveStudyRoom() {
         Scanner scanner = new Scanner(System.in);
 
@@ -198,9 +195,6 @@ public class Student extends User {
         // Step 6: Reserve the room
         selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
     }
-
-
-
 
     /**
      * Enrolls a student in a course (broken rn?)
@@ -808,6 +802,117 @@ public class Student extends User {
 
         FileUtils.writeStructuredData("", "students.txt", STUDENT_HEADERS, updatedData);
         return updated ? "Club successfully updated." : "Failed to update the club. Please check your input.";
+    }
+
+    public void displayEventMenu(){
+        displayMessage("\nUniversity Event Menu: ");
+        displayMessage("1 View University Events");
+        displayMessage("2 Purchase Event Ticket");
+        displayMessage("3 View Purchased Event Tickets");
+        displayMessage("4 Go Back");
+
+        String id = Utils.getInput("Please choose an options (Ex: 3): ");
+
+        switch (id) {
+            case "1":
+                viewUniversityEventList();
+                break;
+            case "2":
+                purchaseUniversityEventTicket();
+                break;
+            case "3":
+                //viewPurchasedEventTickets();
+                break;
+            case "4":
+                displayStudentMenu();
+                break;
+            default:
+                displayMessage("Something went wrong... returning to student menu.");
+                displayStudentMenu();
+        }
+    }
+
+    public static void appendToFile(String filePath, String data) {
+        try (FileWriter fw = new FileWriter(filePath, true);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+                bw.write(data);
+                bw.newLine();
+                System.out.println("File updated");
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+
+    /**
+     * Displays a List of the upcoming University Events
+     */
+    public void viewUniversityEventList() {
+        System.out.println("\nUpcoming University Events:");
+        String filePath = "universityEvents.txt"; // Corrected typo in file name
+
+        // Read structured data from the file
+        List<String[]> eventData = FileUtils.readStructuredData("", filePath);
+
+        for (String[] event : eventData) {
+            if (event.length >= 6) {
+                String eventName = event[1];
+                String eventOpponent = event[2];
+                String eventLocation = event[4];
+                String eventPrice = event[3];
+                String eventDate = event[5];
+
+                System.out.println(eventName + " vs. " + eventOpponent + " - "
+                        + eventLocation + " on " + eventDate + " for $" + eventPrice);
+            }
+        }
+    }
+
+    public void purchaseUniversityEventTicket(){
+        viewUniversityEventList();
+
+        System.out.println("\nPlease select which event you would like to purchase tickets for by typing the event name.");
+        String selectedEventName = Utils.getInput("Enter Event Name (Ex: Women's Volleyball) or type 'Cancel' to cancel: ");
+
+        if(selectedEventName.equals("cancel")){
+            viewUniversityEventList();
+        }
+
+        String numTickets = Utils.getInput("\nEnter the number of tickets you wish to purchase: ");
+
+        // Read event data from the file to find the selected event
+        String filePath = "universityEvents.txt";
+        List<String[]> eventData = FileUtils.readStructuredData("", filePath);
+        boolean eventFound = false;
+
+        for (String[] event : eventData) {
+            // Check for malformed rows
+            if (event.length >= 6) {
+                String eventName = event[1];
+                String eventDate = event[5];
+                String eventLocation = event[4];
+
+                // Match the selected event name
+                if (eventName.equalsIgnoreCase(selectedEventName.trim())) {
+                    eventFound = true;
+
+                    // Write to tickets.txt
+                    String ticketData = getStudentID() + "::" + eventName + "::" + eventDate + "::" + eventLocation + "::" + numTickets + "##";
+                    appendToFile("tickets.txt", ticketData);
+
+                    System.out.println("Ticket(s) purchased successfully!");
+                    System.out.println("Details");
+                    System.out.println("Event Name: " + eventName + "\nEvent Date: " + eventDate + "\nEvent Location: " + eventLocation);
+                    break;
+                }
+            }
+        }
+
+        // If event is not found, notify the user
+        if (!eventFound) {
+            System.out.println("Event not found. Please check the name and try again.");
+            purchaseUniversityEventTicket();
+        }
     }
 
     public void submitAssignment() {
