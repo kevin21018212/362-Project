@@ -212,8 +212,9 @@ public class Display {
             displayMessage("3 Directory Menu");
             displayMessage("4 Schedule Meeting with Advisor");
             displayMessage("5 Provide Professor Feedback");
-            displayMessage("6 View University Events");
-            displayMessage("7 Back to Main Menu");
+            displayMessage("6 View/Purchase University Event Tickets");
+            displayMessage("7 View University Employment Opportunities");
+            displayMessage("8 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -239,6 +240,9 @@ public class Display {
                     student.displayEventMenu();
                     break;
                 case "7":
+                    student.displayUniversityEmploymentMenu();
+                    break;
+                case "8":
                     return;
                 default:
                     displayMessage("Invalid option");
