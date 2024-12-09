@@ -112,28 +112,24 @@ public class Display {
                 case "1":
                     student.reserveStudyRoom();
                     break;
-                case "2":
-                    //checkout single book
+                case "2": //checkout single book
                     displayMessage("\nBooks Available for Checkout:");
                     Library.showBooks(student.getId(),books);
                     String bookId = Utils.getInput("Enter the Book ID to checkout: ");
                     Library.checkoutBook(student.getId(), bookId,books);
                     break;
 
-                case "3":
-                    // auto check out books for courses
+                case "3":// auto check out books for courses
                     Library.autoCheckout(student.getId(),books);
                     break;
 
-                case "4":
-                    //return a book
+                case "4":   //return a book
                     Library.showCheckedOutBooks(student.getId(),books);
                     String returnBookId = Utils.getInput("Enter the Book ID to return: ");
                     Library.returnBook(student.getId(), returnBookId,books);
                     break;
                 case "5":
-                    // exit the library menu
-                    return;
+                    return;  // exit the library menu
                 default:
                     displayMessage("Invalid option. Please try again.");
                     break;

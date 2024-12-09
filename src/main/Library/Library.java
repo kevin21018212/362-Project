@@ -12,7 +12,7 @@ public class Library {
     private static final String DIRECTORY = "library/";
     private static final String ROOMS_FILE = "rooms.txt";
 
-    // Load all rooms
+    // load all rooms
     public static List<Room> loadRooms() {
         List<String[]> roomData = FileUtils.readStructuredData(DIRECTORY, ROOMS_FILE);
         List<Room> rooms = new ArrayList<>();
@@ -56,6 +56,18 @@ public class Library {
             }
         }
         return null;
+    }
+    //makes sure a student can reserve a room
+    public static boolean validateRoom(Room room, String studentID) {
+        if (room == null) {
+            System.out.println("Invalid Room ID. Please try again.");
+            return false;
+        }
+        if (!room.isMajorAllowed(DataAccess.findStudentById(studentID).getMajor())) {
+            System.out.println("You do not have access to reserve this room.");
+            return false;
+        }
+        return true;
     }
 
     // Show books grouped by enrollment status
@@ -101,6 +113,7 @@ public class Library {
         }
     }
 
+
     // Return a book
     public static void returnBook(String studentId, String bookId, List<Book> books) {
         Book book = findBookById(books, bookId);
@@ -131,7 +144,7 @@ public class Library {
         System.out.println("Books for your required courses have been checked out.");
     }
 
-    // Helper methods
+    // helper methods
     private static Student validateStudent(String studentId) {
         Student student = DataAccess.findStudentById(studentId);
         if (student == null) {

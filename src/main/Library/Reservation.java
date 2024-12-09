@@ -42,14 +42,11 @@ public class Reservation {
     public LocalTime getEndTime() {
         return startTime.plus(duration);
     }
-
-
     //check if time overlaps another
     public boolean overlaps(LocalTime newStart, Duration newDuration) {
         LocalTime newEnd = newStart.plus(newDuration);
         return !newEnd.isBefore(startTime) && !newStart.isAfter(getEndTime());
     }
-
     // load all reservations from file
     public static List<Reservation> loadReservations() {
         List<String[]> reservationData = FileUtils.readStructuredData(DIRECTORY, RESERVATIONS_FILE);
@@ -70,7 +67,6 @@ public class Reservation {
         }
         return reservations;
     }
-
     // write reservations to file
     public static void saveReservations(List<Reservation> reservations) {
         List<String[]> data = new ArrayList<>();
@@ -84,9 +80,6 @@ public class Reservation {
         }
         FileUtils.writeStructuredData(DIRECTORY, RESERVATIONS_FILE, new String[]{"RoomID", "StudentID", "StartTime", "DurationMinutes"}, data);
     }
-
-
-
 
     @Override
     public String toString() {

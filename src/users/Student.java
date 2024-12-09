@@ -184,15 +184,8 @@ public class Student extends User {
                     System.out.print("Enter the Room ID you want to reserve: ");
                     String roomId = scanner.nextLine().trim();
                     Room selectedRoom = Library.findRoomById(rooms, roomId);
-                    if (selectedRoom == null) {
-                        System.out.println("Invalid Room ID. Please try again.");
-                        break;
-                    }
-                    // check if the room is accessible
-                    if (!selectedRoom.isMajorAllowed(DataAccess.findStudentById(this.id).getMajor())) {
-                        System.out.println("You do not have access to reserve this room.");
-                        break;
-                    }
+                    if (!Library.validateRoom(selectedRoom,this.id)) break;
+
                     // show the room's schedule
                     selectedRoom.showSchedule(reservations);
                     // get time and duration
@@ -209,12 +202,9 @@ public class Student extends User {
                     // choose room
                     System.out.print("Enter the Room ID for the reservation you want to cancel: ");
                     String cancelRoomId = scanner.nextLine().trim();
-                    // load the selected room
                     Room cancelRoom = Library.findRoomById(rooms, cancelRoomId);
-                    if (cancelRoom == null) {
-                        System.out.println("Invalid Room ID. Please try again.");
-                        break;
-                    }
+                    if (!Library.validateRoom(cancelRoom,this.id)) break;
+
                     // get start time to remove
                     System.out.print("Enter the start time of your reservation to cancel (HH:mm): ");
                     String cancelStartTime = scanner.nextLine().trim();
@@ -229,7 +219,6 @@ public class Student extends User {
             }
         }
     }
-
     public void showMyReservations(  List<Reservation>reservations) {
         // filter reservations for this student
         boolean hasReservations = false;
@@ -240,13 +229,10 @@ public class Student extends User {
                 hasReservations = true;
             }
         }
-        // if no reservations found
         if (!hasReservations) {
             System.out.println("You have no reservations.");
         }
     }
-
-
 
 
     /**
