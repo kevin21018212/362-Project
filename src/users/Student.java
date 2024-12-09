@@ -8,9 +8,11 @@ import helpers.FileUtils;
 import main.Library.Library;
 import main.Library.Reservation;
 import main.Library.Room;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 import java.io.*;
-import java.time.LocalTime;
 import java.util.*;
 
 import static helpers.Display.displayMessage;
@@ -157,9 +159,6 @@ public class Student extends User {
         return "Department not found";
     }
 
-
-
-
     public void reserveStudyRoom() {
         Scanner scanner = new Scanner(System.in);
 
@@ -198,9 +197,6 @@ public class Student extends User {
         // Step 6: Reserve the room
         selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
     }
-
-
-
 
     /**
      * Enrolls a student in a course (broken rn?)
@@ -809,6 +805,149 @@ public class Student extends User {
         FileUtils.writeStructuredData("", "students.txt", STUDENT_HEADERS, updatedData);
         return updated ? "Club successfully updated." : "Failed to update the club. Please check your input.";
     }
+
+    public void displayEventMenu(){
+        displayMessage("\nUniversity Event Menu: ");
+        displayMessage("1 View University Events");
+        displayMessage("2 Purchase Event Ticket");
+        displayMessage("3 View Purchased Event Tickets");
+        displayMessage("4 Go Back");
+
+        String id = Utils.getInput("Please choose an options (Ex: 3): ");
+
+        switch (id) {
+            case "1":
+                viewUniversityEventList();
+                break;
+            case "2":
+                purchaseUniversityEventTicket();
+                break;
+            case "3":
+                viewPurchasedEventTickets();
+                break;
+            case "4":
+                displayStudentMenu();
+                break;
+            default:
+                displayMessage("Something went wrong... returning to student menu.");
+                displayStudentMenu();
+        }
+    }
+
+    /**
+     * Appends a new row of purchased tickets to the tickets.txt file
+     * @param studentId
+     * @param eventName - name of event for purchased tickets
+     * @param eventDate
+     * @param eventLocation
+     * @param numTickets - number of tickets purchased
+     */
+    public void updateTicketsFile(String studentId, String eventName, String eventDate, String eventLocation, String numTickets) {
+        List<String[]> data = FileUtils.readStructuredData("", "tickets.txt");
+        List<String[]> updatedData = new ArrayList<>();
+
+        updatedData.addAll(data);
+
+        updatedData.add(new String[]{studentId, eventName, eventDate, eventLocation, numTickets});
+
+        String[] headers = {"studentID", "eventName", "eventDate", "eventLocation", "numTickets"};
+
+        FileUtils.writeStructuredData("", "tickets.txt", headers, updatedData);
+    }
+
+    /**
+     * Displays a List of the upcoming University Events
+     */
+    public void viewUniversityEventList() {
+        System.out.println("\nUpcoming University Events:");
+        String filePath = "universityEvents.txt"; // Corrected typo in file name
+
+        // Read structured data from the file
+        List<String[]> eventData = FileUtils.readStructuredData("", filePath);
+
+        for (String[] event : eventData) {
+            if (event.length >= 6) {
+                String eventName = event[1];
+                String eventOpponent = event[2];
+                String eventLocation = event[4];
+                String eventPrice = event[3];
+                String eventDate = event[5];
+
+                System.out.println(eventName + " vs. " + eventOpponent + " - "
+                        + eventLocation + " on " + eventDate + " for $" + eventPrice);
+            }
+        }
+    }
+
+    public void purchaseUniversityEventTicket(){
+        String studentIDTemp = String.valueOf(getStudentID());
+        viewUniversityEventList();
+
+        System.out.println("\nPlease select which event you would like to purchase tickets for by typing the event name.");
+        String selectedEventName = Utils.getInput("Enter Event Name (Ex: Women's Volleyball) or type 'Cancel' to cancel: ");
+
+        if(selectedEventName.equals("cancel")){
+            viewUniversityEventList();
+        }
+
+        String numTickets = Utils.getInput("\nEnter the number of tickets you wish to purchase: ");
+
+        // Read event data from the file to find the selected event
+        String filePath = "universityEvents.txt";
+        List<String[]> eventData = FileUtils.readStructuredData("", filePath);
+        boolean eventFound = false;
+
+        for (String[] event : eventData) {
+            // Check for malformed rows
+            if (event.length >= 6) {
+                String eventName = event[1];
+                String eventDate = event[5];
+                String eventLocation = event[4];
+
+                // Match the selected event name
+                if (eventName.equalsIgnoreCase(selectedEventName.trim())) {
+                    eventFound = true;
+
+                    // Write to tickets.txt
+                    updateTicketsFile(studentIDTemp, eventName, eventDate, eventLocation, numTickets);
+
+                    System.out.println("Ticket(s) purchased successfully!");
+                    System.out.println("Details");
+                    System.out.println("Event Name: " + eventName + "\nEvent Date: " + eventDate + "\nEvent Location: " + eventLocation);
+                    break;
+                }
+            }
+        }
+
+        // If event is not found, notify the user
+        if (!eventFound) {
+            System.out.println("Event not found. Please check the name and try again.");
+            purchaseUniversityEventTicket();
+        }
+    }
+
+    public void viewPurchasedEventTickets() {
+        String currentStudentId = String.valueOf(getStudentID());
+        List<String[]> data = FileUtils.readStructuredData("", "tickets.txt");
+        List<String[]> studentTickets = new ArrayList<>();
+
+        for (String[] row : data) {
+            if (row[0].equals(currentStudentId)) {
+                studentTickets.add(row);
+            }
+        }
+
+        // Display only eventName and numTickets for each set of tickets
+        if (studentTickets.isEmpty()) {
+            System.out.println("No purchased tickets found for the current student.");
+        } else {
+            System.out.println("Purchased Event Tickets:");
+            for (String[] ticket : studentTickets) {
+                System.out.println(ticket[1] + " - Tickets: " + ticket[4]);
+            }
+        }
+    }
+
 
     public void submitAssignment() {
         Course.loadCourses();
