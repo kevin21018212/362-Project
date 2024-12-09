@@ -1,0 +1,2 @@
+6037::7828::SUITE::Wheelchair accessible room##
+9758::3058::DOUBLE::Service animal allowed##

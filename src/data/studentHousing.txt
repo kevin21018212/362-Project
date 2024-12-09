@@ -3,3 +3,6 @@ StudentID::Dorm::RoomType::Accommodations::Status##
 1234::Linden Hall::SINGLE::Religious Accommodations::Unpaid##
 2112::Linden Hall::SUITE::Wheelchair accessible room::Unpaid##
 4526::Maple Hall::SINGLE::None::Paid##
+6037::Willow Hall::DOUBLE::Wheelchair accessible room::Unpaid##
+3058::Friley Hall::DOUBLE::Service animal allowed::Unpaid##
+9758::Friley Hall::DOUBLE::None::Paid##

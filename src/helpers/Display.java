@@ -187,7 +187,8 @@ public class Display {
             displayMessage("4 Schedule Meeting with Advisor");
             displayMessage("5 Provide Professor Feedback");
             displayMessage("6 View University Events");
-            displayMessage("7 Back to Main Menu");
+            displayMessage("7 Find a Roommate");
+            displayMessage("8 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -213,6 +214,9 @@ public class Display {
                     student.displayEventMenu();
                     break;
                 case "7":
+                	student.findARoommate();
+                	break;
+                case "8":
                     return;
                 default:
                     displayMessage("Invalid option");
