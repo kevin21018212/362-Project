@@ -9,7 +9,7 @@ import users.Instructor;
 import users.Registrar;
 import users.Student;
 import helpers.displays.DirectoryDisplay;
-
+import main.Library.Library;
 
 
 
@@ -94,8 +94,11 @@ public class Display {
 
     private static void displayLibraryPortal(Student student) {
         while (true) {
-            displayMessage("\nLibrary Menu");
+            displayMessage("\n--- Library Menu ---");
             displayMessage("1. Reserve a study room");
+            displayMessage("2. Checkout a single book");
+            displayMessage("3. Auto-checkout books for enrolled courses");
+            displayMessage("4. Return a book");
             displayMessage("5. Back to main menu\n");
 
             String choice = Utils.getInput("Select an option: ");
@@ -104,7 +107,33 @@ public class Display {
                 case "1":
                     student.reserveStudyRoom();
                     break;
+
+                case "2":
+                    // Display books available for checkout
+                    displayMessage("\nBooks Available for Checkout:");
+                    Library.showBooks(student.getId());
+
+                    // Prompt user to select a book to checkout
+                    String bookId = Utils.getInput("Enter the Book ID to checkout: ");
+                    Library.checkoutBook(student.getId(), bookId);
+                    break;
+
+                case "3":
+                    // Auto-checkout books for enrolled courses
+                    Library.autoCheckout(student.getId());
+                    break;
+
+                case "4":
+                    // Display books currently checked out by the student
+                    displayMessage("\nBooks Checked Out by You:");
+                    Library.showCheckedOutBooks(student.getId());
+
+                    // Prompt user to select a book to return
+                    String returnBookId = Utils.getInput("Enter the Book ID to return: ");
+                    Library.returnBook(student.getId(), returnBookId);
+                    break;
                 case "5":
+                    // Exit the library menu
                     return;
                 default:
                     displayMessage("Invalid option. Please try again.");
@@ -112,6 +141,7 @@ public class Display {
             }
         }
     }
+
 
 
     private static void displayCourseManagementMenu(Student student) {
