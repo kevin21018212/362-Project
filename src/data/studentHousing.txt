@@ -1,3 +1,4 @@
-6969::Maple Hall::DOUBLE::Service animal allowed##
-7828::Willow Hall::SUITE::Wheelchair accessible room##
-1234::Linden Hall::SINGLE::Religious Accommodations##
+StudentID::Dorm::RoomType::Accommodations::Status##
+7828::Willow Hall::SUITE::Wheelchair accessible room::Paid##
+1234::Linden Hall::SINGLE::Religious Accommodations##::Unpaid##
+2112::Linden Hall::SUITE::Wheelchair accessible room::Unpaid##

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import helpers.FileUtils;
 import helpers.Utils;
 
 public class StudentHousing {
@@ -29,14 +30,14 @@ public class StudentHousing {
     private Dorm dormPreference;
     //private String mealPlan;
     private List<String> specialAccommodations;
-    private String applicationStatus;
+    private String status;
 
     public StudentHousing(String studentID) {
         this.studentID = studentID;
         this.term = "Spring 2024";
         this.specialAccommodations = new ArrayList<>();
         //this.mealPlan = mealPlan;
-        this.applicationStatus = "Pending"; // Default status
+        this.status = "Unpaid"; // Default status
     }
     
     public void apply() {
@@ -138,7 +139,8 @@ public class StudentHousing {
             writer.write(studentID + "::" +
                     dormPreference.getDormName() + "::" +
                     roomPreference + "::" +
-                    accommodations + "##");
+                    accommodations + "::" + 
+                    status + "##");
             writer.newLine();
             System.out.println("Application saved to file.");
         } catch (IOException e) {
@@ -156,13 +158,9 @@ public class StudentHousing {
     }
     
     public String checkApplicationStatus() {
-        return "Application status for " + studentID + ": " + applicationStatus;
+        return "Application status for " + studentID + ": " + status;
     }
-    
-    public void updateApplicationStatus(String status) {
-        this.applicationStatus = status;
-        System.out.println("Application status updated to: " + status);
-    }
+   
     
     public static boolean isStudentIdRegistered(String studentId) {
         try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_HOUSING_PATH))) {
@@ -185,4 +183,104 @@ public class StudentHousing {
         }
         return false; // Student ID not found
     }
+    private RoomType getRoomPreferenceFromFile(String studentID, String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                line = line.replace("##", "");
+                String[] parts = line.split("::");
+
+                if (parts[0].equals(studentID)) {
+                    String roomPrefString = parts[2];
+                    switch (roomPrefString.toUpperCase()) {
+                        case "SINGLE":
+                            return RoomType.SINGLE;
+                        case "DOUBLE":
+                            return RoomType.DOUBLE;
+                        case "SUITE":
+                            return RoomType.SUITE;
+                        default:
+                            return RoomType.DOUBLE; // Default value
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return RoomType.DOUBLE; // Default if not found
+    }
+    
+    public void payForHousing() {
+        String filePath = "src/data/studentHousing.txt";
+        
+        if (isPaymentComplete(studentID, filePath)) {
+            System.out.println("Payment already completed for student ID: " + studentID);
+            return;
+        }
+        
+        RoomType roomPreference = getRoomPreferenceFromFile(this.studentID, filePath);
+        double housingCost;
+        switch (roomPreference) {
+            case SINGLE:
+                housingCost = 2000.0;
+                break;
+            case DOUBLE:
+                housingCost = 1500.0;
+                break;
+            case SUITE:
+                housingCost = 2500.0;
+                break;
+            default:
+                housingCost = 1500.0; // Default cost
+        }
+        System.out.println("Total housing cost: $" + housingCost);
+
+        double paymentAmount = Double.parseDouble(Utils.getInput("Enter payment amount: "));
+
+        if (paymentAmount >= housingCost) {
+            System.out.println("Payment successful!");
+            updatePaymentStatus(filePath, true);
+        } else {
+            System.out.println("Insufficient payment. Please pay the full amount.");
+        }
+    }
+
+    private boolean isPaymentComplete(String studentID, String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                line = line.replace("##", "");
+                String[] parts = line.split("::");
+
+                if (parts[0].equals(studentID)) {
+                    return parts[4].equalsIgnoreCase("Paid");
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return false; // Default to unpaid if not found
+    }
+
+    private void updatePaymentStatus(String filePath, boolean isPaid) {
+        List<String[]> data = FileUtils.readStructuredData("", "studentHousing.txt");
+        List<String[]> updatedData = new ArrayList<>();
+
+        for (String[] row : data) {
+            if (row[0].equals(this.studentID)) {
+                // Update payment status
+                String updatedRow = row[0] + "::" + row[1] + "::" + row[2] + "::" + row[3] + "::" + (isPaid ? "Paid" : "Unpaid");
+                updatedData.add(updatedRow.split("::"));
+            } else {
+                updatedData.add(row);
+            }
+        }
+
+        FileUtils.writeStructuredData("", "studentHousing.txt", new String[]{"StudentID", "Dorm", "RoomType", "Accommodations", "Status"}, updatedData);
+    }
+
 }
