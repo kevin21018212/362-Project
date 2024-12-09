@@ -31,8 +31,8 @@ public class Main {
                         break;
                     case "5":
                         String advisorID = Utils.getInput("Enter Advisor ID: ");
-                        AdvisorDisplay advisorDisplay = new AdvisorDisplay(advisorID);
-                        advisorDisplay.displayMenu();
+                        //AdvisorDisplay advisorDisplay = new AdvisorDisplay(advisorID);
+                        //advisorDisplay.displayMenu();
                         break;
                     case "6":
                         System.out.println("End");

@@ -236,8 +236,36 @@ public class StudentHousing {
                 housingCost = 1500.0; // Default cost
         }
         System.out.println("Total housing cost: $" + housingCost);
+        
+        String paymentMethod = "";
+        
+        do{
+        	System.out.println("Select your payment method:");
+            System.out.println("1. Visa");
+            System.out.println("2. Check");
+            System.out.println("3. Bank Transfer");
+            int paymentMethodChoice = Integer.parseInt(Utils.getInput("Enter your choice: "));
+            switch (paymentMethodChoice) {
+            	case 1:
+            		paymentMethod = "Visa";
+            		break;
+            	case 2:
+            		paymentMethod = "Check";
+            		break;
+            	case 3:
+            		paymentMethod = "Bank Transfer";
+            		break;
+            	default:
+            		System.out.println("Invalid choice. Try again.");
+            		break;
+            }
+        }while(paymentMethod == "");
+        
 
-        double paymentAmount = Double.parseDouble(Utils.getInput("Enter payment amount: "));
+        // Display selected payment method
+        System.out.println("You selected: " + paymentMethod);
+
+        double paymentAmount = Double.parseDouble(Utils.getInput("Enter payment amount($" + housingCost + "): "));
 
         if (paymentAmount >= housingCost) {
             System.out.println("Payment successful!");
