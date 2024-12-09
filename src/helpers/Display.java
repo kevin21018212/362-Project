@@ -29,8 +29,8 @@ public class Display {
             displayMessage("2 Academic Records");
             displayMessage("3 Financial Services");
             displayMessage("4 Student Services");
-            Display.displayMessage("5 Drop Out");
-            Display.displayMessage("6 Logout");
+            displayMessage("5 Library Portal");
+            displayMessage("6 Logout");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -47,10 +47,10 @@ public class Display {
                     displayStudentServicesMenu(student);
                     break;
                 case "5":
-                    student.dropOut();
-                    return; // Exit after dropping out
+                    displayLibraryPortal(student);
+                    break;
                 case "6":
-                    return; // Logout
+                    return;
                 default:
                     displayMessage("Invalid option");
             }
@@ -64,7 +64,8 @@ public class Display {
             displayMessage("2 View Grades");
             displayMessage("3 View Academic Progress");
             displayMessage("4 Apply for Graduation");
-            displayMessage("5 Back to Main Menu");
+            displayMessage("5 Drop Out");
+            displayMessage("6 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -81,12 +82,37 @@ public class Display {
                     student.applyForGraduation();
                     break;
                 case "5":
+                    student.dropOut();
+                    break;
+                case "6":
                     return; // Back to main menu
                 default:
                     displayMessage("Invalid option");
             }
         }
     }
+
+    private static void displayLibraryPortal(Student student) {
+        while (true) {
+            displayMessage("\nLibrary Menu");
+            displayMessage("1. Reserve a study room");
+            displayMessage("5. Back to main menu\n");
+
+            String choice = Utils.getInput("Select an option: ");
+
+            switch (choice) {
+                case "1":
+                    student.reserveStudyRoom();
+                    break;
+                case "5":
+                    return;
+                default:
+                    displayMessage("Invalid option. Please try again.");
+                    break;
+            }
+        }
+    }
+
 
     private static void displayCourseManagementMenu(Student student) {
         while (true) {
