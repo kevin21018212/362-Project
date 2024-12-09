@@ -70,14 +70,15 @@ public class Library {
         return true;
     }
 
-    // Show books grouped by enrollment status
+
+    // show books grouped by enrollment
     public static void showBooks(String studentId, List<Book> books) {
         List<String> enrolledCourses = Enrollment.getEnrolledCourses(studentId);
         displayBooks(books, enrolledCourses, true);
         displayBooks(books, enrolledCourses, false);
     }
 
-    //shorer way to display books
+    //shorter way to display books
     private static void displayBooks(List<Book> books, List<String> enrolledCourses, boolean enrolled) {
         String title = enrolled ? "Books for Enrolled Courses:" : "Books for Non-Enrolled Courses:";
         System.out.println("\n" + title);
@@ -113,8 +114,7 @@ public class Library {
         }
     }
 
-
-    // Return a book
+    // return a book
     public static void returnBook(String studentId, String bookId, List<Book> books) {
         Book book = findBookById(books, bookId);
         if (book != null && book.getCheckedOutBy().contains(studentId)) {
@@ -125,25 +125,21 @@ public class Library {
             System.out.println("Book not found or not checked out by you.");
         }
     }
-
-    // Auto checkout books for all enrolled courses
+    // auto checkout books for all enrolled courses
     public static void autoCheckout(String studentId, List<Book> books) {
         List<String> enrolledCourses = Enrollment.getEnrolledCourses(studentId);
         int currentCheckedOutCount = (int) books.stream()
                 .filter(book -> book.getCheckedOutBy().contains(studentId))
                 .count();
-
         for (Book book : books) {
             if (enrolledCourses.contains(book.getCourseId()) && book.isAvailable() && currentCheckedOutCount < 5) {
                 book.checkout(studentId);
                 currentCheckedOutCount++;
             }
         }
-
         Book.saveBooks(books);
         System.out.println("Books for your required courses have been checked out.");
     }
-
     // helper methods
     private static Student validateStudent(String studentId) {
         Student student = DataAccess.findStudentById(studentId);
@@ -152,7 +148,7 @@ public class Library {
         }
         return student;
     }
-
+     // looks through file and gets count of books u checked out
     private static boolean canCheckoutMoreBooks(String studentId, List<Book> books) {
         int count = (int) books.stream()
                 .filter(book -> book.getCheckedOutBy().contains(studentId))
@@ -163,7 +159,6 @@ public class Library {
         }
         return true;
     }
-
     private static Book findBookById(List<Book> books, String bookId) {
         return books.stream()
                 .filter(book -> book.getId().equalsIgnoreCase(bookId))
