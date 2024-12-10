@@ -93,6 +93,17 @@ public class AdvisorController implements AdvisorInterface {
     }
 
     /**
+     * messages all advisor's students
+     * @param subject The message subject
+     * @param message The message content
+     */
+    public void messageAllStudents(String subject, String message) {
+        for (String studentId : advisor.getStudents()) {
+            messageStudent(studentId, subject, message);
+        }
+    }
+
+    /**
      * Removes a student from the advisor's list.
      * @param studentId The ID of the student to remove
      * @return true if student was successfully removed, false otherwise

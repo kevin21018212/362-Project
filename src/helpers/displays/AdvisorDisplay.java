@@ -53,6 +53,7 @@ public class AdvisorDisplay {
             System.out.println("5: Remove Student");
             System.out.println("6: Remove Registration Hold");
             System.out.println("7: View Messages");
+            System.out.println("8: Message all students");
             System.out.println("0: Exit");
 
             String choice = Utils.getInput("Select an option: ");
@@ -85,10 +86,19 @@ public class AdvisorDisplay {
                         MessageDisplay messageDisplay = new MessageDisplay(advisorController.getAdvisor().getId(), advisorController.getAdvisor().getName());
                         messageDisplay.displayMessageMenu();
                         break;
+                    case "8":
+                        messageAllStudents();
+                        break;
                 default:
                     System.out.println("Invalid option");
             }
         }
+    }
+
+    private void messageAllStudents() {
+        String subject = Utils.getInput("Enter subject: ");
+        String message = Utils.getInput("Enter message: ");
+        advisorController.messageAllStudents(subject, message);
     }
 
     private void addMeeting(String studentId) {
