@@ -161,42 +161,79 @@ public class Student extends User {
 
     public void reserveStudyRoom() {
         Scanner scanner = new Scanner(System.in);
+        while (true) {
 
-        //Show accessible and inaccessible rooms
-        Library.showAllRooms(this.id);
+            //load rooms
+            List<Room> rooms = Library.loadRooms();
+            List<Reservation> reservations = Reservation.loadReservations();
 
-        //Choose Room
-        System.out.print("Enter the Room ID you want to reserve: ");
-        String roomId = scanner.nextLine().trim();
+            showMyReservations(reservations);
+            System.out.println("\n--- Study Room Reservation ---");
+            System.out.println("1. Reserve a Room");
+            System.out.println("2. Cancel a Reservation");
+            System.out.println("3. Exit");
 
-        // Load the selected room to validate further operations
-        List<Room> rooms = Library.loadRooms();
-        Room selectedRoom = null;
-        for (Room room : rooms) {
-            if (room.getId().equalsIgnoreCase(roomId)) {
-                selectedRoom = room;
-                break;
+            System.out.print("Enter your choice: ");
+            String choice = scanner.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    // show accessible and inaccessible rooms
+                    Library.showAllRooms(this.id);
+                    // choose room
+                    System.out.print("Enter the Room ID you want to reserve: ");
+                    String roomId = scanner.nextLine().trim();
+                    Room selectedRoom = Library.findRoomById(rooms, roomId);
+                    if (!Library.validateRoom(selectedRoom,this.id)) break;
+
+                    // show the room's schedule
+                    selectedRoom.showSchedule(reservations);
+                    // get time and duration
+                    System.out.print("Enter start time for your reservation (HH:mm): ");
+                    String startTime = scanner.nextLine().trim();
+                    System.out.print("Enter the duration of your reservation in minutes: ");
+                    int durationMinutes = scanner.nextInt();
+                    scanner.nextLine(); //skip line
+                    // reserve
+                    selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
+                    break;
+
+                case "2":
+                    // choose room
+                    System.out.print("Enter the Room ID for the reservation you want to cancel: ");
+                    String cancelRoomId = scanner.nextLine().trim();
+                    Room cancelRoom = Library.findRoomById(rooms, cancelRoomId);
+                    if (!Library.validateRoom(cancelRoom,this.id)) break;
+
+                    // get start time to remove
+                    System.out.print("Enter the start time of your reservation to cancel (HH:mm): ");
+                    String cancelStartTime = scanner.nextLine().trim();
+                    // cancel the reservation
+                    cancelRoom.cancelReservation(this.id, cancelStartTime);
+                    break;
+                case "3":
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
-
-        if (selectedRoom == null) {
-            System.out.println("Invalid Room ID. Please try again.");
-            return;
-        }
-
-        // Step 4: Show the room's schedule
-        List<Reservation> reservations = Reservation.loadReservations();
-        selectedRoom.showSchedule(reservations);
-
-        // Step 5: Prompt user for time and duration
-        System.out.print("Enter start time for your reservation (HH:mm): ");
-        String startTime = scanner.nextLine().trim();
-        System.out.print("Enter the duration of your reservation in minutes: ");
-        int durationMinutes = scanner.nextInt();
-
-        // Step 6: Reserve the room
-        selectedRoom.reserveRoom(this.id, startTime, durationMinutes);
     }
+    public void showMyReservations(  List<Reservation>reservations) {
+        // filter reservations for this student
+        boolean hasReservations = false;
+        System.out.println("\n--- Your Reservations ---");
+        for (Reservation reservation : reservations) {
+            if (reservation.getStudentId().equalsIgnoreCase(this.id)) {
+                System.out.println(reservation);
+                hasReservations = true;
+            }
+        }
+        if (!hasReservations) {
+            System.out.println("You have no reservations.");
+        }
+    }
+
 
     /**
      * Enrolls a student in a course (broken rn?)
@@ -862,7 +899,6 @@ public class Student extends User {
         System.out.println("\nUpcoming University Events:");
         String filePath = "universityEvents.txt"; // Corrected typo in file name
 
-        // Read structured data from the file
         List<String[]> eventData = FileUtils.readStructuredData("", filePath);
 
         for (String[] event : eventData) {
@@ -879,6 +915,9 @@ public class Student extends User {
         }
     }
 
+    /**
+     * Walks user through process of selecting an event and buying tickets.
+     */
     public void purchaseUniversityEventTicket(){
         String studentIDTemp = String.valueOf(getStudentID());
         viewUniversityEventList();
@@ -892,23 +931,19 @@ public class Student extends User {
 
         String numTickets = Utils.getInput("\nEnter the number of tickets you wish to purchase: ");
 
-        // Read event data from the file to find the selected event
         String filePath = "universityEvents.txt";
         List<String[]> eventData = FileUtils.readStructuredData("", filePath);
         boolean eventFound = false;
 
         for (String[] event : eventData) {
-            // Check for malformed rows
             if (event.length >= 6) {
                 String eventName = event[1];
                 String eventDate = event[5];
                 String eventLocation = event[4];
 
-                // Match the selected event name
                 if (eventName.equalsIgnoreCase(selectedEventName.trim())) {
                     eventFound = true;
 
-                    // Write to tickets.txt
                     updateTicketsFile(studentIDTemp, eventName, eventDate, eventLocation, numTickets);
 
                     System.out.println("Ticket(s) purchased successfully!");
@@ -919,13 +954,15 @@ public class Student extends User {
             }
         }
 
-        // If event is not found, notify the user
         if (!eventFound) {
             System.out.println("Event not found. Please check the name and try again.");
             purchaseUniversityEventTicket();
         }
     }
 
+    /**
+     * View the currently logged-in users tickets
+     */
     public void viewPurchasedEventTickets() {
         String currentStudentId = String.valueOf(getStudentID());
         List<String[]> data = FileUtils.readStructuredData("", "tickets.txt");
@@ -945,6 +982,146 @@ public class Student extends User {
             for (String[] ticket : studentTickets) {
                 System.out.println(ticket[1] + " - Tickets: " + ticket[4]);
             }
+        }
+    }
+
+    /**
+     * User menu/prompts for university employment
+     */
+    public void displayUniversityEmploymentMenu(){
+        displayMessage("\nUniversity Employment Menu: ");
+        displayMessage("1 View University Employment Opportunities");
+        displayMessage("2 Apply for job");
+        displayMessage("3 Go Back");
+
+        String id = Utils.getInput("Please choose an options (Ex: 3): ");
+
+        switch (id) {
+            case "1":
+                viewUniversityEmploymentList();
+                break;
+            case "2":
+                applyForUniversityJob();
+                break;
+            case "3":
+                displayStudentMenu();
+                break;
+            default:
+                displayMessage("Something went wrong... returning to student menu.");
+                displayStudentMenu();
+        }
+    }
+
+    /**
+     * Displays a list of the available student job opportunities
+     */
+    public void viewUniversityEmploymentList() {
+        List<String[]> data = FileUtils.readStructuredData("", "employmentOpportunities.txt");
+
+        if (data.isEmpty()) {
+            System.out.println("No employment opportunities are currently available.");
+            return;
+        }
+
+        System.out.println("\nUniversity Employment Opportunities:");
+        for (String[] row : data) {
+            String jobTitle = row[1];
+            String hourlyRate = row[2];
+            String duration = row[3];
+
+            System.out.println(jobTitle + ": pays $" + hourlyRate + "/hr for " + duration + "hours per week");
+        }
+    }
+
+    /**
+     * The application portion of a student applying for a job
+     * @param jobTitle
+     * @param hourlyRate
+     * @param weeklyHours
+     * @return
+     */
+    public boolean studentJobApplication(String jobTitle, int hourlyRate, int weeklyHours){
+        // Check if the student already has a job
+        String studentIDTemp = String.valueOf(getStudentID());
+        String employmentFilePath = "studentEmployment.txt";
+        List<String[]> employmentData = FileUtils.readStructuredData("", employmentFilePath);
+
+        for (String[] record : employmentData) {
+            if (record.length >= 2) { // Ensure the row has enough fields
+                String studentID = record[0].trim();
+                if (studentID.equals(studentIDTemp)) {
+                    System.out.println("You already have a job and cannot apply for another position at this time.");
+                    return false;
+                }
+            }
+        }
+
+        System.out.println("You are applying for the " + jobTitle + "position");
+        String jobAppConfirm1 = Utils.getInput("Please enter yes if the hourly rate of " + hourlyRate + " is acceptable: ");
+        String jobAppConfirm2 = Utils.getInput("Please enter yes if " + weeklyHours + "  hours per week is acceptable: ");
+        if(jobAppConfirm1.equals("yes") || jobAppConfirm2.equals("yes")){
+            System.out.println("Congrats! You have approved the job offerings and have earned the position of " + jobTitle);
+            return true;
+        } else {
+            System.out.println("Your preferences do not align with our opportunity, please keep looking.");
+            return false;
+        }
+    }
+
+    public void updateEmploymentFile(String studentId, String jobTitle, String hourlyRate, String hoursPerWeek) {
+        List<String[]> data = FileUtils.readStructuredData("", "studentEmployment.txt");
+        List<String[]> updatedData = new ArrayList<>();
+
+        updatedData.addAll(data);
+
+        updatedData.add(new String[]{studentId, jobTitle, hourlyRate, hoursPerWeek});
+
+        String[] headers = {"studentID", "jobTitle", "hourlyRate", "hoursPerWeek"};
+
+        FileUtils.writeStructuredData("", "studentEmployment.txt", headers, updatedData);
+    }
+
+
+    public void applyForUniversityJob() {
+        viewUniversityEmploymentList();
+        String studentIDTemp = String.valueOf(getStudentID());
+
+        System.out.println("\nPlease select which opportunity you would like to apply for.");
+        String selectedJob = Utils.getInput("Enter job Name (Ex: Secretary) or type 'Cancel' to cancel: ");
+
+        if (selectedJob.equalsIgnoreCase("cancel")) {
+            displayUniversityEmploymentMenu();
+            return;
+        }
+
+        String filePath = "employmentOpportunities.txt";
+        List<String[]> jobData = FileUtils.readStructuredData("", filePath);
+        boolean jobFound = false;
+
+        for (String[] job : jobData) {
+            if (job.length >= 4) {
+                String jobTitle = job[1].trim();
+                String hourlyRate = job[2].trim();
+                String duration = job[3].trim();
+
+                if (jobTitle.equalsIgnoreCase(selectedJob.trim())) {
+                    jobFound = true;
+
+                    boolean accepted = studentJobApplication(jobTitle, Integer.parseInt(hourlyRate), Integer.parseInt(duration));
+
+                    System.out.println("Application submitted successfully!\n");
+                    if (accepted) {
+                        System.out.println("Congratulations on your acceptance. Updating your employment record.");
+                        updateEmploymentFile(studentIDTemp, jobTitle, hourlyRate, duration);
+                    }
+                    break;
+                }
+            }
+        }
+
+        if (!jobFound) {
+            System.out.println("Job not found. Please check the title and try again.");
+            applyForUniversityJob();
         }
     }
 

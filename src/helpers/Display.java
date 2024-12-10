@@ -4,6 +4,7 @@ import helpers.displays.AdvisorDisplay;
 import helpers.displays.MessageDisplay;
 
 import main.*;
+import main.Library.Book;
 import users.DataAccess;
 import users.Instructor;
 import users.Registrar;
@@ -11,6 +12,7 @@ import users.Student;
 import helpers.displays.DirectoryDisplay;
 import main.Library.Library;
 
+import java.util.List;
 
 
 public class Display {
@@ -94,6 +96,9 @@ public class Display {
 
     private static void displayLibraryPortal(Student student) {
         while (true) {
+
+            List<Book> books = Book.loadBooks();
+
             displayMessage("\n--- Library Menu ---");
             displayMessage("1. Reserve a study room");
             displayMessage("2. Checkout a single book");
@@ -107,34 +112,24 @@ public class Display {
                 case "1":
                     student.reserveStudyRoom();
                     break;
-
-                case "2":
-                    // Display books available for checkout
+                case "2": //checkout single book
                     displayMessage("\nBooks Available for Checkout:");
-                    Library.showBooks(student.getId());
-
-                    // Prompt user to select a book to checkout
+                    Library.showBooks(student.getId(),books);
                     String bookId = Utils.getInput("Enter the Book ID to checkout: ");
-                    Library.checkoutBook(student.getId(), bookId);
+                    Library.checkoutBook(student.getId(), bookId,books);
                     break;
 
-                case "3":
-                    // Auto-checkout books for enrolled courses
-                    Library.autoCheckout(student.getId());
+                case "3":// auto check out books for courses
+                    Library.autoCheckout(student.getId(),books);
                     break;
 
-                case "4":
-                    // Display books currently checked out by the student
-                    displayMessage("\nBooks Checked Out by You:");
-                    Library.showCheckedOutBooks(student.getId());
-
-                    // Prompt user to select a book to return
+                case "4":   //return a book
+                    Library.showCheckedOutBooks(student.getId(),books);
                     String returnBookId = Utils.getInput("Enter the Book ID to return: ");
-                    Library.returnBook(student.getId(), returnBookId);
+                    Library.returnBook(student.getId(), returnBookId,books);
                     break;
                 case "5":
-                    // Exit the library menu
-                    return;
+                    return;  // exit the library menu
                 default:
                     displayMessage("Invalid option. Please try again.");
                     break;
@@ -216,8 +211,8 @@ public class Display {
             displayMessage("3 Directory Menu");
             displayMessage("4 Schedule Meeting with Advisor");
             displayMessage("5 Provide Professor Feedback");
-            displayMessage("6 View University Events");
-            displayMessage("7 Find a Roommate");
+            displayMessage("6 View/Purchase University Event Tickets");
+            displayMessage("7 View University Employment Opportunities");
             displayMessage("8 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
@@ -244,8 +239,8 @@ public class Display {
                     student.displayEventMenu();
                     break;
                 case "7":
-                	student.findARoommate();
-                	break;
+                    student.displayUniversityEmploymentMenu();
+                    break;
                 case "8":
                     return;
                 default:
