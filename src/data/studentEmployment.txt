@@ -1,2 +1,3 @@
 studentID::jobTitle::hourlyRate::hoursPerWeek##
 6037::Secretary::13::20##
+3058::Student Chef::12::30##
