@@ -2,6 +2,7 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import helpers.FileUtils;
 import helpers.Utils;
 
 public class StudentHousing {
@@ -29,14 +31,14 @@ public class StudentHousing {
     private Dorm dormPreference;
     //private String mealPlan;
     private List<String> specialAccommodations;
-    private String applicationStatus;
+    private String status;
 
     public StudentHousing(String studentID) {
         this.studentID = studentID;
         this.term = "Spring 2024";
         this.specialAccommodations = new ArrayList<>();
         //this.mealPlan = mealPlan;
-        this.applicationStatus = "Pending"; // Default status
+        this.status = "Unpaid"; // Default status
     }
     
     public void apply() {
@@ -138,7 +140,8 @@ public class StudentHousing {
             writer.write(studentID + "::" +
                     dormPreference.getDormName() + "::" +
                     roomPreference + "::" +
-                    accommodations + "##");
+                    accommodations + "::" + 
+                    status + "##");
             writer.newLine();
             System.out.println("Application saved to file.");
         } catch (IOException e) {
@@ -156,13 +159,9 @@ public class StudentHousing {
     }
     
     public String checkApplicationStatus() {
-        return "Application status for " + studentID + ": " + applicationStatus;
+        return "Application status for " + studentID + ": " + status;
     }
-    
-    public void updateApplicationStatus(String status) {
-        this.applicationStatus = status;
-        System.out.println("Application status updated to: " + status);
-    }
+   
     
     public static boolean isStudentIdRegistered(String studentId) {
         try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_HOUSING_PATH))) {
@@ -185,4 +184,273 @@ public class StudentHousing {
         }
         return false; // Student ID not found
     }
+    private RoomType getRoomPreferenceFromFile(String studentID, String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                line = line.replace("##", "");
+                String[] parts = line.split("::");
+
+                if (parts[0].equals(studentID)) {
+                    String roomPrefString = parts[2];
+                    switch (roomPrefString.toUpperCase()) {
+                        case "SINGLE":
+                            return RoomType.SINGLE;
+                        case "DOUBLE":
+                            return RoomType.DOUBLE;
+                        case "SUITE":
+                            return RoomType.SUITE;
+                        default:
+                            return RoomType.DOUBLE; // Default value
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return RoomType.DOUBLE; // Default if not found
+    }
+    
+    public void payForHousing() {
+        String filePath = "src/data/studentHousing.txt";
+        
+        if (isPaymentComplete(studentID, filePath)) {
+            System.out.println("Payment already completed for student ID: " + studentID);
+            return;
+        }
+        
+        RoomType roomPreference = getRoomPreferenceFromFile(this.studentID, filePath);
+        double housingCost;
+        switch (roomPreference) {
+            case SINGLE:
+                housingCost = 2000.0;
+                break;
+            case DOUBLE:
+                housingCost = 1500.0;
+                break;
+            case SUITE:
+                housingCost = 2500.0;
+                break;
+            default:
+                housingCost = 1500.0; // Default cost
+        }
+        System.out.println("Total housing cost: $" + housingCost);
+        
+        String paymentMethod = "";
+        
+        do{
+        	System.out.println("Select your payment method:");
+            System.out.println("1. Visa");
+            System.out.println("2. Check");
+            System.out.println("3. Bank Transfer");
+            int paymentMethodChoice = Integer.parseInt(Utils.getInput("Enter your choice: "));
+            switch (paymentMethodChoice) {
+            	case 1:
+            		paymentMethod = "Visa";
+            		break;
+            	case 2:
+            		paymentMethod = "Check";
+            		break;
+            	case 3:
+            		paymentMethod = "Bank Transfer";
+            		break;
+            	default:
+            		System.out.println("Invalid choice. Try again.");
+            		break;
+            }
+        }while(paymentMethod == "");
+        
+
+        // Display selected payment method
+        System.out.println("You selected: " + paymentMethod);
+
+        double paymentAmount = Double.parseDouble(Utils.getInput("Enter payment amount($" + housingCost + "): "));
+
+        if (paymentAmount >= housingCost) {
+            System.out.println("Payment successful!");
+            updatePaymentStatus(filePath, true);
+        } else {
+            System.out.println("Insufficient payment. Please pay the full amount.");
+        }
+    }
+
+    private boolean isPaymentComplete(String studentID, String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                line = line.replace("##", "");
+                String[] parts = line.split("::");
+
+                if (parts[0].equals(studentID)) {
+                    return parts[4].equalsIgnoreCase("Paid");
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return false; // Default to unpaid if not found
+    }
+
+    private void updatePaymentStatus(String filePath, boolean isPaid) {
+        List<String[]> data = FileUtils.readStructuredData("", "studentHousing.txt");
+        List<String[]> updatedData = new ArrayList<>();
+
+        for (String[] row : data) {
+            if (row[0].equals(this.studentID)) {
+                // Update payment status
+                String updatedRow = row[0] + "::" + row[1] + "::" + row[2] + "::" + row[3] + "::" + (isPaid ? "Paid" : "Unpaid");
+                updatedData.add(updatedRow.split("::"));
+            } else {
+                updatedData.add(row);
+            }
+        }
+
+        FileUtils.writeStructuredData("", "studentHousing.txt", new String[]{"StudentID", "Dorm", "RoomType", "Accommodations", "Status"}, updatedData);
+    }
+    public void findRoommate() {
+        String filePath = "src/data/studentHousing.txt";
+        String roommatesFilePath = "src/data/roommates.txt";
+
+        // Check if the student is eligible for a roommate search
+        if (this.roomPreference == RoomType.SINGLE) {
+            System.out.println("Roommate search is not available for Single room assignments.");
+            return;
+        }
+        else if(isRoommateAssigned(this.studentID)) {
+        	System.out.println("You are already assigned a roommate.");
+        	return;
+        }
+        
+        String studentDorm = getStudentDormFromFile(this.studentID);
+
+        System.out.println("Searching for potential roommates in " + studentDorm + "...");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            List<String[]> potentialRoommates = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                // Remove row end marker and split fields
+                line = line.replace("##", "");
+                String[] parts = line.split("::");
+
+                // Ensure the record has all expected fields
+                if (parts.length < 5) continue;
+
+                String studentId = parts[0];
+                String dormName = parts[1];
+                String roomType = parts[2];
+                String accommodations = parts[3];
+
+                // Skip if the student is the current user or has a "Single" room preference
+                if (studentId.equals(this.studentID) || roomType.equalsIgnoreCase("Single")) continue;
+
+                // Check if the dorm matches and the room type is "Double" or "Suite"
+                if (dormName.equals(studentDorm) &&
+                    (roomType.equalsIgnoreCase(roomType))) {
+                	System.out.println("Match found");
+                    potentialRoommates.add(new String[]{studentId, dormName, roomType, accommodations});
+                }
+            }
+
+            // Display potential roommates
+            if (potentialRoommates.isEmpty()) {
+                System.out.println("No matching roommates available in your dorm.");
+            } else {
+                for (int i = 0; i < potentialRoommates.size(); i++) {
+                    String[] roommate = potentialRoommates.get(i);
+                    System.out.println((i + 1) + ". Student ID: " + roommate[0] +
+                                       ", Room Type: " + roommate[2] +
+                                       ", Accommodations: " + roommate[3]);
+                }
+                
+                int choice = Integer.parseInt(Utils.getInput("Select a roommate by number: "));
+
+                if (choice > 0 && choice <= potentialRoommates.size()) {
+                    String[] selectedRoommate = potentialRoommates.get(choice - 1);
+
+                    // Save selection to roommates.txt
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(roommatesFilePath, true))) {
+                        String record = studentID + "::" +
+                                        selectedRoommate[0] + "::" +
+                                        selectedRoommate[2] + "::" +
+                                        selectedRoommate[3] + "##";
+                        writer.write(record);
+                        writer.newLine();
+                        System.out.println("Roommate selection saved successfully!");
+                    } catch (IOException e) {
+                        System.err.println("Error saving roommate selection: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Invalid selection. No roommate saved.");
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading student housing file: " + e.getMessage());
+        }
+    }
+    
+    private String getStudentDormFromFile(String studentID) {
+        String filePath = "src/data/studentHousing.txt";
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                // Remove row end marker and split fields
+                line = line.replace("##", "");
+                String[] parts = line.split("::");
+
+                // Ensure the record has all expected fields
+                if (parts.length < 5) continue;
+
+                String currentStudentId = parts[0];
+                String dormName = parts[1];
+
+                // Check if this is the matching student ID
+                if (currentStudentId.equals(studentID)) {
+                    return dormName;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading student housing file: " + e.getMessage());
+        }
+        return "Dorm not found"; // Return a fallback value if no match is found
+    }
+    
+    private boolean isRoommateAssigned(String studentID) {
+        String filePath = "src/data/roommates.txt";
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                // Remove row end marker and split fields
+                line = line.replace("##", "");
+                String[] parts = line.split("::");
+
+                // Ensure the record has at least two fields
+                if (parts.length < 2) continue;
+
+                String currentStudentID = parts[0];
+                String roommateID = parts[1];
+
+                // Check if the student ID matches either the current student or their roommate
+                if (currentStudentID.equals(studentID) || roommateID.equals(studentID)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading roommates file: " + e.getMessage());
+        }
+        return false; // Return false if no match is found
+    }
+
+
 }
