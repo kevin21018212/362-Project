@@ -308,6 +308,7 @@ public class AdvisorController implements AdvisorInterface {
         String choice = Utils.getInput("Release registration hold? (Y/N)");
         if (choice.equalsIgnoreCase("Y")) {
             this.advisor.getRegistrationHolds().remove(student.getId());
+            messageStudent(student.getId(),"Registration Hold Released", HOLD_RELEASE_MESSAGE);
             saveToData();
             return true;
         }
@@ -332,6 +333,7 @@ public class AdvisorController implements AdvisorInterface {
         String choice = Utils.getInput("Release registration hold? (Y/N)");
         if (choice.equalsIgnoreCase("Y")) {
             this.advisor.getRegistrationHolds().remove(student.getId());
+            messageStudent(student.getId(),"Registration Hold Released", HOLD_RELEASE_MESSAGE);
             saveToData();
             return true;
         }
