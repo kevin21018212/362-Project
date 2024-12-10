@@ -1,3 +1,4 @@
 eventID::eventName::eventOpponent::eventPrice::eventLocation::eventDate##
 001::Big 12 Football Championship::ASU::65::Dallas, TX::December 7th##
 002::Women's Volleyball::Iowa::10::Hilton Coliseum::December 12th##
+003::Wrestling::BYU::5::Hilton::December 19th##

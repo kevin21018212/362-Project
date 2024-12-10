@@ -1029,7 +1029,7 @@ public class Student extends User {
             String hourlyRate = row[2];
             String duration = row[3];
 
-            System.out.println(jobTitle + ": pays $" + hourlyRate + "/hr for " + duration + "hours per week");
+            System.out.println(jobTitle + ": pays $" + hourlyRate + "/hr for " + duration + " hours per week");
         }
     }
 
