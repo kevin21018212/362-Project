@@ -213,6 +213,7 @@ public class Display {
             displayMessage("5 Provide Professor Feedback");
             displayMessage("6 View/Purchase University Event Tickets");
             displayMessage("7 View University Employment Opportunities");
+            displayMessage("8 Find a Roommate");
             displayMessage("8 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
@@ -242,7 +243,8 @@ public class Display {
                     student.displayUniversityEmploymentMenu();
                     break;
                 case "8":
-                    return;
+                	student.findARoommate();
+                    break;
                 default:
                     displayMessage("Invalid option");
             }
