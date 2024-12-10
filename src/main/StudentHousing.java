@@ -268,7 +268,7 @@ public class StudentHousing {
 
         double paymentAmount = Double.parseDouble(Utils.getInput("Enter payment amount($" + housingCost + "): "));
 
-        if (paymentAmount >= housingCost) {
+        if (paymentAmount == housingCost) {
             System.out.println("Payment successful!");
             updatePaymentStatus(filePath, true);
         } else {
