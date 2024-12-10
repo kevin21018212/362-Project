@@ -1583,6 +1583,27 @@ public class Student extends User {
             e.printStackTrace();
         }
     }
+    public void payForHousing() {
+        System.out.println("Fetching your housing information...");
+        StudentHousing housing = new StudentHousing(this.id);
+
+        if (!StudentHousing.isStudentIdRegistered(this.id)) {
+            System.out.println("No housing application found for your ID.");
+            return;
+        }
+
+        System.out.println("Processing your housing payment...");
+        housing.payForHousing();
+    }
+    public void findARoommate() {
+    	StudentHousing housing = new StudentHousing(this.id);
+    	if (!StudentHousing.isStudentIdRegistered(this.id)) {
+            System.out.println("No housing application found for your ID.");
+            return;
+        }
+    	housing.findRoommate();
+    }
+
 
 
 }

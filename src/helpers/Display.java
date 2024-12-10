@@ -176,8 +176,9 @@ public class Display {
             displayMessage("\nFinancial Services:");
             displayMessage("1 View University Bill");
             displayMessage("2 Apply for Student Housing");
-            displayMessage("3 Register for Meal Plan");
-            displayMessage("4 Back to Main Menu");
+            displayMessage("3 Pay for Student Housing");
+            displayMessage("4 Register for Meal Plan");
+            displayMessage("5 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
             switch (choice) {
@@ -189,9 +190,12 @@ public class Display {
                     sh.apply();
                     break;
                 case "3":
-                    MealPlan.chooseMealPlan(student.id);
+                	student.payForHousing();
                     break;
                 case "4":
+                    MealPlan.chooseMealPlan(student.id);
+                    break;
+                case "5":
                     return;
                 default:
                     displayMessage("Invalid option");
@@ -209,6 +213,7 @@ public class Display {
             displayMessage("5 Provide Professor Feedback");
             displayMessage("6 View/Purchase University Event Tickets");
             displayMessage("7 View University Employment Opportunities");
+            displayMessage("8 Find a Roommate");
             displayMessage("8 Back to Main Menu");
             String choice = Utils.getInput("Select an option: ");
 
@@ -238,7 +243,8 @@ public class Display {
                     student.displayUniversityEmploymentMenu();
                     break;
                 case "8":
-                    return;
+                	student.findARoommate();
+                    break;
                 default:
                     displayMessage("Invalid option");
             }
